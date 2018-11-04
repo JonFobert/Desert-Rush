@@ -5,21 +5,35 @@ context.scale(10, 10);
 
 const gravityAccelY = 98.0
 
-function draw(detlaTime) {
+const baddieOne = {
+	x: 40,
+	y: 20,
+	width: 4,
+	height: 4
+};
+
+const baddieTwo = {
+	x: 20,
+	y: 20,
+	width: 4,
+	height: 4
+}
+
+let baddies = [baddieOne, baddieTwo];
+
+function draw(deltaTime) {
 	context.fillStyle = '#E0FBFC';
 	context.fillRect(0, 0, canvas.width, canvas.height)
 	if(player.velocityY !== 0) {
 		jump(deltaTime)
 	}
 	drawPlayer(player);
-	drawBaddie(baddie);
-	checkCollision(player,baddie);
+	baddies.forEach(baddie => {
+		drawBaddie(baddie);
+		baddie.x -= 0.1
+		checkCollision(player,baddie)	
+	});
 
-}
-
-function drawPlayer() {
-	context.fillStyle = '#98C1D9';
-	context.fillRect(player.x, player.y, player.width, player.height)
 }
 const player = {
 	x: 5,
@@ -29,12 +43,20 @@ const player = {
 	velocityY: 0,
 }
 
-const baddie = {
-	x: 40,
-	y: 20,
-	width: 4,
-	height: 4
-};
+function drawPlayer() {
+	context.fillStyle = '#98C1D9';
+	context.fillRect(player.x, player.y, player.width, player.height)
+}
+
+/*var Baddie = class Baddie {
+	constructor()
+		this.x: 40,
+		this.y: 20,
+		this.width: 4,
+		this.height: 4
+}*/
+
+
 
 function drawBaddie(baddie) {
 	context.fillStyle = '#EE6C4D';
@@ -72,7 +94,7 @@ document.addEventListener("keydown", e => {
 let lastTime = 0;
 function main(time) {
 	requestAnimationFrame(main);
-	baddie.x -= 0.25
+	//baddie.x -= 0.25
 	deltaTime = time - lastTime;
 	lastTime = time;
 	draw(deltaTime);
