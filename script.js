@@ -1,12 +1,12 @@
 const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
 context.scale(10, 10);
-//Colors: https://coolors.co/b8d8d8-7a9e9f-4f6367-eef5db-fe5f55
+//Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
 
 const gravityAccelY = 98.0
 
 function draw(detlaTime) {
-	context.fillStyle = '#EEF5DB';
+	context.fillStyle = '#E0FBFC';
 	context.fillRect(0, 0, canvas.width, canvas.height)
 	if(player.velocityY !== 0) {
 		jump(deltaTime)
@@ -18,7 +18,7 @@ function draw(detlaTime) {
 }
 
 function drawPlayer() {
-	context.fillStyle = '#4F6367';
+	context.fillStyle = '#98C1D9';
 	context.fillRect(player.x, player.y, player.width, player.height)
 }
 const player = {
@@ -37,7 +37,7 @@ const baddie = {
 };
 
 function drawBaddie(baddie) {
-	context.fillStyle = '#FE5F55';
+	context.fillStyle = '#EE6C4D';
 	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
 }
 

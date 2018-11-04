@@ -1,0 +1,13 @@
+body {
+	background-color: #293241;
+	font-family: 'Roboto', sans-serif;
+	font-size: 32px;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+canvas {
+	margin: auto;
+	display: block;
+	margin-top: 40px;
+}
