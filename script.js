@@ -1,37 +1,56 @@
-const canvas = document.querySelector('canvas');
+const canvas = document.querySelector('#game');
 const context = canvas.getContext('2d');
+const canvasInstruct = document.querySelector('#instructions');
+const contextInstruct = canvasInstruct.getContext('2d');
 context.scale(10, 10);
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
 
-const gravityAccelY = 98.0
+const gravityAccelY = 70.0
 
 const baddieOne = {
-	x: 40,
+	x: 55,
 	y: 20,
 	width: 4,
 	height: 4
 };
 
 const baddieTwo = {
-	x: 20,
+	x: 200,
 	y: 20,
 	width: 4,
 	height: 4
 }
 
-let baddies = [baddieOne, baddieTwo];
+const baddieThree = {
+	x: 230,
+	y: 20,
+	width: 4,
+	height: 4
+}
+
+let baddies = [baddieOne, baddieTwo, baddieThree];
 
 function draw(deltaTime) {
 	context.fillStyle = '#E0FBFC';
 	context.fillRect(0, 0, canvas.width, canvas.height)
+	contextInstruct.font = "24px Arial";
+	contextInstruct.fillText("UP arrow key to Jump", 120, 50);
 	if(player.velocityY !== 0) {
 		jump(deltaTime)
 	}
 	drawPlayer(player);
 	baddies.forEach(baddie => {
 		drawBaddie(baddie);
-		baddie.x -= 0.1
-		checkCollision(player,baddie)	
+		baddie.x -= 0.2
+		if(checkCollision(player,baddie)) {
+			player.score = 0
+			updateScore();
+		}
+		if (baddie.x < -4) {
+			baddie.x = 55
+			player.score++
+			updateScore();
+		}	
 	});
 
 }
@@ -41,21 +60,13 @@ const player = {
 	width: 2,
 	height: 2,
 	velocityY: 0,
+	score: 0
 }
 
 function drawPlayer() {
 	context.fillStyle = '#98C1D9';
 	context.fillRect(player.x, player.y, player.width, player.height)
 }
-
-/*var Baddie = class Baddie {
-	constructor()
-		this.x: 40,
-		this.y: 20,
-		this.width: 4,
-		this.height: 4
-}*/
-
 
 
 function drawBaddie(baddie) {
@@ -68,7 +79,7 @@ function checkCollision(player, baddie) {
 		player.x < (baddie.x + baddie.width) && (player.x + player.width) < baddie.width) &&
 		((player.y + player.height) > baddie.y && player.y < (baddie.y + baddie.height)||
 		player.y < (baddie.y + baddie.height) && (player.y + player.height) < baddie.height)) {
-		console.log("Colliding!")
+			return true
 	}
 }
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
@@ -84,8 +95,7 @@ function jump(deltaTime) {
 }
 
 document.addEventListener("keydown", e => {
-	if (e.keyCode === 38) {
-		console.log("jump")
+	if (e.keyCode === 38 && player.velocityY === 0) {
 		player.velocityY = -40
 	}
 });
@@ -94,10 +104,15 @@ document.addEventListener("keydown", e => {
 let lastTime = 0;
 function main(time) {
 	requestAnimationFrame(main);
-	//baddie.x -= 0.25
 	deltaTime = time - lastTime;
 	lastTime = time;
 	draw(deltaTime);
 }
 
-main();
+function updateScore() {
+	document.querySelector('.score').innerHTML = `score: ${player.score}`
+}
+updateScore();
+requestAnimationFrame(main);
+
+//draw()

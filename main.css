@@ -3,11 +3,28 @@ body {
 	font-family: 'Roboto', sans-serif;
 	font-size: 32px;
 	color: #FFFFFF;
+}
+
+p, .score {
 	text-align: center;
 }
 
-canvas {
+#stage {
+	width: 500px;
+	height: 300px;
 	margin: auto;
 	display: block;
 	margin-top: 40px;
+}
+
+canvas {
+	position: absolute;
+}
+
+#game {
+	z-index: 1
+}
+
+#instructions {
+	z-index: 2
 }
