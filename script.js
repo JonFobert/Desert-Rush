@@ -30,11 +30,13 @@ const baddieThree = {
 
 let baddies = [baddieOne, baddieTwo, baddieThree];
 
+let instructText = "UP arrow key to Jump"
+
 function draw(deltaTime) {
 	context.fillStyle = '#E0FBFC';
 	context.fillRect(0, 0, canvas.width, canvas.height)
 	contextInstruct.font = "24px Arial";
-	contextInstruct.fillText("UP arrow key to Jump", 120, 50);
+	contextInstruct.fillText(instructText, 120, 50);
 	if(player.velocityY !== 0) {
 		jump(deltaTime)
 	}
@@ -47,6 +49,8 @@ function draw(deltaTime) {
 			updateScore();
 		}
 		if (baddie.x < -4) {
+			contextInstruct.clearRect(0,0, 500, 300)
+			instructText = "test";
 			baddie.x = 55
 			player.score++
 			updateScore();
