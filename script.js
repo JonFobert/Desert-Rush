@@ -41,7 +41,6 @@ function draw(deltaTime) {
 	context.fillRect(0, 0, canvas.width, canvas.height)
 	contextInstruct.clearRect(0,0,500,300)
 	contextInstruct.font = "24px Arial";
-	console.log(instructText);
 	contextInstruct.fillText(instructText, 120, 50);
 	if(player.velocityY !== 0) {
 		jump(deltaTime);
@@ -68,48 +67,43 @@ function draw(deltaTime) {
 	});
 }
 const introBaddie = {
-	x: 100,
+	x: 80,
 	y: 18,
 	width: 4,
 	height: 4
 };
 const introPad = {
-	x: 150,
+	x: 130,
 	y: 19,
 	width: 6,
 	height: 3
 };
 
 function introOnRails() {
-	stage = 
-	console.log(introBaddie.x)
 	drawBaddie(introBaddie);
 	drawPad(introPad);
-	introBaddie.x -= 0.1;
-	introPad.x -=0.1;
-	/*if(checkCollision(player,introBaddie)) {
+	introBaddie.x -= 0.2;
+	introPad.x -=0.2;
+	if(checkCollision(player,introBaddie)) {
 		player.score = 0;
 		updateScore();
 	}
-	if(checkCollision(player,introPad)){
-		player.score = 0;
+	if(checkCollisionPad(player,introPad)){
+		console.log("Stomped")
 		updateScore();
-	}*/
+	}
 	if (introPad.x < -6) {
-		//contextInstruct.clearRect(0,0,500,300);
 		player.score++
 		updateScore();
 		return introComplete = true
 	}
 	else if (introBaddie.x < -4) {
 		instructText = "Jump on green pads for bonus points"
-		player.score++
+		player.score= 1
 		updateScore();
 	}
 	else if (introBaddie.x < 50) {
-		//contextInstruct.clearRect(0,0,500,300);
 		instructText = "Jump to avoid red enemies";
-		//console.log(instructText)
 	}	
 };
 
@@ -142,12 +136,19 @@ function checkCollision(player, baddie) {
 		player.x < (baddie.x + baddie.width) && (player.x + player.width) < baddie.width) &&
 		((player.y + player.height) > baddie.y && player.y < (baddie.y + baddie.height)||
 		player.y < (baddie.y + baddie.height) && (player.y + player.height) < baddie.height)) {
-			return true
+		return true
+	}
+}
+
+function checkCollisionPad(player, pad) {
+	if(((player.x + player.width) > pad.x && player.x < (pad.x + pad.width)||
+		player.x < (pad.x + pad.width) && (player.x + player.width) < pad.width) &&
+		((player.y + player.height) - pad.y < 0.5 && (player.y + player.height) - pad.y > -0.5) && player.velocityY > 0) {
+		return true
 	}
 }
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
 function jump(deltaTime) {
-	//console.log(deltaTime)
 	let timeInSec = deltaTime/1000
 	player.velocityY += gravityAccelY * timeInSec;
 	player.y += player.velocityY * timeInSec;
