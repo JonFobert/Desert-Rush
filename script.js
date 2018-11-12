@@ -52,9 +52,6 @@ let framesSinceReplace = 0
 function draw(deltaTime, time) {
 	context.fillStyle = '#E0FBFC';
 	context.fillRect(0, 0, canvas.width, canvas.height)
-	/*contextInstruct.clearRect(0,0,500,300)
-	contextInstruct.font = "24px Arial";
-	contextInstruct.fillText(instructText, 120, 50);*/
 	if(player.velocityY !== 0) {
 		jump(deltaTime);
 	}
@@ -79,8 +76,6 @@ function draw(deltaTime, time) {
 		}
 
 		if (baddie.x < -4) {
-			contextInstruct.clearRect(0, 0, 500, 300)
-			//instructText = "test";
 			//place the baddie 20 to 50 units behind where the previous one was replaced
 			baddie.x = (lastReplace - framesSinceReplace * 0.2) + randomIntFromInterval(20, 50);
 			lastReplace = baddie.x
@@ -94,7 +89,8 @@ const introBaddie = {
 	x: 80,
 	y: 18,
 	width: 4,
-	height: 4
+	height: 4,
+	counted: false
 };
 const introPad = {
 	x: 130,
@@ -105,7 +101,7 @@ const introPad = {
 };
 
 function introOnRails() {
-	let instructText = "UP arrow key to Jump";
+	instructText = "UP arrow key to Jump";
 	drawBaddie(introBaddie);
 	drawPad(introPad);
 	introBaddie.x -= 0.2;
@@ -115,34 +111,40 @@ function introOnRails() {
 		updateScore();
 	}
 	checkCollisionPad(player,introPad);
-	
+
 	if (introPad.x < -6) {
-		if(introPad.stomped) {
-			player.score += 2;
-			updateScore();
-		}
-		
 		instructText = "";
+		drawText(0)
 		return introComplete = true
 	}
+
+	else if (introPad.x < 7) {
+		if (introPad.stomped === true) {
+			player.velocityY = -40
+			player.score += 2
+			updateScore();
+			introPad.stomped = false
+		}
+	}
+
 	else if (introBaddie.x < -4) {
-		instructText = "Jump on green pads for bonus points";
-		contextInstruct.clearRect(0,0,500,300)
-		contextInstruct.font = "24px Arial";
-		contextInstruct.fillText(instructText, 70, 50);
-		player.score = 1;
+		instructText = "Bounce on green pads for bonus points";
+		drawText(60);
+		//player.score = 1;
 		updateScore();
+	}
+
+	else if (introBaddie.x < 7 && introBaddie.counted === false) {
+		player.score++;
+		updateScore()
+		introBaddie.counted = true;
 	}
 	else if (introBaddie.x < 50) {
 		instructText = "Jump to avoid red enemies";
-		contextInstruct.clearRect(0,0,500,300)
-		contextInstruct.font = "24px Arial";
-		contextInstruct.fillText(instructText, 100, 50);
+		drawText(100);
 	}	
 	else {
-		contextInstruct.clearRect(0,0,500,300)
-		contextInstruct.font = "24px Arial";
-		contextInstruct.fillText(instructText, 120, 50);
+		drawText(120);
 	}
 };
 
@@ -159,6 +161,12 @@ function drawBaddie(baddie) {
 function drawPad(baddie) {
 	context.fillStyle = '#99ED4B';
 	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
+}
+
+function drawText(xOffset) {
+	contextInstruct.clearRect(0,0,500,300)
+	contextInstruct.font = "24px Arial";
+	contextInstruct.fillText(instructText, xOffset, 50);
 }
 
 //https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
@@ -214,5 +222,3 @@ function updateScore() {
 }
 updateScore();
 requestAnimationFrame(main);
-
-//draw()
