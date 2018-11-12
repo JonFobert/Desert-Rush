@@ -18,6 +18,7 @@ const player = {
 };
 
 const baddieOne = {
+	type: 'baddie',
 	x: 55,
 	y: 18,
 	width: 4,
@@ -30,6 +31,7 @@ const baddieOne = {
 };
 
 const pad = {
+	type: 'pad',
 	x: 165,
 	y: 19,
 	width: 6,
@@ -43,6 +45,7 @@ const pad = {
 };
 
 const baddieTwo = {
+	type: 'baddie',
 	x: 100,
 	y: 18,
 	width: 4,
@@ -55,6 +58,7 @@ const baddieTwo = {
 };
 
 const baddieThree = {
+	type: 'baddie',
 	x: 140,
 	y: 18,
 	width: 4,
@@ -66,7 +70,7 @@ const baddieThree = {
 	}
 };
 
-let baddies = [baddieOne, baddieTwo, baddieThree, pad];
+let actors = [baddieOne, baddieTwo, baddieThree, pad];
 
 let introComplete = false;
 
@@ -86,27 +90,27 @@ function draw(deltaTime, time) {
 		return;
 	}
 	framesSinceReplace++
-	baddies.forEach(baddie => {
-		drawBaddie(baddie);
-		baddie.x -= 0.2;
-		if(baddie.collided(player,baddie)) {
-			baddie.collideAction();
+	actors.forEach(actor => {
+		drawBaddie(actor);
+		actor.x -= 0.2;
+		if(actor.collided(player,actor)) {
+			actor.collideAction();
 			updateScore();
 		}
 
-		if (baddie.x < 7 && baddie.counted == false) {
+		if (actor.x < 7 && actor.type == 'baddie' && actor.counted == false) {
 			player.score++;
 			updateScore();
-			baddie.counted = true;
+			actor.counted = true;
 		}
 
-		if (baddie.x < -4) {
+		if (actor.x < -4) {
 			//place the baddie 20 to 40 units behind where the previous baddie was replaced
-			baddie.x = (lastReplace - framesSinceReplace * 0.2) + randomIntFromInterval(20, 40);
-			lastReplace = baddie.x
+			actor.x = (lastReplace - framesSinceReplace * 0.2) + randomIntFromInterval(20, 40);
+			lastReplace = actor.x
 			framesSinceReplace = 0
-			console.log(baddie.x)
-			baddie.counted = false;
+			console.log(actor.x)
+			actor.counted = false;
 		}	
 	});
 }
@@ -213,7 +217,6 @@ function checkCollisionPad(player, pad) {
 		player.x < (pad.x + pad.width) && (player.x + player.width) < pad.width) &&
 		((player.y + player.height) - pad.y < 0.5 && (player.y + player.height) - pad.y > -0.5) 
 		&& player.velocityY > 0) {
-		pad.stomped = true;
 		return true
 	}
 }
