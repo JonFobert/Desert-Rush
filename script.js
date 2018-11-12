@@ -6,37 +6,52 @@ const contextInstruct = canvasInstruct.getContext('2d');
 context.scale(10, 10);
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
 
+const gravityAccelY = 70.0;
 
-const gravityAccelY = 70.0
+const player = {
+	x: 5,
+	y: 20,
+	width: 2,
+	height: 2,
+	velocityY: 0,
+	score: 0
+};
 
 const baddieOne = {
 	x: 55,
 	y: 18,
 	width: 4,
-	height: 4
+	height: 4,
+	counted: false,
 };
 
 const baddieTwo = {
-	x: 200,
+	x: 120,
 	y: 18,
 	width: 4,
-	height: 4
-}
+	height: 4,
+	counted: false,
+};
 
 const baddieThree = {
-	x: 230,
+	x: 180,
 	y: 18,
 	width: 4,
-	height: 4
-}
+	height: 4,
+	counted: false,
+};
 
 let baddies = [baddieOne, baddieTwo, baddieThree];
 
-let instructText = "UP arrow key to Jump"
+let instructText = "UP arrow key to Jump";
 
-let introComplete = false
+let introComplete = true;
 
-function draw(deltaTime) {
+let currentFrame = 0
+let lastReplace = 200;
+framesSinceReplace = 0
+
+function draw(deltaTime, time) {
 	context.fillStyle = '#E0FBFC';
 	context.fillRect(0, 0, canvas.width, canvas.height)
 	contextInstruct.clearRect(0,0,500,300)
@@ -50,19 +65,30 @@ function draw(deltaTime) {
 		introOnRails();
 		return;
 	}
+	framesSinceReplace++
 	baddies.forEach(baddie => {
 		drawBaddie(baddie);
-		baddie.x -= 0.2
+		baddie.x -= 1;
 		if(checkCollision(player,baddie)) {
-			player.score = 0
+			player.score = 0;
 			updateScore();
 		}
-		if (baddie.x < -4) {
-			contextInstruct.clearRect(0,0, 500, 300)
-			instructText = "test";
-			baddie.x = 55
-			player.score++
+
+		if (baddie.x < 7 && baddie.counted == false) {
+			player.score++;
 			updateScore();
+			baddie.counted = true;
+		}
+
+		if (baddie.x < -4) {
+			contextInstruct.clearRect(0, 0, 500, 300)
+			instructText = "test";
+			//place the baddie 20 to 50 units behind where the previous one was replaced
+			baddie.x = (lastReplace - framesSinceReplace) + randomIntFromInterval(20, 50);
+			lastReplace = baddie.x
+			framesSinceReplace = 0
+			console.log(baddie.x)
+			baddie.counted = false;
 		}	
 	});
 }
@@ -76,7 +102,8 @@ const introPad = {
 	x: 130,
 	y: 19,
 	width: 6,
-	height: 3
+	height: 3,
+	stomped: false
 };
 
 function introOnRails() {
@@ -88,18 +115,18 @@ function introOnRails() {
 		player.score = 0;
 		updateScore();
 	}
-	if(checkCollisionPad(player,introPad)){
-		console.log("Stomped")
-		updateScore();
-	}
+	checkCollisionPad(player,introPad);
+	
 	if (introPad.x < -6) {
-		player.score++
-		updateScore();
+		if(introPad.stomped) {
+			player.score += 2;
+			updateScore();
+		}
 		return introComplete = true
 	}
 	else if (introBaddie.x < -4) {
-		instructText = "Jump on green pads for bonus points"
-		player.score= 1
+		instructText = "Jump on green pads for bonus points";
+		player.score = 1;
 		updateScore();
 	}
 	else if (introBaddie.x < 50) {
@@ -107,18 +134,9 @@ function introOnRails() {
 	}	
 };
 
-const player = {
-	x: 5,
-	y: 20,
-	width: 2,
-	height: 2,
-	velocityY: 0,
-	score: 0
-}
-
 function drawPlayer() {
 	context.fillStyle = '#98C1D9';
-	context.fillRect(player.x, player.y, player.width, player.height)
+	context.fillRect(player.x, player.y, player.width, player.height);
 }
 
 function drawBaddie(baddie) {
@@ -131,20 +149,26 @@ function drawPad(baddie) {
 	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
 }
 
+//https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
+function randomIntFromInterval(min,max) {
+	return Math.floor(Math.random()*(max-min+1) + min);
+}
+
 function checkCollision(player, baddie) {
 	if(((player.x + player.width) > baddie.x && player.x < (baddie.x + baddie.width)||
 		player.x < (baddie.x + baddie.width) && (player.x + player.width) < baddie.width) &&
 		((player.y + player.height) > baddie.y && player.y < (baddie.y + baddie.height)||
 		player.y < (baddie.y + baddie.height) && (player.y + player.height) < baddie.height)) {
-		return true
+		return true;
 	}
 }
 
 function checkCollisionPad(player, pad) {
 	if(((player.x + player.width) > pad.x && player.x < (pad.x + pad.width)||
 		player.x < (pad.x + pad.width) && (player.x + player.width) < pad.width) &&
-		((player.y + player.height) - pad.y < 0.5 && (player.y + player.height) - pad.y > -0.5) && player.velocityY > 0) {
-		return true
+		((player.y + player.height) - pad.y < 0.5 && (player.y + player.height) - pad.y > -0.5) 
+		&& player.velocityY > 0) {
+		pad.stomped = true;
 	}
 }
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
@@ -170,7 +194,7 @@ function main(time) {
 	requestAnimationFrame(main);
 	deltaTime = time - lastTime;
 	lastTime = time;
-	draw(deltaTime);
+	draw(deltaTime, time);
 }
 
 function updateScore() {
