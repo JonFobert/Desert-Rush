@@ -43,20 +43,18 @@ const baddieThree = {
 
 let baddies = [baddieOne, baddieTwo, baddieThree];
 
-let instructText = "UP arrow key to Jump";
-
-let introComplete = true;
+let introComplete = false;
 
 let currentFrame = 0
 let lastReplace = 200;
-framesSinceReplace = 0
+let framesSinceReplace = 0
 
 function draw(deltaTime, time) {
 	context.fillStyle = '#E0FBFC';
 	context.fillRect(0, 0, canvas.width, canvas.height)
-	contextInstruct.clearRect(0,0,500,300)
+	/*contextInstruct.clearRect(0,0,500,300)
 	contextInstruct.font = "24px Arial";
-	contextInstruct.fillText(instructText, 120, 50);
+	contextInstruct.fillText(instructText, 120, 50);*/
 	if(player.velocityY !== 0) {
 		jump(deltaTime);
 	}
@@ -68,7 +66,7 @@ function draw(deltaTime, time) {
 	framesSinceReplace++
 	baddies.forEach(baddie => {
 		drawBaddie(baddie);
-		baddie.x -= 1;
+		baddie.x -= 0.2;
 		if(checkCollision(player,baddie)) {
 			player.score = 0;
 			updateScore();
@@ -82,9 +80,9 @@ function draw(deltaTime, time) {
 
 		if (baddie.x < -4) {
 			contextInstruct.clearRect(0, 0, 500, 300)
-			instructText = "test";
+			//instructText = "test";
 			//place the baddie 20 to 50 units behind where the previous one was replaced
-			baddie.x = (lastReplace - framesSinceReplace) + randomIntFromInterval(20, 50);
+			baddie.x = (lastReplace - framesSinceReplace * 0.2) + randomIntFromInterval(20, 50);
 			lastReplace = baddie.x
 			framesSinceReplace = 0
 			console.log(baddie.x)
@@ -107,6 +105,7 @@ const introPad = {
 };
 
 function introOnRails() {
+	let instructText = "UP arrow key to Jump";
 	drawBaddie(introBaddie);
 	drawPad(introPad);
 	introBaddie.x -= 0.2;
@@ -122,16 +121,29 @@ function introOnRails() {
 			player.score += 2;
 			updateScore();
 		}
+		
+		instructText = "";
 		return introComplete = true
 	}
 	else if (introBaddie.x < -4) {
 		instructText = "Jump on green pads for bonus points";
+		contextInstruct.clearRect(0,0,500,300)
+		contextInstruct.font = "24px Arial";
+		contextInstruct.fillText(instructText, 70, 50);
 		player.score = 1;
 		updateScore();
 	}
 	else if (introBaddie.x < 50) {
 		instructText = "Jump to avoid red enemies";
+		contextInstruct.clearRect(0,0,500,300)
+		contextInstruct.font = "24px Arial";
+		contextInstruct.fillText(instructText, 100, 50);
 	}	
+	else {
+		contextInstruct.clearRect(0,0,500,300)
+		contextInstruct.font = "24px Arial";
+		contextInstruct.fillText(instructText, 120, 50);
+	}
 };
 
 function drawPlayer() {
