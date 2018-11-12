@@ -23,25 +23,50 @@ const baddieOne = {
 	width: 4,
 	height: 4,
 	counted: false,
+	collided: checkCollision,
+	collideAction: function () {
+		player.score = 0;
+	}
+};
+
+const pad = {
+	x: 165,
+	y: 19,
+	width: 6,
+	height: 3,
+	stomped: false,
+	collided: checkCollisionPad,
+	collideAction: function () {
+		player.velocityY = -40;
+		player.score += 2;
+	}
 };
 
 const baddieTwo = {
-	x: 120,
+	x: 100,
 	y: 18,
 	width: 4,
 	height: 4,
 	counted: false,
+	collided: checkCollision,
+	collideAction: function () {
+		player.score = 0;
+	}
 };
 
 const baddieThree = {
-	x: 180,
+	x: 140,
 	y: 18,
 	width: 4,
 	height: 4,
 	counted: false,
+	collided: checkCollision,
+	collideAction: function () {
+		player.score = 0;
+	}
 };
 
-let baddies = [baddieOne, baddieTwo, baddieThree];
+let baddies = [baddieOne, baddieTwo, baddieThree, pad];
 
 let introComplete = false;
 
@@ -64,8 +89,8 @@ function draw(deltaTime, time) {
 	baddies.forEach(baddie => {
 		drawBaddie(baddie);
 		baddie.x -= 0.2;
-		if(checkCollision(player,baddie)) {
-			player.score = 0;
+		if(baddie.collided(player,baddie)) {
+			baddie.collideAction();
 			updateScore();
 		}
 
@@ -76,8 +101,8 @@ function draw(deltaTime, time) {
 		}
 
 		if (baddie.x < -4) {
-			//place the baddie 20 to 50 units behind where the previous one was replaced
-			baddie.x = (lastReplace - framesSinceReplace * 0.2) + randomIntFromInterval(20, 50);
+			//place the baddie 20 to 40 units behind where the previous baddie was replaced
+			baddie.x = (lastReplace - framesSinceReplace * 0.2) + randomIntFromInterval(20, 40);
 			lastReplace = baddie.x
 			framesSinceReplace = 0
 			console.log(baddie.x)
@@ -189,6 +214,7 @@ function checkCollisionPad(player, pad) {
 		((player.y + player.height) - pad.y < 0.5 && (player.y + player.height) - pad.y > -0.5) 
 		&& player.velocityY > 0) {
 		pad.stomped = true;
+		return true
 	}
 }
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
