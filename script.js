@@ -126,7 +126,8 @@ const introPad = {
 	y: 19,
 	width: 6,
 	height: 3,
-	stomped: false
+	stomped: false,
+	collided: checkCollisionPad
 };
 
 function introOnRails() {
@@ -139,7 +140,6 @@ function introOnRails() {
 		player.score = 0;
 		updateScore();
 	}
-	checkCollisionPad(player,introPad);
 
 	if (introPad.x < -6) {
 		instructText = "";
@@ -148,11 +148,10 @@ function introOnRails() {
 	}
 
 	else if (introPad.x < 7) {
-		if (introPad.stomped === true) {
+		if (introPad.collided(player, introPad)) {
 			player.velocityY = -40
 			player.score += 2
 			updateScore();
-			introPad.stomped = false
 		}
 	}
 
