@@ -34,7 +34,7 @@ const pad = {
 	y: 19,
 	width: 6,
 	height: 3,
-	stomped: false,
+	counted: true,
 	collided: checkCollisionPad,
 	collideAction: function () {
 		player.velocityY = -40;
