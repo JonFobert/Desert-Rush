@@ -2,11 +2,11 @@ const canvas = document.querySelector('#game');
 const context = canvas.getContext('2d');
 const canvasInstruct = document.querySelector('#instructions');
 const contextInstruct = canvasInstruct.getContext('2d');
-//consider getting rid of this to avoid float Baddie movement computation
 context.scale(10, 10);
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
 
 const gravityAccelY = 70.0;
+let actorSpeed = 0.2
 
 const player = {
 	x: 5,
@@ -28,6 +28,7 @@ const baddieOne = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
+		actorSpeed = 0.2;
 	}
 };
 
@@ -57,6 +58,7 @@ const baddieTwo = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
+		actorSpeed = 0.2;
 	}
 };
 
@@ -71,6 +73,7 @@ const baddieThree = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
+		actorSpeed = 0.2;
 	}
 };
 
@@ -96,7 +99,7 @@ function draw(deltaTime, time) {
 	framesSinceReplace++
 	actors.forEach(actor => {
 		actor.draw(actor);
-		actor.x -= 0.2;
+		actor.x -= actorSpeed;
 		if(actor.collided(player,actor)) {
 			actor.collideAction();
 			updateScore();
@@ -110,11 +113,12 @@ function draw(deltaTime, time) {
 
 		if (actor.x < -4) {
 			//place the baddie 20 to 40 units behind where the previous baddie was replaced
-			actor.x = (lastReplace - framesSinceReplace * 0.2) + randomIntFromInterval(20, 40);
+			actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(20, 40);
 			lastReplace = actor.x
-			framesSinceReplace = 0
+			framesSinceReplace = 0;
 			console.log(actor.x)
 			actor.counted = false;
+			actorSpeed += 0.02;
 		}	
 	});
 }
