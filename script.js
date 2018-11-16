@@ -19,6 +19,7 @@ const player = {
 
 const baddieOne = {
 	type: 'baddie',
+	draw: drawBaddie,
 	x: 55,
 	y: 18,
 	width: 4,
@@ -32,6 +33,7 @@ const baddieOne = {
 
 const pad = {
 	type: 'pad',
+	draw: drawPad,
 	x: 165,
 	y: 19,
 	width: 6,
@@ -46,6 +48,7 @@ const pad = {
 
 const baddieTwo = {
 	type: 'baddie',
+	draw: drawBaddie,
 	x: 100,
 	y: 18,
 	width: 4,
@@ -59,6 +62,7 @@ const baddieTwo = {
 
 const baddieThree = {
 	type: 'baddie',
+	draw: drawBaddie,
 	x: 140,
 	y: 18,
 	width: 4,
@@ -91,7 +95,7 @@ function draw(deltaTime, time) {
 	}
 	framesSinceReplace++
 	actors.forEach(actor => {
-		drawBaddie(actor);
+		actor.draw(actor);
 		actor.x -= 0.2;
 		if(actor.collided(player,actor)) {
 			actor.collideAction();
@@ -186,9 +190,9 @@ function drawBaddie(baddie) {
 	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
 }
 
-function drawPad(baddie) {
+function drawPad(pad) {
 	context.fillStyle = '#99ED4B';
-	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
+	context.fillRect(pad.x, pad.y, pad.width, pad.height);
 }
 
 function drawText(xOffset) {
