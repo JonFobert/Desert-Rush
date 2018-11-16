@@ -213,6 +213,15 @@ function randomIntFromInterval(min,max) {
 	return Math.floor(Math.random()*(max-min+1) + min);
 }
 
+//modified version of: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function randomizeLastThree(array) {
+	for(let i = 5; i > 3; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+	return array;
+}
+
 function checkCollision(player, baddie) {
 	if(((player.x + player.width) > baddie.x && player.x < (baddie.x + baddie.width)||
 		player.x < (baddie.x + baddie.width) && (player.x + player.width) < baddie.width) &&
