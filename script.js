@@ -98,27 +98,30 @@ function draw(deltaTime, time) {
 	}
 	framesSinceReplace++
 	actors.forEach(actor => {
-		actor.draw(actor);
 		actor.x -= actorSpeed;
-		if(actor.collided(player,actor)) {
-			actor.collideAction();
-			updateScore();
-		}
+		if (actor.x < 50) {
+			actor.draw(actor);
 
-		if (actor.x < 7 && actor.type == 'baddie' && actor.counted == false) {
-			player.score++;
-			updateScore();
-			actor.counted = true;
-		}
+			if(actor.collided(player,actor)) {
+				actor.collideAction();
+				updateScore();
+			}
 
-		if (actor.x < -4) {
-			//place the baddie 20 to 40 units behind where the previous baddie was replaced
-			actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(20, 40);
-			lastReplace = actor.x
-			framesSinceReplace = 0;
-			console.log(actor.x)
-			actor.counted = false;
-			actorSpeed += 0.02;
+			if (actor.x < 7 && actor.type == 'baddie' && actor.counted == false) {
+				player.score++;
+				updateScore();
+				actor.counted = true;
+			}
+
+			if (actor.x < -4) {
+				//place the baddie 20 to 40 units behind where the previous baddie was replaced
+				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(20, 40);
+				lastReplace = actor.x
+				framesSinceReplace = 0;
+				console.log(actor.x)
+				actor.counted = false;
+				actorSpeed += 0.02;
+			}
 		}	
 	});
 }
