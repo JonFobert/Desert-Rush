@@ -97,7 +97,7 @@ const baddieThree = {
 
 let actors = [baddieOne, baddieTwo, baddieThree];
 
-let introComplete = true;
+let introComplete = false;
 let nextActorFrame = 0
 let cycle = 0
 let lastReplace = 200;
@@ -146,14 +146,14 @@ function draw(deltaTime, time) {
 }
 const introBaddie = {
 	x: 80,
-	y: 18,
-	width: 4,
-	height: 4,
+	y: 28,
+	width: 5,
+	height: 9,
 	counted: false
 };
 const introPad = {
 	x: 130,
-	y: 19,
+	y: 34,
 	width: 6,
 	height: 3,
 	stomped: false,
@@ -162,7 +162,7 @@ const introPad = {
 
 function introOnRails() {
 	instructText = "UP arrow key to Jump";
-	drawBaddie(introBaddie);
+	drawBaddieSprite(introBaddie);
 	drawPad(introPad);
 	introBaddie.x -= 0.2;
 	introPad.x -=0.2;
