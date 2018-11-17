@@ -48,7 +48,7 @@ const baddieOne = {
 	}
 };
 
-const pad = {
+/*const pad = {
 	type: 'pad',
 	draw: drawPad,
 	x: 165,
@@ -61,7 +61,7 @@ const pad = {
 		player.velocityY = -40;
 		player.score += 2;
 	}
-};
+};*/
 
 const baddieTwo = {
 	type: 'baddie',
@@ -95,7 +95,7 @@ const baddieThree = {
 	}
 };
 
-let actors = [baddieOne, baddieTwo, baddieThree, pad];
+let actors = [baddieOne, baddieTwo, baddieThree];
 
 let introComplete = true;
 let nextActorFrame = 0
