@@ -15,13 +15,17 @@ let playerImg = document.createElement("img");
 playerImg.src = "playerWalk.png";
 let playerSpriteW = 80, playerSpriteH = 93;
 
+let baddieImg = document.createElement("img");
+baddieImg.src = "zombieWalk.png";
+let baddieSpriteW = 80, baddieSpriteH = 90;
+
 
 const gravityAccelY = 70.0;
 let actorSpeed = 0.2
 
 const player = {
 	x: 5,
-	y: 12.7,
+	y: 27.7,
 	width: 6,
 	height: 9,
 	velocityY: 0,
@@ -30,11 +34,12 @@ const player = {
 
 const baddieOne = {
 	type: 'baddie',
-	draw: drawBaddie,
+	draw: drawBaddieSprite,
+	drawTwo: drawBaddie,
 	x: 55,
-	y: 18,
-	width: 4,
-	height: 4,
+	y: 28,
+	width: 5,
+	height: 9,
 	counted: false,
 	collided: checkCollision,
 	collideAction: function () {
@@ -47,8 +52,8 @@ const pad = {
 	type: 'pad',
 	draw: drawPad,
 	x: 165,
-	y: 19,
-	width: 6,
+	y: 37,
+	width: 5,
 	height: 3,
 	counted: true,
 	collided: checkCollisionPad,
@@ -60,11 +65,12 @@ const pad = {
 
 const baddieTwo = {
 	type: 'baddie',
-	draw: drawBaddie,
+	draw: drawBaddieSprite,
+	drawTwo: drawBaddie,
 	x: 100,
-	y: 18,
-	width: 4,
-	height: 4,
+	y: 28,
+	width: 5,
+	height: 9,
 	counted: false,
 	collided: checkCollision,
 	collideAction: function () {
@@ -75,11 +81,12 @@ const baddieTwo = {
 
 const baddieThree = {
 	type: 'baddie',
-	draw: drawBaddie,
+	draw: drawBaddieSprite,
+	drawTwo: drawBaddie,
 	x: 140,
-	y: 18,
-	width: 4,
-	height: 4,
+	y: 27,
+	width: 5,
+	height: 9,
 	counted: false,
 	collided: checkCollision,
 	collideAction: function () {
@@ -90,7 +97,7 @@ const baddieThree = {
 
 let actors = [baddieOne, baddieTwo, baddieThree, pad];
 
-let introComplete = false;
+let introComplete = true;
 let nextActorFrame = 0
 let cycle = 0
 let lastReplace = 200;
@@ -110,8 +117,9 @@ function draw(deltaTime, time) {
 	framesSinceReplace++;
 	actors.forEach(actor => {
 		actor.x -= actorSpeed;
-		if (actor.x < 50) {
+		if (actor.x < 80) {
 			actor.draw(actor);
+			//actor.drawTwo(actor);
 
 			if(actor.collided(player,actor)) {
 				actor.collideAction();
@@ -126,7 +134,7 @@ function draw(deltaTime, time) {
 
 			if (actor.x < -4) {
 				//place the baddie 20 to 40 units behind where the previous baddie was replaced
-				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(20, 40);
+				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(30, 50);
 				lastReplace = actor.x
 				framesSinceReplace = 0;
 				console.log(actor.x)
@@ -217,6 +225,14 @@ function drawPlayerSprite() {
 }
 
 
+function drawBaddieSprite(baddie) {
+	context.drawImage(baddieImg,
+					  //source rectangle
+					  cycle * baddieSpriteW, 0, baddieSpriteW, baddieSpriteH,
+					  //destination rectange. -1 to compensate for blank left of sprite
+					  baddie.x-1, baddie.y, baddieSpriteW/10, baddieSpriteH/10);
+}
+
 function drawBaddie(baddie) {
 	context.fillStyle = '#EE6C4D';
 	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
@@ -269,15 +285,15 @@ function jump(deltaTime) {
 	let timeInSec = deltaTime/1000
 	player.velocityY += gravityAccelY * timeInSec;
 	player.y += player.velocityY * timeInSec;
-	if (player.y > 12.7) {
-    	player.y = 12.7; // assuming the ground is at height 20
+	if (player.y > 27.7) {
+    	player.y = 27.7; // assuming the ground is at height 20
     	player.velocityY = 0;
 	}
 }
 
 document.addEventListener("keydown", e => {
 	if (e.keyCode === 38 && player.velocityY === 0) {
-		player.velocityY = -40
+		player.velocityY = -50
 	}
 });
 
