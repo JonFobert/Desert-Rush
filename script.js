@@ -4,6 +4,16 @@ const canvasInstruct = document.querySelector('#instructions');
 const contextInstruct = canvasInstruct.getContext('2d');
 context.scale(10, 10);
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
+/*sprite ideas:
+https://www.kenney.nl/assets/platformer-characters-1
+https://www.kenney.nl/assets/platformer-art-extended-enemies
+*/
+
+/* powerup ideas
+double jump
+slow down
+lasers
+*/
 
 const gravityAccelY = 70.0;
 let actorSpeed = 0.2
@@ -96,7 +106,7 @@ function draw(deltaTime, time) {
 		introOnRails();
 		return;
 	}
-	framesSinceReplace++
+	framesSinceReplace++;
 	actors.forEach(actor => {
 		actor.x -= actorSpeed;
 		if (actor.x < 50) {
