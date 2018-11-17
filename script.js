@@ -9,20 +9,21 @@ https://www.kenney.nl/assets/platformer-characters-1
 https://www.kenney.nl/assets/platformer-art-extended-enemies
 */
 
-/* powerup ideas
-double jump
-slow down
-lasers
-*/
+
+//sprite images
+let playerImg = document.createElement("img");
+playerImg.src = "playerWalk.png";
+let playerSpriteW = 80, playerSpriteH = 93;
+
 
 const gravityAccelY = 70.0;
 let actorSpeed = 0.2
 
 const player = {
 	x: 5,
-	y: 20,
-	width: 2,
-	height: 2,
+	y: 12.7,
+	width: 6,
+	height: 9,
 	velocityY: 0,
 	score: 0
 };
@@ -90,8 +91,8 @@ const baddieThree = {
 let actors = [baddieOne, baddieTwo, baddieThree, pad];
 
 let introComplete = false;
-
-let currentFrame = 0
+let nextActorFrame = 0
+let cycle = 0
 let lastReplace = 200;
 let framesSinceReplace = 0
 
@@ -101,7 +102,7 @@ function draw(deltaTime, time) {
 	if(player.velocityY !== 0) {
 		jump(deltaTime);
 	}
-	drawPlayer(player);
+	drawPlayerSprite(player);
 	if (introComplete == false) {
 		introOnRails();
 		return;
@@ -202,6 +203,20 @@ function drawPlayer() {
 	context.fillRect(player.x, player.y, player.width, player.height);
 }
 
+function drawPlayerSprite() {
+	context.drawImage(playerImg,
+					  //source rectangle
+					  cycle * playerSpriteW, 0, playerSpriteW, playerSpriteH,
+					  //destination rectange. -1 to compensate for blank left of sprite
+					  player.x-1, player.y, playerSpriteW/10, playerSpriteH/10);
+	nextActorFrame++
+	if (nextActorFrame == 8) {
+		cycle = (cycle + 1) % 2
+		nextActorFrame = 0
+	}
+}
+
+
 function drawBaddie(baddie) {
 	context.fillStyle = '#EE6C4D';
 	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
@@ -254,8 +269,8 @@ function jump(deltaTime) {
 	let timeInSec = deltaTime/1000
 	player.velocityY += gravityAccelY * timeInSec;
 	player.y += player.velocityY * timeInSec;
-	if (player.y > 20) {
-    	player.y = 20; // assuming the ground is at height 20
+	if (player.y > 12.7) {
+    	player.y = 12.7; // assuming the ground is at height 20
     	player.velocityY = 0;
 	}
 }
