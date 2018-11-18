@@ -56,7 +56,7 @@ const baddieOne = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	x: 55,
+	x: 115,
 	y: 37,
 	width: 5,
 	height: 9,
@@ -87,7 +87,7 @@ const baddieTwo = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	x: 100,
+	x: 160,
 	y: 37,
 	width: 5,
 	height: 9,
@@ -103,7 +103,7 @@ const baddieThree = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	x: 140,
+	x: 200,
 	y: 37,
 	width: 5,
 	height: 9,
@@ -119,7 +119,7 @@ const baddieFour = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	x: 180,
+	x: 240,
 	y: 37,
 	width: 5,
 	height: 9,
@@ -133,15 +133,13 @@ const baddieFour = {
 
 let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 
-let introComplete = true;
+let introComplete = false;
 let nextActorFrame = 0
 let cycle = 0
 let lastReplace = 200;
 let framesSinceReplace = 0
 
 function draw(deltaTime, time) {
-	//context.fillStyle = '#E0FBFC';
-	//context.fillRect(0, 0, canvas.width, canvas.height)
 	context.clearRect(0, 0, canvas.width, canvas.height)
 	drawBackground();
 	if(player.velocityY !== 0) {
@@ -183,7 +181,7 @@ function draw(deltaTime, time) {
 	});
 }
 const introBaddie = {
-	x: 80,
+	x: 100,
 	y: 37,
 	width: 5,
 	height: 9,
@@ -199,11 +197,11 @@ const introPad = {
 };
 
 function introOnRails() {
-	instructText = "UP arrow key to Jump";
+	instructText = "Up arrow key to Jump";
+	introBaddie.x -= 0.3;
+	introPad.x -=0.3;
 	drawBaddieSprite(introBaddie);
-	drawPad(introPad);
-	introBaddie.x -= 0.2;
-	introPad.x -=0.2;
+	//drawPad(introPad);
 	if(checkCollision(player,introBaddie)) {
 		player.score = 0;
 		updateScore();
@@ -224,7 +222,7 @@ function introOnRails() {
 	}
 
 	else if (introBaddie.x < -4) {
-		instructText = "Bounce on green pads for bonus points";
+		instructText = "";
 		drawText(60);
 		//player.score = 1;
 		updateScore();
@@ -236,11 +234,11 @@ function introOnRails() {
 		introBaddie.counted = true;
 	}
 	else if (introBaddie.x < 50) {
-		instructText = "Jump to avoid red enemies";
-		drawText(100);
+		instructText = "Jump to avoid zombies";
+		drawText(320);
 	}	
 	else {
-		drawText(120);
+		drawText(330);
 	}
 };
 
@@ -335,9 +333,10 @@ function drawPad(pad) {
 }
 
 function drawText(xOffset) {
-	contextInstruct.clearRect(0,0,500,300)
-	contextInstruct.font = "24px Arial";
-	contextInstruct.fillText(instructText, xOffset, 50);
+	contextInstruct.clearRect(0,0,960,540)
+	contextInstruct.font = "32px Arial";
+	contextInstruct.fillStyle = "#293241";
+	contextInstruct.fillText(instructText, xOffset, 100);
 }
 
 //https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
