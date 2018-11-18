@@ -9,6 +9,26 @@ https://www.kenney.nl/assets/platformer-characters-1
 https://www.kenney.nl/assets/platformer-art-extended-enemies
 */
 
+//background images
+
+let backgroundFive = document.createElement("img");
+backgroundFive.src = "assets/background5.png"
+let backgroundFiveX = 0
+
+let backgroundFour = document.createElement("img");
+backgroundFour.src = "assets/background4.png"
+let backgroundFourX = 0
+
+let backgroundThree = document.createElement("img");
+backgroundThree.src = "assets/background3.png"
+let backgroundThreeX = 0
+
+let backgroundTwo = document.createElement("img");
+backgroundTwo.src = "assets/background2.png"
+let backgroundTwoX = 0
+
+let backgroundOne = document.createElement("img");
+backgroundOne.src = "assets/background1.png"
 
 //sprite images
 let playerImg = document.createElement("img");
@@ -25,7 +45,7 @@ let actorSpeed = 0.2
 
 const player = {
 	x: 5,
-	y: 27.7,
+	y: 36.7,
 	width: 6,
 	height: 9,
 	velocityY: 0,
@@ -37,7 +57,7 @@ const baddieOne = {
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
 	x: 55,
-	y: 28,
+	y: 37,
 	width: 5,
 	height: 9,
 	counted: false,
@@ -68,7 +88,7 @@ const baddieTwo = {
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
 	x: 100,
-	y: 28,
+	y: 37,
 	width: 5,
 	height: 9,
 	counted: false,
@@ -84,7 +104,7 @@ const baddieThree = {
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
 	x: 140,
-	y: 28,
+	y: 37,
 	width: 5,
 	height: 9,
 	counted: false,
@@ -97,15 +117,17 @@ const baddieThree = {
 
 let actors = [baddieOne, baddieTwo, baddieThree];
 
-let introComplete = false;
+let introComplete = true;
 let nextActorFrame = 0
 let cycle = 0
 let lastReplace = 200;
 let framesSinceReplace = 0
 
 function draw(deltaTime, time) {
-	context.fillStyle = '#E0FBFC';
-	context.fillRect(0, 0, canvas.width, canvas.height)
+	//context.fillStyle = '#E0FBFC';
+	//context.fillRect(0, 0, canvas.width, canvas.height)
+	context.clearRect(0, 0, canvas.width, canvas.height)
+	drawBackground();
 	if(player.velocityY !== 0) {
 		jump(deltaTime);
 	}
@@ -146,7 +168,7 @@ function draw(deltaTime, time) {
 }
 const introBaddie = {
 	x: 80,
-	y: 28,
+	y: 37,
 	width: 5,
 	height: 9,
 	counted: false
@@ -209,6 +231,59 @@ function introOnRails() {
 function drawPlayer() {
 	context.fillStyle = '#98C1D9';
 	context.fillRect(player.x, player.y, player.width, player.height);
+}
+
+function drawBackground() {
+	context.drawImage(backgroundOne,
+				  0, 0, canvas.width, canvas.height,
+				  0, 0, canvas.width/10, canvas.height/10)
+	
+	//IMAGE TWO
+	context.drawImage(backgroundTwo,
+					  0, 0, canvas.width, canvas.height,
+					  backgroundTwoX/10, 0, canvas.width/10, canvas.height/10)
+	context.drawImage(backgroundTwo,
+				 	  0, 0, canvas.width, canvas.height,
+				 	  backgroundTwoX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
+	backgroundTwoX -= 0.5
+	if (-backgroundTwoX == canvas.width) {
+		backgroundTwoX = 0;
+	}
+	
+	//IMAGE THREE
+	context.drawImage(backgroundThree,
+					  0, 0, canvas.width, canvas.height,
+					  backgroundThreeX/10, 0, canvas.width/10, canvas.height/10)
+	context.drawImage(backgroundThree,
+				 	  0, 0, canvas.width, canvas.height,
+				 	  backgroundThreeX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
+	backgroundThreeX -= 1
+	if (-backgroundThreeX == canvas.width) {
+		backgroundThreeX = 0;
+	}
+	/*
+		//IMAGE FOUR
+	context.drawImage(backgroundFour,
+					  0, 0, canvas.width, canvas.height,
+					  backgroundFourX/10, 0, canvas.width/10, canvas.height/10)
+	context.drawImage(backgroundFour,
+				 	  0, 0, canvas.width, canvas.height,
+				 	  backgroundFourX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
+	backgroundFourX -= 2
+	if (-backgroundFourX == canvas.width) {
+		backgroundFourX = 0;
+	}*/
+		//IMAGE FIVE
+	context.drawImage(backgroundFive,
+					  0, 0, canvas.width, canvas.height,
+					  backgroundFiveX/10, 0, canvas.width/10, canvas.height/10)
+	context.drawImage(backgroundFive,
+				 	  0, 0, canvas.width, canvas.height,
+				 	  backgroundFiveX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
+	backgroundFiveX -= 2
+	if (-backgroundFiveX == canvas.width) {
+		backgroundFiveX = 0;
+	}
 }
 
 function drawPlayerSprite() {
@@ -285,8 +360,8 @@ function jump(deltaTime) {
 	let timeInSec = deltaTime/1000
 	player.velocityY += gravityAccelY * timeInSec;
 	player.y += player.velocityY * timeInSec;
-	if (player.y > 27.7) {
-    	player.y = 27.7; // assuming the ground is at height 20
+	if (player.y > 36.7) {
+    	player.y = 36.7; // assuming the ground is at height 20
     	player.velocityY = 0;
 	}
 }
