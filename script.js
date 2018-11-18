@@ -3,6 +3,8 @@ const context = canvas.getContext('2d');
 const canvasInstruct = document.querySelector('.instructions');
 const contextInstruct = canvasInstruct.getContext('2d');
 context.scale(10, 10);
+const startButton = document.querySelector('.start');
+const startScreen = document.querySelector('.start-menu');
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
 /*sprite ideas:
 https://www.kenney.nl/assets/platformer-characters-1
@@ -399,5 +401,10 @@ function main(time) {
 function updateScore() {
 	document.querySelector('.score').innerHTML = `score: ${player.score}`
 }
+
+startButton.addEventListener("click", () => {
+	startScreen.style.display = "none"
+});
+
 updateScore();
 requestAnimationFrame(main);
