@@ -141,6 +141,7 @@ const baddieFour = {
 
 let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 
+//starting conditions. The intro is not complete. The actor animation should be on the first frame. The 
 let introComplete = false;
 let nextActorFrame = 0
 let cycle = 0
@@ -171,7 +172,7 @@ function draw(deltaTime, time) {
 				resetGame();
 			}
 
-			if (actor.x < 7 && actor.type == 'baddie' && actor.counted == false) {
+			if (actor.x < (5 - actor.width) && actor.type == 'baddie' && actor.counted == false) {
 				player.score++;
 				updateScore();
 				actor.counted = true;
@@ -240,7 +241,7 @@ function introOnRails() {
 		updateScore();
 	}
 
-	else if (introBaddie.x < 7 && introBaddie.counted === false) {
+	else if (introBaddie.x < (5 - introBaddie.width) && introBaddie.counted === false) {
 		player.score++;
 		updateScore()
 		introBaddie.counted = true;
@@ -325,10 +326,10 @@ function drawPlayerSprite() {
 					  cycle * playerSpriteW, 0, playerSpriteW, playerSpriteH,
 					  //destination rectange. -1 to compensate for blank left of sprite
 					  player.x-1, player.y, playerSpriteW/10, playerSpriteH/10);
-	nextActorFrame++
-	if (nextActorFrame == 8) {
+	actorFrameInCycle++
+	if (actorFrameInCycle == 8) {
 		cycle = (cycle + 1) % 2
-		nextActorFrame = 0
+		actorFrameInCycle = 0
 	}
 }
 
@@ -431,6 +432,11 @@ startButton.addEventListener("click", () => {
 function resetGame() {
 	StartButtonPressed = false
 	runGame = false
+	//allActors = [baddieOne,baddieTwo,baddieThree,baddieFour,introBaddie]
+	/*for ( let i = 0; i < allActors.length; i++ ) {
+		allActors[i].x = allActors[i].startingX
+
+	}*/
 	baddieOne.x = baddieOne.startingX
 	baddieTwo.x = baddieTwo.startingX
 	baddieThree.x = baddieThree.startingX
@@ -439,6 +445,10 @@ function resetGame() {
 	introPad.x = introPad.startingX
 	introComplete = false
 	startScreen.style.display = "block"
+	nextActorFrame = 0
+	cycle = 0
+	lastReplace = 240;
+	framesSinceReplace = 0
 }
 
 updateScore();
