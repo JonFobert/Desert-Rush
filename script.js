@@ -12,11 +12,11 @@ https://www.kenney.nl/assets/platformer-art-extended-enemies
 
 //sprite images
 let playerImg = document.createElement("img");
-playerImg.src = "playerWalk.png";
+playerImg.src = "assets/playerWalk.png";
 let playerSpriteW = 80, playerSpriteH = 93;
 
 let baddieImg = document.createElement("img");
-baddieImg.src = "zombieWalk.png";
+baddieImg.src = "assets/zombieWalk.png";
 let baddieSpriteW = 80, baddieSpriteH = 90;
 
 
@@ -84,7 +84,7 @@ const baddieThree = {
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
 	x: 140,
-	y: 27,
+	y: 28,
 	width: 5,
 	height: 9,
 	counted: false,
@@ -134,7 +134,7 @@ function draw(deltaTime, time) {
 
 			if (actor.x < -4) {
 				//place the baddie 20 to 40 units behind where the previous baddie was replaced
-				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(30, 50);
+				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(30, 60);
 				lastReplace = actor.x
 				framesSinceReplace = 0;
 				console.log(actor.x)
