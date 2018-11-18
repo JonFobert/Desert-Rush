@@ -60,6 +60,7 @@ const baddieOne = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
+	startingX: 115,
 	x: 115,
 	y: 37,
 	width: 5,
@@ -91,6 +92,7 @@ const baddieTwo = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
+	startingX: 160,
 	x: 160,
 	y: 37,
 	width: 5,
@@ -107,6 +109,7 @@ const baddieThree = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
+	startingX: 200,
 	x: 200,
 	y: 37,
 	width: 5,
@@ -123,6 +126,7 @@ const baddieFour = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
+	startingX: 240,
 	x: 240,
 	y: 37,
 	width: 5,
@@ -140,7 +144,7 @@ let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 let introComplete = false;
 let nextActorFrame = 0
 let cycle = 0
-let lastReplace = 200;
+let lastReplace = 240;
 let framesSinceReplace = 0
 
 function draw(deltaTime, time) {
@@ -164,7 +168,7 @@ function draw(deltaTime, time) {
 			if(actor.collided(player,actor)) {
 				actor.collideAction();
 				updateScore();
-				StartButtonPressed = false
+				resetGame();
 			}
 
 			if (actor.x < 7 && actor.type == 'baddie' && actor.counted == false) {
@@ -174,7 +178,7 @@ function draw(deltaTime, time) {
 			}
 
 			if (actor.x < -4) {
-				//place the baddie 20 to 40 units behind where the previous baddie was replaced
+				//place the baddie 30 to 60 units behind where the previous baddie was replaced
 				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(30, 60);
 				lastReplace = actor.x
 				framesSinceReplace = 0;
@@ -186,6 +190,7 @@ function draw(deltaTime, time) {
 	});
 }
 const introBaddie = {
+	startingX: 100,
 	x: 100,
 	y: 37,
 	width: 5,
@@ -193,6 +198,7 @@ const introBaddie = {
 	counted: false
 };
 const introPad = {
+	startingX: 130,
 	x: 130,
 	y: 34,
 	width: 6,
@@ -210,7 +216,7 @@ function introOnRails() {
 	if(checkCollision(player,introBaddie)) {
 		player.score = 0;
 		updateScore();
-		StartButtonPressed = false
+		resetGame();
 	}
 
 	if (introPad.x < -6) {
@@ -245,6 +251,7 @@ function introOnRails() {
 	}	
 
 	else if (introBaddie.x < 95) {
+		instructText = "UP arrow key to jump"
 		drawText(330);
 	}
 	else {
@@ -421,7 +428,25 @@ startButton.addEventListener("click", () => {
 	requestAnimationFrame(main);
 });
 
+function resetGame() {
+	StartButtonPressed = false
+	runGame = false
+	baddieOne.x = baddieOne.startingX
+	baddieTwo.x = baddieTwo.startingX
+	baddieThree.x = baddieThree.startingX
+	baddieFour.x = baddieFour.startingX
+	introBaddie.x = introBaddie.startingX
+	introPad.x = introPad.startingX
+	introComplete = false
+	startScreen.style.display = "block"
+}
+
+updateScore();
+
 //adapted from https://stackoverflow.com/questions/31299509/call-a-function-when-html5-canvas-is-ready
+//because the images load asychronously, wait for 
+//all the images to load before calling the first 
+//frame which will be the background of the start menu
 var images = [
             'assets/background5.png',
             'assets/background4.png',
@@ -431,33 +456,32 @@ var images = [
             'assets/playerWalk.png',
             'assets/zombieWalk.png'
           ];
-          var imagesLoading = images.length;
-          
-          // Image loader.
-          var loadImage = function(i) {
-             var img = new Image();
-             img.onload = function() {
-               images[i] = img;
-               --imagesLoading;
-               // Call the complete callback when all images loaded.
-               if (imagesLoading === 0) {
-                 workDone();
-               }
-             };
-             img.src = images[i];
-          };
-          
-          // Call upon all images loaded.
-          var workDone = function() {
-            // Clear canvas
-            requestAnimationFrame(main)
-        	}
-           
-          // Start to load all images.
-          var i;
-          for(i = 0; i < imagesLoading; ++i) {
-            loadImage(i);
-          }
+var imagesLoading = images.length;
+
+// Image loader.
+var loadImage = function(i) {
+ var img = new Image();
+ img.onload = function() {
+   images[i] = img;
+   --imagesLoading;
+   // Call the complete callback when all images loaded.
+   if (imagesLoading === 0) {
+     workDone();
+   }
+ };
+ img.src = images[i];
+};
+
+// Call upon all images loaded.
+var workDone = function() {
+// Clear canvas
+	requestAnimationFrame(main)
+}
+
+// Start to load all images.
+var i;
+for(i = 0; i < imagesLoading; ++i) {
+	loadImage(i);
+}
 
 
-updateScore();
