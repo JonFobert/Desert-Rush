@@ -1,6 +1,6 @@
-const canvas = document.querySelector('#game');
+const canvas = document.querySelector('.game');
 const context = canvas.getContext('2d');
-const canvasInstruct = document.querySelector('#instructions');
+const canvasInstruct = document.querySelector('.instructions');
 const contextInstruct = canvasInstruct.getContext('2d');
 context.scale(10, 10);
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241

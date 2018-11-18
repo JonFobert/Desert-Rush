@@ -7,12 +7,17 @@
 		<link rel="stylesheet" href="./main.css">
 	</head>
 	<body>
-		<p>Side Scroller</p>
-		<div class = "score"></div>
-		<div id = "stage">
-			<canvas id="game" width = "960" height = "540"></canvas>
-			<canvas id="instructions" width = "960" height = "540"></canvas>
-			<script src="script.js"></script>
+		<div id = "page">
+			<h1 class = "game-title">Side Scroller</h1>
+			<div class = "score"></div>
+			<div id = "stage">
+				<canvas class="game" width = "960" height = "540"></canvas>
+				<canvas class="instructions" width = "960" height = "540"></canvas>
+				<div class = "start-menu" width = "960" height = "540">
+					<h1>Start Menu</h1>
+				</div>
+				<script src="script.js"></script>
+			</div>
 		</div>
 	</body>
 </html>
