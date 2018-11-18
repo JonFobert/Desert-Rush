@@ -44,6 +44,8 @@ let baddieSpriteW = 80, baddieSpriteH = 90;
 
 const gravityAccelY = 70.0;
 let actorSpeed = 0.3
+let StartButtonPressed = false;
+let runGame = true;
 
 const player = {
 	x: 5,
@@ -162,6 +164,7 @@ function draw(deltaTime, time) {
 			if(actor.collided(player,actor)) {
 				actor.collideAction();
 				updateScore();
+				StartButtonPressed = false
 			}
 
 			if (actor.x < 7 && actor.type == 'baddie' && actor.counted == false) {
@@ -199,7 +202,7 @@ const introPad = {
 };
 
 function introOnRails() {
-	instructText = "Up arrow key to Jump";
+	instructText = "";
 	introBaddie.x -= 0.3;
 	introPad.x -=0.3;
 	drawBaddieSprite(introBaddie);
@@ -207,6 +210,7 @@ function introOnRails() {
 	if(checkCollision(player,introBaddie)) {
 		player.score = 0;
 		updateScore();
+		StartButtonPressed = false
 	}
 
 	if (introPad.x < -6) {
@@ -239,8 +243,14 @@ function introOnRails() {
 		instructText = "Jump to avoid zombies";
 		drawText(320);
 	}	
-	else {
+
+	else if (introBaddie.x < 95) {
 		drawText(330);
+	}
+	else {
+		if (!StartButtonPressed) {
+			runGame = false
+		}
 	}
 };
 
@@ -392,19 +402,62 @@ document.addEventListener("keydown", e => {
 //resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
 let lastTime = 0;
 function main(time) {
-	requestAnimationFrame(main);
-	deltaTime = time - lastTime;
-	lastTime = time;
-	draw(deltaTime, time);
+	if(runGame) {
+		requestAnimationFrame(main);
+		deltaTime = time - lastTime;
+		lastTime = time;
+		draw(deltaTime, time);
+	}
 }
 
 function updateScore() {
-	document.querySelector('.score').innerHTML = `score: ${player.score}`
+	document.querySelector('.score').innerHTML = `Score: ${player.score}`
 }
 
 startButton.addEventListener("click", () => {
+	StartButtonPressed = true
+	runGame = true
 	startScreen.style.display = "none"
+	requestAnimationFrame(main);
 });
 
+//adapted from https://stackoverflow.com/questions/31299509/call-a-function-when-html5-canvas-is-ready
+var images = [
+            'assets/background5.png',
+            'assets/background4.png',
+            'assets/background3.png',
+            'assets/background2.png',
+            'assets/background1.png',
+            'assets/playerWalk.png',
+            'assets/zombieWalk.png'
+          ];
+          var imagesLoading = images.length;
+          
+          // Image loader.
+          var loadImage = function(i) {
+             var img = new Image();
+             img.onload = function() {
+               images[i] = img;
+               --imagesLoading;
+               // Call the complete callback when all images loaded.
+               if (imagesLoading === 0) {
+                 workDone();
+               }
+             };
+             img.src = images[i];
+          };
+          
+          // Call upon all images loaded.
+          var workDone = function() {
+            // Clear canvas
+            requestAnimationFrame(main)
+        	}
+           
+          // Start to load all images.
+          var i;
+          for(i = 0; i < imagesLoading; ++i) {
+            loadImage(i);
+          }
+
+
 updateScore();
-requestAnimationFrame(main);
