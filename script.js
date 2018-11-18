@@ -41,7 +41,7 @@ let baddieSpriteW = 80, baddieSpriteH = 90;
 
 
 const gravityAccelY = 70.0;
-let actorSpeed = 0.2
+let actorSpeed = 0.3
 
 const player = {
 	x: 5,
@@ -64,7 +64,7 @@ const baddieOne = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		actorSpeed = 0.2;
+		actorSpeed = 0.3;
 	}
 };
 
@@ -95,7 +95,7 @@ const baddieTwo = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		actorSpeed = 0.2;
+		actorSpeed = 0.3;
 	}
 };
 
@@ -111,11 +111,27 @@ const baddieThree = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		actorSpeed = 0.2;
+		actorSpeed = 0.3;
 	}
 };
 
-let actors = [baddieOne, baddieTwo, baddieThree];
+const baddieFour = {
+	type: 'baddie',
+	draw: drawBaddieSprite,
+	drawTwo: drawBaddie,
+	x: 180,
+	y: 37,
+	width: 5,
+	height: 9,
+	counted: false,
+	collided: checkCollision,
+	collideAction: function () {
+		player.score = 0;
+		actorSpeed = 0.3;
+	}
+};
+
+let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 
 let introComplete = true;
 let nextActorFrame = 0
@@ -139,7 +155,7 @@ function draw(deltaTime, time) {
 	framesSinceReplace++;
 	actors.forEach(actor => {
 		actor.x -= actorSpeed;
-		if (actor.x < 80) {
+		if (actor.x < 96) {
 			actor.draw(actor);
 			//actor.drawTwo(actor);
 
