@@ -73,10 +73,6 @@ body {
 	grid-column: 2 / 3;
 }
 
-/*p, .score {
-	text-align: center;
-}*/
-
 .score {
 	grid-row: 2 / 3;
 	grid-column: 2 / 3;
@@ -113,6 +109,30 @@ body {
 	text-align: center;
 }
 
+.start-menu h1 {
+	color: #2ECC71;
+	font-size: 48px;
+	margin-top: 20px;
+}
+
+.start-menu p {
+	margin-top: 50px;
+	color: #2ECC71;
+	line-height: 1.2
+}
+
 .start-menu button {
-	margin: 0 50px 0 50px;
+	margin: 50px 50px 0 50px;
+    font-size: 24px;
+    background: transparent;
+    color: #ffffff;
+    font-weight: 600;
+    border-width: 3px;
+    border-radius: 5px;
+    border-color: #2ECC71;
+    padding: 5px 10px 5px 10px;
+}
+
+.start-menu button:hover {
+	background-color: #2ECC71
 }
