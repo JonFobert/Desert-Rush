@@ -5,6 +5,8 @@ const contextInstruct = canvasInstruct.getContext('2d');
 context.scale(10, 10);
 const startButton = document.querySelector('.start');
 const startScreen = document.querySelector('.start-menu');
+const gameOverScreen = document.querySelector('.game-over');
+const restartButton = document.querySelector('.restart');
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
 /*sprite ideas:
 https://www.kenney.nl/assets/platformer-characters-1
@@ -141,9 +143,11 @@ const baddieFour = {
 
 let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 
-//starting conditions. The intro is not complete. The actor animation should be on the first frame. The 
+//Game starting conditions. The intro is not complete. The actor animation should be on 
+//the first cycle. The actor cycle is on the first frame. The last zombie starts at 240
+//It has been zero frames since a zombie was
 let introComplete = false;
-let nextActorFrame = 0
+let actorFrameInCycle = 0
 let cycle = 0
 let lastReplace = 240;
 let framesSinceReplace = 0
@@ -168,7 +172,6 @@ function draw(deltaTime, time) {
 
 			if(actor.collided(player,actor)) {
 				actor.collideAction();
-				updateScore();
 				resetGame();
 			}
 
@@ -215,8 +218,6 @@ function introOnRails() {
 	drawBaddieSprite(introBaddie);
 	//drawPad(introPad);
 	if(checkCollision(player,introBaddie)) {
-		player.score = 0;
-		updateScore();
 		resetGame();
 	}
 
@@ -422,34 +423,39 @@ function updateScore() {
 	document.querySelector('.score').innerHTML = `Score: ${player.score}`
 }
 
+
+
+function resetGame() {
+	StartButtonPressed = false;
+	runGame = false;
+	baddieOne.x = baddieOne.startingX;
+	baddieTwo.x = baddieTwo.startingX;
+	baddieThree.x = baddieThree.startingX;
+	baddieFour.x = baddieFour.startingX;
+	introBaddie.x = introBaddie.startingX;
+	introPad.x = introPad.startingX;
+	introComplete = false;
+	gameOverScreen.style.display = "block";
+	nextActorFrame = 0;
+	cycle = 0;
+	lastReplace = 240;
+	framesSinceReplace = 0;
+}
+
+
 startButton.addEventListener("click", () => {
-	StartButtonPressed = true
-	runGame = true
-	startScreen.style.display = "none"
+	StartButtonPressed = true;
+	runGame = true;
+	startScreen.style.display = "none";
 	requestAnimationFrame(main);
 });
 
-function resetGame() {
-	StartButtonPressed = false
-	runGame = false
-	//allActors = [baddieOne,baddieTwo,baddieThree,baddieFour,introBaddie]
-	/*for ( let i = 0; i < allActors.length; i++ ) {
-		allActors[i].x = allActors[i].startingX
-
-	}*/
-	baddieOne.x = baddieOne.startingX
-	baddieTwo.x = baddieTwo.startingX
-	baddieThree.x = baddieThree.startingX
-	baddieFour.x = baddieFour.startingX
-	introBaddie.x = introBaddie.startingX
-	introPad.x = introPad.startingX
-	introComplete = false
-	startScreen.style.display = "block"
-	nextActorFrame = 0
-	cycle = 0
-	lastReplace = 240;
-	framesSinceReplace = 0
-}
+restartButton.addEventListener("click", () => {
+	StartButtonPressed = true;
+	runGame = true;
+	gameOverScreen.style.display = "none";
+	requestAnimationFrame(main);
+});
 
 updateScore();
 
