@@ -43,12 +43,6 @@ let baddieImg = document.createElement("img");
 baddieImg.src = "assets/zombieWalk.png";
 let baddieSpriteW = 80, baddieSpriteH = 90;
 
-
-const gravityAccelY = 70.0;
-let actorSpeed = 0.3
-let StartButtonPressed = false;
-let runGame = true;
-
 const player = {
 	x: 5,
 	y: 36.7,
@@ -64,9 +58,9 @@ const baddieOne = {
 	drawTwo: drawBaddie,
 	startingX: 115,
 	x: 115,
-	y: 37,
-	width: 5,
-	height: 9,
+	y: 38,
+	width: 4,
+	height: 8,
 	counted: false,
 	collided: checkCollision,
 	collideAction: function () {
@@ -96,9 +90,9 @@ const baddieTwo = {
 	drawTwo: drawBaddie,
 	startingX: 160,
 	x: 160,
-	y: 37,
-	width: 5,
-	height: 9,
+	y: 38,
+	width: 4,
+	height: 8,
 	counted: false,
 	collided: checkCollision,
 	collideAction: function () {
@@ -113,9 +107,9 @@ const baddieThree = {
 	drawTwo: drawBaddie,
 	startingX: 200,
 	x: 200,
-	y: 37,
-	width: 5,
-	height: 9,
+	y: 38,
+	width: 4,
+	height: 8,
 	counted: false,
 	collided: checkCollision,
 	collideAction: function () {
@@ -130,9 +124,9 @@ const baddieFour = {
 	drawTwo: drawBaddie,
 	startingX: 240,
 	x: 240,
-	y: 37,
-	width: 5,
-	height: 9,
+	y: 38,
+	width: 4,
+	height: 8,
 	counted: false,
 	collided: checkCollision,
 	collideAction: function () {
@@ -151,6 +145,10 @@ let actorFrameInCycle = 0
 let cycle = 0
 let lastReplace = 240;
 let framesSinceReplace = 0
+const gravityAccelY = 70.0;
+let actorSpeed = 0.3
+let StartButtonPressed = false;
+let runGame = true;
 
 function draw(deltaTime, time) {
 	context.clearRect(0, 0, canvas.width, canvas.height)
@@ -196,9 +194,9 @@ function draw(deltaTime, time) {
 const introBaddie = {
 	startingX: 100,
 	x: 100,
-	y: 37,
-	width: 5,
-	height: 9,
+	y: 38,
+	width: 4,
+	height: 8,
 	counted: false
 };
 const introPad = {
@@ -213,8 +211,8 @@ const introPad = {
 
 function introOnRails() {
 	instructText = "";
-	introBaddie.x -= 0.3;
-	introPad.x -=0.3;
+	introBaddie.x -= actorSpeed
+	introPad.x -= actorSpeed
 	drawBaddieSprite(introBaddie);
 	//drawPad(introPad);
 	if(checkCollision(player,introBaddie)) {
@@ -225,6 +223,8 @@ function introOnRails() {
 		instructText = "";
 		drawText(0)
 		introBaddie.counted = false;
+		actorSpeed += 0.02
+		console.log('speed up!')
 		return introComplete = true;
 	}
 
@@ -350,7 +350,7 @@ function drawBaddieSprite(baddie) {
 					  //source rectangle
 					  cycle * baddieSpriteW, 0, baddieSpriteW, baddieSpriteH,
 					  //destination rectange. -1 to compensate for blank left of sprite
-					  baddie.x-1, baddie.y, baddieSpriteW/10, baddieSpriteH/10);
+					  baddie.x-2, baddie.y-1, baddieSpriteW/10, baddieSpriteH/10);
 }
 
 function drawBaddie(baddie) {
@@ -469,7 +469,8 @@ restartButton.addEventListener("click", () => {
 	StartButtonPressed = true;
 	runGame = true;
 	gameOverScreen.style.display = "none";
-	requestAnimationFrame(main);
+	requestAnimationFrame(main); 
+	actorSpeed = 0.3;
 });
 
 updateScore();
