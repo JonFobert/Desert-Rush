@@ -171,7 +171,7 @@ function draw(deltaTime, time) {
 			//actor.drawTwo(actor);
 
 			if(actor.collided(player,actor)) {
-				actor.collideAction();
+				//actor.collideAction();
 				resetGame();
 			}
 
@@ -224,7 +224,8 @@ function introOnRails() {
 	if (introPad.x < -6) {
 		instructText = "";
 		drawText(0)
-		return introComplete = true
+		introBaddie.counted = false;
+		return introComplete = true;
 	}
 
 	else if (introPad.x < 7) {
@@ -238,8 +239,6 @@ function introOnRails() {
 	else if (introBaddie.x < -4) {
 		instructText = "";
 		drawText(60);
-		//player.score = 1;
-		updateScore();
 	}
 
 	else if (introBaddie.x < (5 - introBaddie.width) && introBaddie.counted === false) {
@@ -262,6 +261,17 @@ function introOnRails() {
 		}
 	}
 };
+
+
+
+
+
+
+
+
+
+
+
 
 function drawPlayer() {
 	context.fillStyle = '#98C1D9';
@@ -423,11 +433,14 @@ function updateScore() {
 	document.querySelector('.score').innerHTML = `Score: ${player.score}`
 }
 
-
+function displayFinalScore() {
+	document.querySelector('#gameOverScore').innerHTML = `Your Final Score: ${player.score}`
+}
 
 function resetGame() {
 	StartButtonPressed = false;
 	runGame = false;
+	displayFinalScore();
 	baddieOne.x = baddieOne.startingX;
 	baddieTwo.x = baddieTwo.startingX;
 	baddieThree.x = baddieThree.startingX;
@@ -451,6 +464,8 @@ startButton.addEventListener("click", () => {
 });
 
 restartButton.addEventListener("click", () => {
+	player.score = 0;
+	updateScore();
 	StartButtonPressed = true;
 	runGame = true;
 	gameOverScreen.style.display = "none";
