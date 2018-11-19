@@ -455,7 +455,6 @@ function resetGame() {
 	framesSinceReplace = 0;
 }
 
-
 startButton.addEventListener("click", () => {
 	StartButtonPressed = true;
 	runGame = true;
@@ -472,6 +471,16 @@ restartButton.addEventListener("click", () => {
 	requestAnimationFrame(main); 
 	actorSpeed = 0.3;
 });
+
+let leaderboardArr = [64,19,28,46,21];
+leaderboardArr.sort();
+
+document.querySelector('.leaderboard').innerHTML = `Highscores: <br> 
+${leaderboardArr[0]} <br> 
+${leaderboardArr[1]} <br>
+${leaderboardArr[2]} <br>
+${leaderboardArr[3]} <br>
+${leaderboardArr[4]}`
 
 updateScore();
 
