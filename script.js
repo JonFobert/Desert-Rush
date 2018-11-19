@@ -149,6 +149,8 @@ const gravityAccelY = 70.0;
 let actorSpeed = 0.3
 let StartButtonPressed = false;
 let runGame = true;
+let leaderboardArr = [4,3,2,1,0];
+leaderboardArr.sort().reverse();
 
 function draw(deltaTime, time) {
 	context.clearRect(0, 0, canvas.width, canvas.height)
@@ -440,6 +442,7 @@ function displayFinalScore() {
 function resetGame() {
 	StartButtonPressed = false;
 	runGame = false;
+	createLeaderboard();
 	displayFinalScore();
 	baddieOne.x = baddieOne.startingX;
 	baddieTwo.x = baddieTwo.startingX;
@@ -472,15 +475,27 @@ restartButton.addEventListener("click", () => {
 	actorSpeed = 0.3;
 });
 
-let leaderboardArr = [64,19,28,46,21];
-leaderboardArr.sort();
 
-document.querySelector('.leaderboard').innerHTML = `Highscores: <br> 
-${leaderboardArr[0]} <br> 
-${leaderboardArr[1]} <br>
-${leaderboardArr[2]} <br>
-${leaderboardArr[3]} <br>
-${leaderboardArr[4]}`
+
+function createLeaderboard() {
+	if (player.score > leaderboardArr[4]) {
+		leaderboardArr.pop()
+		leaderboardArr.push(player.score);
+		leaderboardArr.sort().reverse()
+		console.log(leaderboardArr)
+	}
+	displayLeaderboard()
+}
+
+function displayLeaderboard() {
+	document.querySelector('.leaderboard').innerHTML = `Highscores: <br> 
+	${leaderboardArr[0]} <br>
+	${leaderboardArr[1]} <br>
+	${leaderboardArr[2]} <br>
+	${leaderboardArr[3]} <br>
+	${leaderboardArr[4]}  `
+}
+
 
 updateScore();
 
