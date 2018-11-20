@@ -492,7 +492,7 @@ function createLeaderboard() {
 
 function displayNameEntry() {
 	document.querySelector('.nameEntry').innerHTML = 
-		`Enter Your Name: <input type="text" placeholder= "Name" id="nameField">
+		`<input type="text" placeholder= "ENTER YOUR NAME" id="nameField" autocomplete="off">
 		`
 }
 
@@ -511,10 +511,9 @@ function displayLeaderboard() {
 	document.querySelector('.leaderboard').innerHTML = `
 	HIGH SCORES
 	<br>
-	<br> 
 	<table class = 'gameOverTable'>
 		<tr>
-			<th>RANK</th>
+			<th id="firstColumn">RANK</th>
 			<th>NAME</th>
 			<th>SCORE</th>
 		<tr>

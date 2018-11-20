@@ -118,7 +118,7 @@ body {
 }
 
 .game-over h2 {
-	margin-top: 10px;
+	margin-top: 0px;
 }
 
 
@@ -142,17 +142,34 @@ body {
 .game-over {
 	display: none;
 	height: 540px;
+	font-size: 24px
+}
+
+.nameEntry {
+	margin-top: 50px;
+}
+
+.nameEntry input[type=text]{;
+	font-size: 24px;
+}
+
+.nameEntry input[type=text]:focus {
+    border: 3px solid #2ECC71;
 }
 
 .leaderboard {
 	padding-top: 20px;
+	line-height: 1.4
 }
 
 .gameOverTable{
 	margin: auto;
 	text-align: right;
 	width: 400px;
-	line-height: 1.2
+}
+
+#firstColumn {
+	width: 64px;
 }
 
 .gameOverTable tr {
