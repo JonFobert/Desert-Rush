@@ -117,6 +117,11 @@ body {
 	line-height: 1.2
 }
 
+.game-over h2 {
+	margin-top: 10px;
+}
+
+
 .start-menu button{
 	margin: 50px 50px 0 50px;
     font-size: 24px;
@@ -136,6 +141,22 @@ body {
 
 .game-over {
 	display: none;
+	height: 540px;
+}
+
+.leaderboard {
+	padding-top: 20px;
+}
+
+.gameOverTable{
+	margin: auto;
+	text-align: right;
+	width: 400px;
+	line-height: 1.2
+}
+
+.gameOverTable tr {
+	width: 50px;
 }
 
 .game-over button{

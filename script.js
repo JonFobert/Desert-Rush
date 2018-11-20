@@ -149,8 +149,8 @@ const gravityAccelY = 70.0;
 let actorSpeed = 0.3
 let StartButtonPressed = false;
 let runGame = true;
-let leaderboardArr = [4,3,2,1,0];
-leaderboardArr.sort().reverse();
+let leaderboardArr = [['Brian', 4], ['Jill', 3], ['Toby', 2], ['Eric', 1], ['Sal', 0]];
+leaderboardSort(leaderboardArr).reverse();
 
 function draw(deltaTime, time) {
 	context.clearRect(0, 0, canvas.width, canvas.height)
@@ -436,7 +436,7 @@ function updateScore() {
 }
 
 function displayFinalScore() {
-	document.querySelector('#gameOverScore').innerHTML = `Your Final Score: ${player.score}`
+	document.querySelector('#gameOverScore').innerHTML = `Final Score: ${player.score}`
 }
 
 function resetGame() {
@@ -475,25 +475,75 @@ restartButton.addEventListener("click", () => {
 	actorSpeed = 0.3;
 });
 
+function leaderboardSort(boardArray) {
+	boardArray = boardArray.sort( (a, b) => {
+		return a[1] - b[1];
+	})
+	return boardArray
+}
 
 
 function createLeaderboard() {
-	if (player.score > leaderboardArr[4]) {
-		leaderboardArr.pop()
-		leaderboardArr.push(player.score);
-		leaderboardArr.sort().reverse()
-		console.log(leaderboardArr)
+	if (player.score > leaderboardArr[4][1]) {
+		displayNameEntry()
 	}
 	displayLeaderboard()
 }
 
+function displayNameEntry() {
+	document.querySelector('.nameEntry').innerHTML = 
+		`Enter Your Name: <input type="text" placeholder= "Name" id="nameField">
+		`
+}
+
+document.querySelector('.nameEntry').addEventListener("submit", e => {
+	e.preventDefault();
+	leaderboardArr.pop()
+	leaderboardArr.push([nameField.value, player.score]);
+	leaderboardSort(leaderboardArr).reverse()
+	displayLeaderboard()
+	e.target.style.display= "none"
+});
+
+
+
 function displayLeaderboard() {
-	document.querySelector('.leaderboard').innerHTML = `Highscores: <br> 
-	${leaderboardArr[0]} <br>
-	${leaderboardArr[1]} <br>
-	${leaderboardArr[2]} <br>
-	${leaderboardArr[3]} <br>
-	${leaderboardArr[4]}  `
+	document.querySelector('.leaderboard').innerHTML = `
+	HIGH SCORES
+	<br>
+	<br> 
+	<table class = 'gameOverTable'>
+		<tr>
+			<th>RANK</th>
+			<th>NAME</th>
+			<th>SCORE</th>
+		<tr>
+			<td>1ST</td>
+			<td>${leaderboardArr[0][0]}</td>
+			<td>${leaderboardArr[0][1]}</td>
+		</tr>
+		<tr>
+			<td>2ND</td>
+			<td>${leaderboardArr[1][0]}</td>
+			<td>${leaderboardArr[1][1]}</td>
+		</tr>
+		<tr>
+			<td>3RD</td>
+			<td>${leaderboardArr[2][0]}</td>
+			<td>${leaderboardArr[2][1]}</td>
+		</tr>
+		<tr>
+			<td>4TH</td>
+			<td>${leaderboardArr[3][0]}</td>
+			<td>${leaderboardArr[3][1]}</td>
+		</tr>
+		<tr>
+			<td>5TH</td>
+			<td>${leaderboardArr[4][0]}</td>
+			<td>${leaderboardArr[4][1]}</td>
+		</tr>
+	</table>`
+
 }
 
 
