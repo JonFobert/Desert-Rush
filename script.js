@@ -149,7 +149,7 @@ const gravityAccelY = 70.0;
 let actorSpeed = 0.3
 let StartButtonPressed = false;
 let runGame = true;
-let leaderboardArr = [['Brian', 4], ['Jill', 3], ['Toby', 2], ['Eric', 1], ['Sal', 0]];
+let leaderboardArr = [['JOE', 4], ['RIO', 3], ['SAM', 2], ['ALY', 1], ['RGE', 0]];
 leaderboardSort(leaderboardArr).reverse();
 
 function draw(deltaTime, time) {
@@ -492,14 +492,15 @@ function createLeaderboard() {
 
 function displayNameEntry() {
 	document.querySelector('.nameEntry').innerHTML = 
-		`<input type="text" placeholder= "ENTER YOUR NAME" id="nameField" autocomplete="off">
+	`HIGH SCORE! <br>
+	 NAME: <input type="text" placeholder= "_ _ _" id="nameField" autocomplete="off" maxlength="3">
 		`
 }
 
 document.querySelector('.nameEntry').addEventListener("submit", e => {
 	e.preventDefault();
 	leaderboardArr.pop()
-	leaderboardArr.push([nameField.value, player.score]);
+	leaderboardArr.push([nameField.value.toUpperCase(), player.score]);
 	leaderboardSort(leaderboardArr).reverse()
 	displayLeaderboard()
 	e.target.style.display= "none"
