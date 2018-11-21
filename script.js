@@ -7,6 +7,9 @@ const startButton = document.querySelector('.start');
 const startScreen = document.querySelector('.start-menu');
 const gameOverScreen = document.querySelector('.game-over');
 const restartButton = document.querySelector('.restart');
+const leaderboardButton = document.querySelector('.leaderboardbtn')
+const leaderboardScreen = document.querySelector('.leaderboardScreen')
+const returnToMenuButton = document.querySelector('.returnToMenu')
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
 /*sprite ideas:
 https://www.kenney.nl/assets/platformer-characters-1
@@ -465,6 +468,17 @@ startButton.addEventListener("click", () => {
 	requestAnimationFrame(main);
 });
 
+leaderboardButton.addEventListener("click", () => {
+	startScreen.style.display = "none";
+	leaderboardScreen.style.display = "block"
+	displayLeaderboard();
+});
+
+returnToMenuButton.addEventListener("click", () => {
+	startScreen.style.display = "block";
+	leaderboardScreen.style.display = "none"
+});
+
 restartButton.addEventListener("click", () => {
 	player.score = 0;
 	updateScore();
@@ -510,41 +524,41 @@ document.querySelector('.nameEntry').addEventListener("submit", e => {
 
 
 function displayLeaderboard() {
-	document.querySelector('.leaderboard').innerHTML = `
-	HIGH SCORES
-	<br>
-	<table class = 'gameOverTable'>
-		<tr>
-			<th id="firstColumn">RANK</th>
-			<th>NAME</th>
-			<th>SCORE</th>
-		<tr>
-			<td>1ST</td>
-			<td>${leaderboardArr[0][0]}</td>
-			<td>${leaderboardArr[0][1]}</td>
-		</tr>
-		<tr>
-			<td>2ND</td>
-			<td>${leaderboardArr[1][0]}</td>
-			<td>${leaderboardArr[1][1]}</td>
-		</tr>
-		<tr>
-			<td>3RD</td>
-			<td>${leaderboardArr[2][0]}</td>
-			<td>${leaderboardArr[2][1]}</td>
-		</tr>
-		<tr>
-			<td>4TH</td>
-			<td>${leaderboardArr[3][0]}</td>
-			<td>${leaderboardArr[3][1]}</td>
-		</tr>
-		<tr>
-			<td>5TH</td>
-			<td>${leaderboardArr[4][0]}</td>
-			<td>${leaderboardArr[4][1]}</td>
-		</tr>
-	</table>`
-
+	document.querySelector('.leaderboardDirect').innerHTML = `
+		HIGH SCORES
+		<br>
+		<table class = 'gameOverTable'>
+			<tr>
+				<th id="firstColumn">RANK</th>
+				<th>NAME</th>
+				<th>SCORE</th>
+			<tr>
+				<td>1ST</td>
+				<td>${leaderboardArr[0][0]}</td>
+				<td>${leaderboardArr[0][1]}</td>
+			</tr>
+			<tr>
+				<td>2ND</td>
+				<td>${leaderboardArr[1][0]}</td>
+				<td>${leaderboardArr[1][1]}</td>
+			</tr>
+			<tr>
+				<td>3RD</td>
+				<td>${leaderboardArr[2][0]}</td>
+				<td>${leaderboardArr[2][1]}</td>
+			</tr>
+			<tr>
+				<td>4TH</td>
+				<td>${leaderboardArr[3][0]}</td>
+				<td>${leaderboardArr[3][1]}</td>
+			</tr>
+			<tr>
+				<td>5TH</td>
+				<td>${leaderboardArr[4][0]}</td>
+				<td>${leaderboardArr[4][1]}</td>
+			</tr>
+		</table>`
+	document.querySelector('.leaderboardEndGame').innerHTML = document.querySelector('.leaderboardDirect').innerHTML
 }
 
 

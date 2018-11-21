@@ -93,7 +93,7 @@ body {
 	z-index: 2
 }
 
-.start-menu, .game-over{
+.start-menu, .game-over, .leaderboardScreen{
 	width: 640px;
 	height: 360px;
 	grid-row: 1 / 2;
@@ -134,12 +134,12 @@ body {
     padding: 5px 10px 5px 10px;
 }
 
-.start-menu button:hover, .game-over button:hover {
+.start-menu button:hover, .game-over button:hover, .leaderboardScreen button:hover {
 	background-color: #2ECC71;
 	color: black;
 }
 
-.game-over {
+.game-over, .leaderboardScreen{
 	display: none;
 	height: 540px;
 	font-size: 24px
@@ -167,7 +167,7 @@ body {
 	height: 111px;
 }
 
-.leaderboard {
+.leaderboardDirect, .leaderboardEndGame {
 	padding-top: 20px;
 	line-height: 1.4
 }
@@ -186,7 +186,7 @@ body {
 	width: 50px;
 }
 
-.game-over button{
+.game-over button, .leaderboardScreen button{
 	margin: 20px 50px 0 50px;
     font-size: 24px;
     background: transparent;
