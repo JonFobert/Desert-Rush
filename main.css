@@ -146,19 +146,25 @@ body {
 }
 
 .nameEntry {
-	margin-top: 50px;
+	margin-top: 35px;
+	font-size: 34px
 }
 
 .nameEntry input[type=text]{;
-	font-size: 24px;
+	font-size: 34px;
 	background-color: transparent;
     border: none;
     color: white;
-    width: 50px;
+    width: 65px;
 }
 
 .nameEntry input[type=text]:focus {
     outline: none;
+}
+
+.nameEntryBuffer {
+	display: none;
+	height: 111px;
 }
 
 .leaderboard {
@@ -181,7 +187,7 @@ body {
 }
 
 .game-over button{
-	margin: 50px 50px 0 50px;
+	margin: 20px 50px 0 50px;
     font-size: 24px;
     background: transparent;
     color: #ffffff;

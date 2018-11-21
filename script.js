@@ -504,6 +504,7 @@ document.querySelector('.nameEntry').addEventListener("submit", e => {
 	leaderboardSort(leaderboardArr).reverse()
 	displayLeaderboard()
 	e.target.style.display= "none"
+	document.querySelector('.nameEntryBuffer').style.display = "block";
 });
 
 
