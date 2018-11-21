@@ -150,6 +150,8 @@ let lastReplace = 240;
 let framesSinceReplace = 0
 const gravityAccelY = 70.0;
 let actorSpeed = 0.3
+let lowEndSpacing = 30
+let highEndSpacing = 60
 let StartButtonPressed = false;
 let runGame = true;
 let leaderboardArr = [['JOE', 4], ['RIO', 3], ['SAM', 2], ['ALY', 1], ['RGE', 0]];
@@ -186,12 +188,14 @@ function draw(deltaTime, time) {
 
 			if (actor.x < -4) {
 				//place the baddie 30 to 60 units behind where the previous baddie was replaced
-				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(30, 60);
+				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
 				lastReplace = actor.x
+				lowEndSpacing += 3
+				highEndSpacing += 3
 				framesSinceReplace = 0;
 				console.log(actor.x)
 				actor.counted = false;
-				actorSpeed += 0.02;
+				actorSpeed += 0.03;
 			}
 		}	
 	});
