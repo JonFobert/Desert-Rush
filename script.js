@@ -1,3 +1,12 @@
+/*
+notes:
+Consider replacing startingX with values in resetgame()
+Document how the dleta time for the loop works and how it 
+relates to the frame replace of the badddies
+Write the README
+*/
+
+
 const canvas = document.querySelector('.game');
 const context = canvas.getContext('2d');
 const canvasInstruct = document.querySelector('.instructions');
@@ -140,9 +149,15 @@ const baddieFour = {
 
 let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 
-//Game starting conditions. The intro is not complete. The actor animation should be on 
-//the first cycle. The actor cycle is on the first frame. The last zombie starts at 240
-//It has been zero frames since a zombie was
+
+/************************************************************
+				Game starting conditions
+The intro is not complete. The actor animation should be on 
+the first cycle. The actor cycle is on the first frame. 
+The last zombie starts at 240 It has been zero frames since a 
+baddie was last replaced. When replaced a baddie will be
+between position 30 and 60.
+*************************************************************/
 let introComplete = false;
 let actorFrameInCycle = 0
 let cycle = 0
@@ -157,6 +172,8 @@ let runGame = true;
 let leaderboardArr = [['JOE', 4], ['RIO', 3], ['SAM', 2], ['ALY', 1], ['RGE', 0]];
 leaderboardSort(leaderboardArr).reverse();
 
+
+//the draw function. This function draws the graphics on screen
 function draw(deltaTime, time) {
 	context.clearRect(0, 0, canvas.width, canvas.height)
 	drawBackground();
@@ -168,6 +185,7 @@ function draw(deltaTime, time) {
 		introOnRails();
 		return;
 	}
+	//framesSinceReplace counts how many frames ago a baddie's position was reset
 	framesSinceReplace++;
 	actors.forEach(actor => {
 		actor.x -= actorSpeed;
@@ -180,16 +198,19 @@ function draw(deltaTime, time) {
 				resetGame();
 			}
 
+			//if the baddie passes the player add one to the players score
 			if (actor.x < (5 - actor.width) && actor.type == 'baddie' && actor.counted == false) {
 				player.score++;
 				updateScore();
 				actor.counted = true;
 			}
 
+			//once the baddie is off screen to the left reset the baddie 30 to 60 units
+			//behind where the previous baddie was replaced
 			if (actor.x < -4) {
-				//place the baddie 30 to 60 units behind where the previous baddie was replaced
 				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
 				lastReplace = actor.x
+				
 				lowEndSpacing += 3
 				highEndSpacing += 3
 				framesSinceReplace = 0;
@@ -275,11 +296,9 @@ function introOnRails() {
 
 
 
-
-
-
-
-
+/********************************************
+  DRAWING THE CHARACTER, BADDIES AND PLAYER 
+********************************************/
 
 
 function drawPlayer() {
@@ -393,6 +412,7 @@ function randomizeLastThree(array) {
 	return array;
 }
 
+//check the for a collision between baddie and player. If they intersect return true
 function checkCollision(player, baddie) {
 	if(((player.x + player.width) > baddie.x && player.x < (baddie.x + baddie.width)||
 		player.x < (baddie.x + baddie.width) && (player.x + player.width) < baddie.width) &&
@@ -402,6 +422,7 @@ function checkCollision(player, baddie) {
 	}
 }
 
+//check the for a collision between pad and player. If they intersect return true
 function checkCollisionPad(player, pad) {
 	if(((player.x + player.width) > pad.x && player.x < (pad.x + pad.width)||
 		player.x < (pad.x + pad.width) && (player.x + player.width) < pad.width) &&
@@ -411,16 +432,19 @@ function checkCollisionPad(player, pad) {
 	}
 }
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
+//function for gravity. If player is in the air accelerate in +Y (downward) direction.
+//if player is on the ground keep the velocity 0.
 function jump(deltaTime) {
 	let timeInSec = deltaTime/1000
 	player.velocityY += gravityAccelY * timeInSec;
 	player.y += player.velocityY * timeInSec;
 	if (player.y > 36.7) {
-    	player.y = 36.7; // assuming the ground is at height 20
+    	player.y = 36.7; // assuming the ground is at height 36.7
     	player.velocityY = 0;
 	}
 }
 
+//if the player hits the up arrow key give the player a -Y (upwards) velocity
 document.addEventListener("keydown", e => {
 	if (e.keyCode === 38 && player.velocityY === 0) {
 		player.velocityY = -50
@@ -428,6 +452,7 @@ document.addEventListener("keydown", e => {
 });
 
 //resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
+//main loop for the code. Keeps track of time and calls draw function to draw each frame
 let lastTime = 0;
 function main(time) {
 	if(runGame) {
@@ -564,7 +589,6 @@ function displayLeaderboard() {
 		</table>`
 	document.querySelector('.leaderboardEndGame').innerHTML = document.querySelector('.leaderboardDirect').innerHTML
 }
-
 
 updateScore();
 
