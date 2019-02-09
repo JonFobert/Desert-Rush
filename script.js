@@ -7,9 +7,11 @@
 
 const canvas = document.querySelector('.game');
 const context = canvas.getContext('2d');
+context.scale(10, 10);
+
 const canvasInstruct = document.querySelector('.instructions');
 const contextInstruct = canvasInstruct.getContext('2d');
-context.scale(10, 10);
+
 const startButton = document.querySelector('.start');
 const startScreen = document.querySelector('.start-menu');
 const gameOverScreen = document.querySelector('.game-over');
@@ -17,7 +19,7 @@ const restartButton = document.querySelector('.restart');
 const leaderboardButton = document.querySelector('.leaderboardbtn')
 const leaderboardScreen = document.querySelector('.leaderboardScreen')
 const returnToMenuButton = document.querySelector('.returnToMenu')
-//Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
+
 
 //background images
 
@@ -72,27 +74,11 @@ const baddieOne = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		baddieSpeed = 0.3;
+		baddieSpeed = 0.35;
 	}
 };
 
 const baddieTwo = {
-	type: 'baddie',
-	draw: drawBaddieSprite,
-	drawTwo: drawBaddie,
-	x: 160,
-	y: 38,
-	width: 4,
-	height: 8,
-	counted: false,
-	collided: checkCollision,
-	collideAction: function () {
-		player.score = 0;
-		baddieSpeed = 0.3;
-	}
-};
-
-const baddieThree = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
@@ -104,15 +90,15 @@ const baddieThree = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		baddieSpeed = 0.3;
+		baddieSpeed = 0.35;
 	}
 };
 
-const baddieFour = {
+const baddieThree = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	x: 240,
+	x: 250,
 	y: 38,
 	width: 4,
 	height: 8,
@@ -120,12 +106,27 @@ const baddieFour = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		baddieSpeed = 0.3;
+		baddieSpeed = 0.35;
+	}
+};
+
+const baddieFour = {
+	type: 'baddie',
+	draw: drawBaddieSprite,
+	drawTwo: drawBaddie,
+	x: 300,
+	y: 38,
+	width: 4,
+	height: 8,
+	counted: false,
+	collided: checkCollision,
+	collideAction: function () {
+		player.score = 0;
+		baddieSpeed = 0.35;
 	}
 };
 
 let baddies = [baddieOne, baddieTwo, baddieThree, baddieFour];
-
 
 /************************************************************
 				Game starting conditions
@@ -139,19 +140,20 @@ When replaced the first baddie will be between position
 let introComplete = false;
 let baddieFrameInCycle = 0;
 let cycle = 0;
-let lastReplace = 240;
+let lastReplace = 300;
 let physicsFrames = 0
 const gravityAccelY = 70.0;
-let baddieSpeed = 0.3;
-let lowEndSpacing = 30;
-let highEndSpacing = 60;
+let baddieSpeed = 0.35;
+let baddieAcceleration = 0.1;
+let lowEndSpacing = 40;
+let highEndSpacing = 90;
 let StartButtonPressed = false;
 let runGame = true;
 let leaderboardArr = [['JOE', 4], ['RIO', 3], ['SAM', 2], ['ALY', 1], ['RGE', 0]];
 leaderboardSort(leaderboardArr).reverse();
 
 /***********************************************
-			draw function:
+				draw function:
 The draw is the function called every frame
 It computes and displays every frame and resets
 the game if the player collides with a baddie
@@ -197,12 +199,12 @@ function draw(deltaTime, time) {
 			if (baddie.x < -4) {
 				baddie.x = (lastReplace - physicsFrames * baddieSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
 				lastReplace = baddie.x;
-				lowEndSpacing += 3;
-				highEndSpacing += 3;
+				lowEndSpacing += 5 + baddieAcceleration;
+				highEndSpacing += 5 + baddieAcceleration;
 				physicsFrames = 0;
-				console.log(baddie.x)
 				baddie.counted = false;
-				baddieSpeed += 0.03;
+				baddieSpeed += 0.07;
+				baddieAcceleration += 0.13
 			}
 		}	
 	});
@@ -235,7 +237,7 @@ function introOnRails() {
 		instructText = "";
 		drawText(0);
 		introBaddie.counted = false;
-		baddieSpeed += 0.02;
+		baddieSpeed += 0.03;
 		return introComplete = true;
 	}
 
@@ -461,7 +463,7 @@ restartButton.addEventListener("click", () => {
 	runGame = true;
 	gameOverScreen.style.display = "none";
 	requestAnimationFrame(main); 
-	baddieSpeed = 0.3;
+	baddieSpeed = 0.35;
 });
 
 function leaderboardSort(boardArray) {
