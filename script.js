@@ -146,8 +146,13 @@ let runGame = true;
 let leaderboardArr = [['JOE', 4], ['RIO', 3], ['SAM', 2], ['ALY', 1], ['RGE', 0]];
 leaderboardSort(leaderboardArr).reverse();
 
+/***********************************************
+			draw function:
+The draw is the function called every frame
+It computes and displays every frame and resets
+the game if the player collides with a baddie
+***********************************************/
 
-//the draw function. This function draws the graphics on screen
 function draw(deltaTime, time) {
 	context.clearRect(0, 0, canvas.width, canvas.height)
 	drawBackground();
@@ -199,6 +204,14 @@ function draw(deltaTime, time) {
 		}	
 	});
 }
+/**********************************************
+				IntroOnRails
+This is the intro. There is one Baddie. The 
+instructions on how to play the game are 
+displayed at the top of the game.  It is run 
+every time a new  game is started.
+**********************************************/
+
 const introBaddie = {
 	x: 100,
 	y: 38,
@@ -207,12 +220,6 @@ const introBaddie = {
 	counted: false
 };
 
-
-/**********************************************
-			Intro
-Intro is one Baddie and the instructions on how
-to play the game
-**********************************************/
 function introOnRails() {
 	instructText = "";
 	introBaddie.x -= actorSpeed * ((1000/60)/deltaTime);
@@ -257,12 +264,9 @@ function introOnRails() {
 };
 
 
-
-
-
-/********************************************
-  DRAWING THE CHARACTER, BADDIES AND PLAYER 
-********************************************/
+/***********************************************************
+  Functions to draw the player, background, and characters
+***********************************************************/
 
 
 function drawPlayer() {
@@ -270,11 +274,15 @@ function drawPlayer() {
 	context.fillRect(player.x, player.y, player.width, player.height);
 }
 
+//The background consists of four images. 3 are 2x the width of the canvas. 
+//these 3 images move to the left and loops, creating the illustion they are
+//infinite. 
 function drawBackground() {
+	//IMAGE ONE
 	context.drawImage(backgroundOne,
 				  0, 0, canvas.width, canvas.height,
 				  0, 0, canvas.width/10, canvas.height/10)
-	
+
 	//IMAGE TWO
 	context.drawImage(backgroundTwo,
 					  0, 0, canvas.width, canvas.height,
@@ -325,7 +333,6 @@ function drawPlayerSprite() {
 	}
 }
 
-
 function drawBaddieSprite(baddie) {
 	context.drawImage(baddieImg,
 					  //source rectangle
@@ -346,10 +353,9 @@ function drawText(xOffset) {
 	contextInstruct.fillText(instructText, xOffset, 100);
 }
 
-/*****************************
-Functions to handle collision
-and placement
-*****************************/
+/****************************************************
+Functions to handle collision, placement, and jumping
+****************************************************/
 
 //https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
 function randomIntFromInterval(min,max) {
@@ -358,6 +364,7 @@ function randomIntFromInterval(min,max) {
 
 //modified version of: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 //Not currently being used. Might be a better way to randomize the placement of Baddies
+/*
 function randomizeLastThree(array) {
 	for(let i = 5; i > 3; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
@@ -365,6 +372,7 @@ function randomizeLastThree(array) {
 	}
 	return array;
 }
+*/
 
 //check the for a collision between baddie and player. If they intersect return true
 function checkCollision(player, baddie) {
@@ -376,15 +384,6 @@ function checkCollision(player, baddie) {
 	}
 }
 
-//check the for a collision between pad and player. If they intersect return true
-function checkCollisionPad(player, pad) {
-	if(((player.x + player.width) > pad.x && player.x < (pad.x + pad.width)||
-		player.x < (pad.x + pad.width) && (player.x + player.width) < pad.width) &&
-		((player.y + player.height) - pad.y < 0.5 && (player.y + player.height) - pad.y > -0.5) 
-		&& player.velocityY > 0) {
-		return true
-	}
-}
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
 //function for gravity. If player is in the air accelerate in +Y (downward) direction.
 //if player is on the ground keep the velocity 0.
@@ -409,10 +408,6 @@ function updateScore() {
 	document.querySelector('.score').innerHTML = `Score: ${player.score}`
 }
 
-function displayFinalScore() {
-	document.querySelector('#gameOverScore').innerHTML = `Final Score: ${player.score}`
-}
-
 function resetGame() {
 	StartButtonPressed = false;
 	runGame = false;
@@ -431,9 +426,13 @@ function resetGame() {
 	physicsFrames = 0;
 }
 
-/***************************
-Menu display and operation
-***************************/
+/******************************
+Menu/page display and operation
+*******************************/
+
+function displayFinalScore() {
+	document.querySelector('#gameOverScore').innerHTML = `Final Score: ${player.score}`
+}
 
 startButton.addEventListener("click", () => {
 	StartButtonPressed = true;
@@ -535,27 +534,20 @@ function displayLeaderboard() {
 	document.querySelector('.leaderboardEndGame').innerHTML = document.querySelector('.leaderboardDirect').innerHTML
 }
 
-//run this before the main animation loop in order to set the score to 0 to start.
-updateScore();
+/******************************************************
+				Main Animation Loop
+	On loading the page the html displays the
+	images and main menu. For the main animation loop:
+	Fist, wait until all of the images are loaded.
+	Once that is done check to see if the player has 
+	hit the button to start or restart the game
+*******************************************************/
 
-//resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
-//main animation loop for the code. Keeps track of time and calls draw function to compute and 
-//draw each frame once the player hits a button to start a game ("restart game" or "start game"). The
-//main animation loop starts
-let lastTime = 0;
-function main(time) {
-	if(runGame) {
-		requestAnimationFrame(main);
-		deltaTime = time - lastTime;
-		lastTime = time;
-		draw(deltaTime, time);
-	}
-}
 
 //adapted from https://stackoverflow.com/questions/31299509/call-a-function-when-html5-canvas-is-ready
-//because the images load asychronously, wait for 
-//all the images to load before calling the first 
-//frame which will be the background of the start menu
+//because the images load asychronously, wait for  all the images to load before calling the 
+//main animation frame for the first time
+
 var images = [
             'assets/background5.png',
             'assets/background4.png',
@@ -583,7 +575,6 @@ var loadImage = function(i) {
 
 // Call upon all images loaded.
 var workDone = function() {
-// Clear canvas
 	requestAnimationFrame(main)
 }
 
@@ -594,3 +585,19 @@ for(i = 0; i < imagesLoading; ++i) {
 }
 
 
+//run this before the main animation loop in order to set the score to 0 when starting.
+updateScore();
+
+//resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
+//main animation loop for the code. Keeps track of time and calls draw function to compute and 
+//draw each frame once the player hits a button to start a game ("restart game" or "start game"). The
+//main animation loop starts
+let lastTime = 0;
+function main(time) {
+	if(runGame) {
+		requestAnimationFrame(main);
+		deltaTime = time - lastTime;
+		lastTime = time;
+		draw(deltaTime, time);
+	}
+}
