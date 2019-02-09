@@ -1,6 +1,9 @@
-//Write the README
-
-
+/***********************************************************
+						OVERVIEW:
+	The main loop of this game uses request animation frame.
+	See the function "main" at the bottom.
+	The physics run at 60 fps.
+***********************************************************/
 
 const canvas = document.querySelector('.game');
 const context = canvas.getContext('2d');
@@ -45,6 +48,8 @@ let playerSpriteW = 80, playerSpriteH = 93;
 let baddieImg = document.createElement("img");
 baddieImg.src = "assets/zombieWalk.png";
 let baddieSpriteW = 80, baddieSpriteH = 90;
+
+
 
 const player = {
 	x: 5,
@@ -589,7 +594,7 @@ for(i = 0; i < imagesLoading; ++i) {
 updateScore();
 
 //resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
-//main animation loop for the code. Keeps track of time and calls draw function to compute and 
+//main loop for the game. Keeps track of time and calls draw function to compute and 
 //draw each frame once the player hits a button to start a game ("restart game" or "start game"). The
 //main animation loop starts
 let lastTime = 0;
