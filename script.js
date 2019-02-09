@@ -68,7 +68,6 @@ const baddieOne = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	startingX: 115,
 	x: 115,
 	y: 38,
 	width: 4,
@@ -86,7 +85,6 @@ const baddieTwo = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	startingX: 160,
 	x: 160,
 	y: 38,
 	width: 4,
@@ -103,7 +101,6 @@ const baddieThree = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	startingX: 200,
 	x: 200,
 	y: 38,
 	width: 4,
@@ -120,7 +117,6 @@ const baddieFour = {
 	type: 'baddie',
 	draw: drawBaddieSprite,
 	drawTwo: drawBaddie,
-	startingX: 240,
 	x: 240,
 	y: 38,
 	width: 4,
@@ -196,7 +192,6 @@ function draw(deltaTime, time) {
 			if (actor.x < -4) {
 				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
 				lastReplace = actor.x
-				
 				lowEndSpacing += 3
 				highEndSpacing += 3
 				framesSinceReplace = 0;
@@ -208,7 +203,6 @@ function draw(deltaTime, time) {
 	});
 }
 const introBaddie = {
-	startingX: 100,
 	x: 100,
 	y: 38,
 	width: 4,
@@ -216,6 +210,7 @@ const introBaddie = {
 	counted: false
 };
 
+/*
 const introPad = {
 	startingX: 130,
 	x: 130,
@@ -225,37 +220,28 @@ const introPad = {
 	stomped: false,
 	collided: checkCollisionPad
 };
-
+*/
 
 /**********************************************
 			Intro
-The intro is only run once. It includes text 
-that shows at the top of the background.
+Intro is one Baddie and the instructions on how
+to play the game
 **********************************************/
 function introOnRails() {
 	instructText = "";
 	introBaddie.x -= actorSpeed
-	introPad.x -= actorSpeed
+	//introPad.x -= actorSpeed
 	drawBaddieSprite(introBaddie);
-	//drawPad(introPad);
 	if(checkCollision(player,introBaddie)) {
 		resetGame();
 	}
 
-	if (introPad.x < -6) {
+	if (introBaddie.x < -36) {
 		instructText = "";
 		drawText(0)
 		introBaddie.counted = false;
 		actorSpeed += 0.02
 		return introComplete = true;
-	}
-
-	else if (introPad.x < 7) {
-		if (introPad.collided(player, introPad)) {
-			player.velocityY = -40
-			player.score += 2
-			updateScore();
-		}
 	}
 
 	else if (introBaddie.x < -4) {
@@ -468,12 +454,11 @@ function resetGame() {
 	runGame = false;
 	createLeaderboard();
 	displayFinalScore();
-	baddieOne.x = baddieOne.startingX;
-	baddieTwo.x = baddieTwo.startingX;
-	baddieThree.x = baddieThree.startingX;
-	baddieFour.x = baddieFour.startingX;
-	introBaddie.x = introBaddie.startingX;
-	introPad.x = introPad.startingX;
+	baddieOne.x = 115;
+	baddieTwo.x = 160;
+	baddieThree.x = 200;
+	baddieFour.x = 240;
+	introBaddie.x = 100;
 	introComplete = false;
 	gameOverScreen.style.display = "block";
 	nextActorFrame = 0;
