@@ -49,7 +49,7 @@ let baddieImg = document.createElement("img");
 baddieImg.src = "assets/zombieWalk.png";
 let baddieSpriteW = 80, baddieSpriteH = 90;
 
-
+//Objects for the player and baddies (the enemies the player jumps over)
 
 const player = {
 	x: 5,
@@ -137,14 +137,14 @@ When replaced the first baddie will be between position
 240+30 and 240+60.
 *************************************************************/
 let introComplete = false;
-let baddieFrameInCycle = 0
-let cycle = 0
+let baddieFrameInCycle = 0;
+let cycle = 0;
 let lastReplace = 240;
 let physicsFrames = 0
 const gravityAccelY = 70.0;
-let baddieSpeed = 0.3
-let lowEndSpacing = 30
-let highEndSpacing = 60
+let baddieSpeed = 0.3;
+let lowEndSpacing = 30;
+let highEndSpacing = 60;
 let StartButtonPressed = false;
 let runGame = true;
 let leaderboardArr = [['JOE', 4], ['RIO', 3], ['SAM', 2], ['ALY', 1], ['RGE', 0]];
@@ -158,7 +158,7 @@ the game if the player collides with a baddie
 ***********************************************/
 
 function draw(deltaTime, time) {
-	context.clearRect(0, 0, canvas.width, canvas.height)
+	context.clearRect(0, 0, canvas.width, canvas.height);
 	drawBackground();
 	if(player.velocityY !== 0) {
 		gravity(deltaTime);
@@ -168,7 +168,7 @@ function draw(deltaTime, time) {
 		introOnRails();
 		return;
 	}
-	//physics Frames counts how many 1/60ths of a second ago the baddie was replaced
+	//physicsFrames counts how many 1/60ths of a second ago the baddie was replaced
 	physicsFrames += deltaTime / (1000/60);
 	baddies.forEach(baddie => {
 		//the physics run at 60 fps. The new baddie position will be the baddies 
@@ -178,7 +178,6 @@ function draw(deltaTime, time) {
 		baddie.x -= baddieSpeed * ((1000/60)/deltaTime);
 		if (baddie.x < 96) {
 			baddie.draw(baddie);
-			console.log(baddie.x)
 
 			if(baddie.collided(player,baddie)) {
 				resetGame();
@@ -197,9 +196,9 @@ function draw(deltaTime, time) {
 			//increase the difficulty as time goes on
 			if (baddie.x < -4) {
 				baddie.x = (lastReplace - physicsFrames * baddieSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
-				lastReplace = baddie.x
-				lowEndSpacing += 3
-				highEndSpacing += 3
+				lastReplace = baddie.x;
+				lowEndSpacing += 3;
+				highEndSpacing += 3;
 				physicsFrames = 0;
 				console.log(baddie.x)
 				baddie.counted = false;
@@ -227,7 +226,6 @@ const introBaddie = {
 function introOnRails() {
 	instructText = "";
 	introBaddie.x -= baddieSpeed * ((1000/60)/deltaTime);
-	//introPad.x -= baddieSpeed
 	drawBaddieSprite(introBaddie);
 	if(checkCollision(player,introBaddie)) {
 		resetGame();
@@ -235,9 +233,9 @@ function introOnRails() {
 
 	if (introBaddie.x < -36) {
 		instructText = "";
-		drawText(0)
+		drawText(0);
 		introBaddie.counted = false;
-		baddieSpeed += 0.02
+		baddieSpeed += 0.02;
 		return introComplete = true;
 	}
 
@@ -248,7 +246,7 @@ function introOnRails() {
 
 	else if (introBaddie.x < (5 - introBaddie.width) && introBaddie.counted === false) {
 		player.score++;
-		updateScore()
+		updateScore();
 		introBaddie.counted = true;
 	}
 	else if (introBaddie.x < 50) {
@@ -262,7 +260,7 @@ function introOnRails() {
 	}
 	else {
 		if (!StartButtonPressed) {
-			runGame = false
+			runGame = false;
 		}
 	}
 };
@@ -285,16 +283,16 @@ function drawBackground() {
 	//IMAGE ONE
 	context.drawImage(backgroundOne,
 				  0, 0, canvas.width, canvas.height,
-				  0, 0, canvas.width/10, canvas.height/10)
+				  0, 0, canvas.width/10, canvas.height/10);
 
 	//IMAGE TWO
 	context.drawImage(backgroundTwo,
 					  0, 0, canvas.width, canvas.height,
-					  backgroundTwoX/10, 0, canvas.width/10, canvas.height/10)
+					  backgroundTwoX/10, 0, canvas.width/10, canvas.height/10);
 	context.drawImage(backgroundTwo,
 				 	  0, 0, canvas.width, canvas.height,
-				 	  backgroundTwoX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
-	backgroundTwoX -= 0.5
+				 	  backgroundTwoX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10);
+	backgroundTwoX -= 0.5;
 	if (-backgroundTwoX == canvas.width) {
 		backgroundTwoX = 0;
 	}
@@ -302,11 +300,11 @@ function drawBackground() {
 	//IMAGE THREE
 	context.drawImage(backgroundThree,
 					  0, 0, canvas.width, canvas.height,
-					  backgroundThreeX/10, 0, canvas.width/10, canvas.height/10)
+					  backgroundThreeX/10, 0, canvas.width/10, canvas.height/10);
 	context.drawImage(backgroundThree,
 				 	  0, 0, canvas.width, canvas.height,
-				 	  backgroundThreeX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
-	backgroundThreeX -= 1
+				 	  backgroundThreeX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10);
+	backgroundThreeX -= 1;
 	if (-backgroundThreeX == canvas.width) {
 		backgroundThreeX = 0;
 	}
@@ -314,11 +312,11 @@ function drawBackground() {
 		//IMAGE FIVE
 	context.drawImage(backgroundFive,
 					  0, 0, canvas.width, canvas.height,
-					  backgroundFiveX/10, 0, canvas.width/10, canvas.height/10)
+					  backgroundFiveX/10, 0, canvas.width/10, canvas.height/10);
 	context.drawImage(backgroundFive,
 				 	  0, 0, canvas.width, canvas.height,
-				 	  backgroundFiveX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
-	backgroundFiveX -= 2
+				 	  backgroundFiveX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10);
+	backgroundFiveX -= 2;
 	if (-backgroundFiveX == canvas.width) {
 		backgroundFiveX = 0;
 	}
@@ -333,7 +331,7 @@ function drawPlayerSprite() {
 	baddieFrameInCycle++
 	if (baddieFrameInCycle == 8) {
 		cycle = (cycle + 1) % 2
-		baddieFrameInCycle = 0
+		baddieFrameInCycle = 0;
 	}
 }
 
@@ -483,7 +481,7 @@ function createLeaderboard() {
 function displayNameEntry() {
 	document.querySelector('.nameEntry').innerHTML = 
 	`HIGH SCORE! <br>
-	 NAME: <input type="text" placeholder= "_ _ _" id="nameField" autocomplete="off" maxlength="3">
+	 NAME: <input type="text" placeholder= " _ _ _" id="nameField" autocomplete="off" maxlength="3">
 		`
 }
 
