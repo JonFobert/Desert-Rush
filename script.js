@@ -72,10 +72,9 @@ const baddieOne = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		actorSpeed = 0.3;
+		baddieSpeed = 0.3;
 	}
 };
-
 
 const baddieTwo = {
 	type: 'baddie',
@@ -89,7 +88,7 @@ const baddieTwo = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		actorSpeed = 0.3;
+		baddieSpeed = 0.3;
 	}
 };
 
@@ -105,7 +104,7 @@ const baddieThree = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		actorSpeed = 0.3;
+		baddieSpeed = 0.3;
 	}
 };
 
@@ -121,16 +120,16 @@ const baddieFour = {
 	collided: checkCollision,
 	collideAction: function () {
 		player.score = 0;
-		actorSpeed = 0.3;
+		baddieSpeed = 0.3;
 	}
 };
 
-let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
+let baddies = [baddieOne, baddieTwo, baddieThree, baddieFour];
 
 
 /************************************************************
 				Game starting conditions
-The intro is not complete. The actor animation should be on 
+The intro is not complete. The baddie animation should be on 
 the first cycle and the first frame of the first cycle.
 The game's physics run at 60 fps and it has been been zero 
 frames since a baddie was last replaced. 
@@ -138,12 +137,12 @@ When replaced the first baddie will be between position
 240+30 and 240+60.
 *************************************************************/
 let introComplete = false;
-let actorFrameInCycle = 0
+let baddieFrameInCycle = 0
 let cycle = 0
 let lastReplace = 240;
 let physicsFrames = 0
 const gravityAccelY = 70.0;
-let actorSpeed = 0.3
+let baddieSpeed = 0.3
 let lowEndSpacing = 30
 let highEndSpacing = 60
 let StartButtonPressed = false;
@@ -171,40 +170,40 @@ function draw(deltaTime, time) {
 	}
 	//physics Frames counts how many 1/60ths of a second ago the baddie was replaced
 	physicsFrames += deltaTime / (1000/60);
-	actors.forEach(actor => {
-		//the physics run at 60 fps. The new actor position will be the actors 
-		//old position - the actors speed (the distance the actor advances in
+	baddies.forEach(baddie => {
+		//the physics run at 60 fps. The new baddie position will be the baddies 
+		//old position - the baddies speed (the distance the baddie advances in
 		//1/60th of a second) this is multiplied by how how many 1/60ths of a second
 		//it has been since the last frame.
-		actor.x -= actorSpeed * ((1000/60)/deltaTime);
-		if (actor.x < 96) {
-			actor.draw(actor);
-			console.log(actor.x)
+		baddie.x -= baddieSpeed * ((1000/60)/deltaTime);
+		if (baddie.x < 96) {
+			baddie.draw(baddie);
+			console.log(baddie.x)
 
-			if(actor.collided(player,actor)) {
+			if(baddie.collided(player,baddie)) {
 				resetGame();
 			}
 
 			//if the baddie passes the player add one to the players score
-			if (actor.x < (5 - actor.width) && actor.type == 'baddie' && actor.counted == false) {
+			if (baddie.x < (5 - baddie.width) && baddie.type == 'baddie' && baddie.counted == false) {
 				player.score++;
 				updateScore();
-				actor.counted = true;
+				baddie.counted = true;
 			}
 
 			//once the baddie is off screen to the left replace the baddie 30 to 60 units
 			//behind where the previous baddie was replaced. The baddies will over time get
 			//placed further away from the player, but they will also move faster. This should
 			//increase the difficulty as time goes on
-			if (actor.x < -4) {
-				actor.x = (lastReplace - physicsFrames * actorSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
-				lastReplace = actor.x
+			if (baddie.x < -4) {
+				baddie.x = (lastReplace - physicsFrames * baddieSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
+				lastReplace = baddie.x
 				lowEndSpacing += 3
 				highEndSpacing += 3
 				physicsFrames = 0;
-				console.log(actor.x)
-				actor.counted = false;
-				actorSpeed += 0.03;
+				console.log(baddie.x)
+				baddie.counted = false;
+				baddieSpeed += 0.03;
 			}
 		}	
 	});
@@ -227,8 +226,8 @@ const introBaddie = {
 
 function introOnRails() {
 	instructText = "";
-	introBaddie.x -= actorSpeed * ((1000/60)/deltaTime);
-	//introPad.x -= actorSpeed
+	introBaddie.x -= baddieSpeed * ((1000/60)/deltaTime);
+	//introPad.x -= baddieSpeed
 	drawBaddieSprite(introBaddie);
 	if(checkCollision(player,introBaddie)) {
 		resetGame();
@@ -238,7 +237,7 @@ function introOnRails() {
 		instructText = "";
 		drawText(0)
 		introBaddie.counted = false;
-		actorSpeed += 0.02
+		baddieSpeed += 0.02
 		return introComplete = true;
 	}
 
@@ -331,10 +330,10 @@ function drawPlayerSprite() {
 					  cycle * playerSpriteW, 0, playerSpriteW, playerSpriteH,
 					  //destination rectange. -1 to compensate for blank left of sprite
 					  player.x-1, player.y, playerSpriteW/10, playerSpriteH/10);
-	actorFrameInCycle++
-	if (actorFrameInCycle == 8) {
+	baddieFrameInCycle++
+	if (baddieFrameInCycle == 8) {
 		cycle = (cycle + 1) % 2
-		actorFrameInCycle = 0
+		baddieFrameInCycle = 0
 	}
 }
 
@@ -425,7 +424,7 @@ function resetGame() {
 	introBaddie.x = 100;
 	introComplete = false;
 	gameOverScreen.style.display = "block";
-	nextActorFrame = 0;
+	nextbaddieFrame = 0;
 	cycle = 0;
 	lastReplace = 240;
 	physicsFrames = 0;
@@ -464,7 +463,7 @@ restartButton.addEventListener("click", () => {
 	runGame = true;
 	gameOverScreen.style.display = "none";
 	requestAnimationFrame(main); 
-	actorSpeed = 0.3;
+	baddieSpeed = 0.3;
 });
 
 function leaderboardSort(boardArray) {
@@ -473,7 +472,6 @@ function leaderboardSort(boardArray) {
 	})
 	return boardArray
 }
-
 
 function createLeaderboard() {
 	if (player.score > leaderboardArr[4][1]) {
@@ -498,8 +496,6 @@ document.querySelector('.nameEntry').addEventListener("submit", e => {
 	e.target.style.display= "none"
 	document.querySelector('.nameEntryBuffer').style.display = "block";
 });
-
-
 
 function displayLeaderboard() {
 	document.querySelector('.leaderboardDirect').innerHTML = `
