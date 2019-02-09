@@ -152,7 +152,7 @@ function draw(deltaTime, time) {
 	context.clearRect(0, 0, canvas.width, canvas.height)
 	drawBackground();
 	if(player.velocityY !== 0) {
-		jump(deltaTime);
+		gravity(deltaTime);
 	}
 	drawPlayerSprite(player);
 	if (introComplete == false) {
@@ -346,6 +346,11 @@ function drawText(xOffset) {
 	contextInstruct.fillText(instructText, xOffset, 100);
 }
 
+/*****************************
+Functions to handle collision
+and placement
+*****************************/
+
 //https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
 function randomIntFromInterval(min,max) {
 	return Math.floor(Math.random()*(max-min+1) + min);
@@ -383,7 +388,7 @@ function checkCollisionPad(player, pad) {
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
 //function for gravity. If player is in the air accelerate in +Y (downward) direction.
 //if player is on the ground keep the velocity 0.
-function jump(deltaTime) {
+function gravity(deltaTime) {
 	let timeInSec = deltaTime/1000
 	player.velocityY += gravityAccelY * timeInSec;
 	player.y += player.velocityY * timeInSec;
@@ -399,19 +404,6 @@ document.addEventListener("keydown", e => {
 		player.velocityY = -50
 	}
 });
-
-//resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
-//main loop for the code. Keeps track of time and calls draw function to draw each frame
-let lastTime = 0;
-function main(time) {
-	if(runGame) {
-		requestAnimationFrame(main);
-		deltaTime = time - lastTime;
-		lastTime = time;
-		draw(deltaTime, time);
-		console.log(deltaTime)
-	}
-}
 
 function updateScore() {
 	document.querySelector('.score').innerHTML = `Score: ${player.score}`
@@ -438,6 +430,10 @@ function resetGame() {
 	lastReplace = 240;
 	physicsFrames = 0;
 }
+
+/***************************
+Menu display and operation
+***************************/
 
 startButton.addEventListener("click", () => {
 	StartButtonPressed = true;
@@ -539,7 +535,22 @@ function displayLeaderboard() {
 	document.querySelector('.leaderboardEndGame').innerHTML = document.querySelector('.leaderboardDirect').innerHTML
 }
 
+//run this before the main animation loop in order to set the score to 0 to start.
 updateScore();
+
+//resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
+//main animation loop for the code. Keeps track of time and calls draw function to compute and 
+//draw each frame once the player hits a button to start a game ("restart game" or "start game"). The
+//main animation loop starts
+let lastTime = 0;
+function main(time) {
+	if(runGame) {
+		requestAnimationFrame(main);
+		deltaTime = time - lastTime;
+		lastTime = time;
+		draw(deltaTime, time);
+	}
+}
 
 //adapted from https://stackoverflow.com/questions/31299509/call-a-function-when-html5-canvas-is-ready
 //because the images load asychronously, wait for 
@@ -576,7 +587,7 @@ var workDone = function() {
 	requestAnimationFrame(main)
 }
 
-// Start to load all images.
+// Start to load all images
 var i;
 for(i = 0; i < imagesLoading; ++i) {
 	loadImage(i);
