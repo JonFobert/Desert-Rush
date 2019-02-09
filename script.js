@@ -1,10 +1,5 @@
-/*
-notes:
-Consider replacing startingX with values in resetgame()
-Document how the delta time for the loop works and how it 
-relates to the frame replace of the badddies
-Write the README
-*/
+//Write the README
+
 
 
 const canvas = document.querySelector('.game');
@@ -20,10 +15,6 @@ const leaderboardButton = document.querySelector('.leaderboardbtn')
 const leaderboardScreen = document.querySelector('.leaderboardScreen')
 const returnToMenuButton = document.querySelector('.returnToMenu')
 //Colors: https://coolors.co/3d5a80-98c1d9-e0fbfc-ee6c4d-293241
-/*sprite ideas:
-https://www.kenney.nl/assets/platformer-characters-1
-https://www.kenney.nl/assets/platformer-art-extended-enemies
-*/
 
 //background images
 
@@ -135,8 +126,9 @@ let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 /************************************************************
 				Game starting conditions
 The intro is not complete. The actor animation should be on 
-the first cycle and the first frame of the first cycle
-It has been zero frames since a baddie was last replaced. 
+the first cycle and the first frame of the first cycle.
+The game's physics run at 60 fps and it has been been zero 
+frames since a baddie was last replaced. 
 When replaced the first baddie will be between position 
 240+30 and 240+60.
 *************************************************************/
@@ -172,7 +164,7 @@ function draw(deltaTime, time) {
 	actors.forEach(actor => {
 		//the physics run at 60 fps. The new actor position will be the actors 
 		//old position - the actors speed (the distance the actor advances in
-		// 1/60th of a second) this is multiplied by how how many 1/60ths of a second
+		//1/60th of a second) this is multiplied by how how many 1/60ths of a second
 		//it has been since the last frame.
 		actor.x -= actorSpeed * ((1000/60)/deltaTime);
 		if (actor.x < 96) {
@@ -215,17 +207,6 @@ const introBaddie = {
 	counted: false
 };
 
-/*
-const introPad = {
-	startingX: 130,
-	x: 130,
-	y: 34,
-	width: 6,
-	height: 3,
-	stomped: false,
-	collided: checkCollisionPad
-};
-*/
 
 /**********************************************
 			Intro
@@ -317,18 +298,7 @@ function drawBackground() {
 	if (-backgroundThreeX == canvas.width) {
 		backgroundThreeX = 0;
 	}
-	/*
-		//IMAGE FOUR
-	context.drawImage(backgroundFour,
-					  0, 0, canvas.width, canvas.height,
-					  backgroundFourX/10, 0, canvas.width/10, canvas.height/10)
-	context.drawImage(backgroundFour,
-				 	  0, 0, canvas.width, canvas.height,
-				 	  backgroundFourX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10)
-	backgroundFourX -= 2
-	if (-backgroundFourX == canvas.width) {
-		backgroundFourX = 0;
-	}*/
+
 		//IMAGE FIVE
 	context.drawImage(backgroundFive,
 					  0, 0, canvas.width, canvas.height,
@@ -369,11 +339,6 @@ function drawBaddie(baddie) {
 	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
 }
 
-function drawPad(pad) {
-	context.fillStyle = '#99ED4B';
-	context.fillRect(pad.x, pad.y, pad.width, pad.height);
-}
-
 function drawText(xOffset) {
 	contextInstruct.clearRect(0,0,960,540)
 	contextInstruct.font = "32px Arial";
@@ -387,6 +352,7 @@ function randomIntFromInterval(min,max) {
 }
 
 //modified version of: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+//Not currently being used. Might be a better way to randomize the placement of Baddies
 function randomizeLastThree(array) {
 	for(let i = 5; i > 3; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
