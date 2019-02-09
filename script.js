@@ -144,7 +144,7 @@ let introComplete = false;
 let actorFrameInCycle = 0
 let cycle = 0
 let lastReplace = 240;
-let framesSinceReplace = 0
+let physicsFrames = 0
 const gravityAccelY = 70.0;
 let actorSpeed = 0.3
 let lowEndSpacing = 30
@@ -167,12 +167,17 @@ function draw(deltaTime, time) {
 		introOnRails();
 		return;
 	}
-	//framesSinceReplace counts how many frames ago a baddie's position was reset
-	framesSinceReplace++;
+	//physics Frames counts how many 1/60ths of a second ago the baddie was replaced
+	physicsFrames += deltaTime / (1000/60);
 	actors.forEach(actor => {
-		actor.x -= actorSpeed;
+		//the physics run at 60 fps. The new actor position will be the actors 
+		//old position - the actors speed (the distance the actor advances in
+		// 1/60th of a second) this is multiplied by how how many 1/60ths of a second
+		//it has been since the last frame.
+		actor.x -= actorSpeed * ((1000/60)/deltaTime);
 		if (actor.x < 96) {
 			actor.draw(actor);
+			console.log(actor.x)
 
 			if(actor.collided(player,actor)) {
 				resetGame();
@@ -190,11 +195,11 @@ function draw(deltaTime, time) {
 			//placed further away from the player, but they will also move faster. This should
 			//increase the difficulty as time goes on
 			if (actor.x < -4) {
-				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
+				actor.x = (lastReplace - physicsFrames * actorSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
 				lastReplace = actor.x
 				lowEndSpacing += 3
 				highEndSpacing += 3
-				framesSinceReplace = 0;
+				physicsFrames = 0;
 				console.log(actor.x)
 				actor.counted = false;
 				actorSpeed += 0.03;
@@ -229,7 +234,7 @@ to play the game
 **********************************************/
 function introOnRails() {
 	instructText = "";
-	introBaddie.x -= actorSpeed
+	introBaddie.x -= actorSpeed * ((1000/60)/deltaTime);
 	//introPad.x -= actorSpeed
 	drawBaddieSprite(introBaddie);
 	if(checkCollision(player,introBaddie)) {
@@ -438,6 +443,7 @@ function main(time) {
 		deltaTime = time - lastTime;
 		lastTime = time;
 		draw(deltaTime, time);
+		console.log(deltaTime)
 	}
 }
 
@@ -464,7 +470,7 @@ function resetGame() {
 	nextActorFrame = 0;
 	cycle = 0;
 	lastReplace = 240;
-	framesSinceReplace = 0;
+	physicsFrames = 0;
 }
 
 startButton.addEventListener("click", () => {
