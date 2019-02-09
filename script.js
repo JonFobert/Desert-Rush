@@ -1,7 +1,7 @@
 /*
 notes:
 Consider replacing startingX with values in resetgame()
-Document how the dleta time for the loop works and how it 
+Document how the delta time for the loop works and how it 
 relates to the frame replace of the badddies
 Write the README
 */
@@ -81,20 +81,6 @@ const baddieOne = {
 	}
 };
 
-/*const pad = {
-	type: 'pad',
-	draw: drawPad,
-	x: 165,
-	y: 37,
-	width: 5,
-	height: 3,
-	counted: true,
-	collided: checkCollisionPad,
-	collideAction: function () {
-		player.velocityY = -40;
-		player.score += 2;
-	}
-};*/
 
 const baddieTwo = {
 	type: 'baddie',
@@ -153,10 +139,10 @@ let actors = [baddieOne, baddieTwo, baddieThree, baddieFour];
 /************************************************************
 				Game starting conditions
 The intro is not complete. The actor animation should be on 
-the first cycle. The actor cycle is on the first frame. 
-The last zombie starts at 240 It has been zero frames since a 
-baddie was last replaced. When replaced a baddie will be
-between position 30 and 60.
+the first cycle and the first frame of the first cycle
+It has been zero frames since a baddie was last replaced. 
+When replaced the first baddie will be between position 
+240+30 and 240+60.
 *************************************************************/
 let introComplete = false;
 let actorFrameInCycle = 0
@@ -191,10 +177,8 @@ function draw(deltaTime, time) {
 		actor.x -= actorSpeed;
 		if (actor.x < 96) {
 			actor.draw(actor);
-			//actor.drawTwo(actor);
 
 			if(actor.collided(player,actor)) {
-				//actor.collideAction();
 				resetGame();
 			}
 
@@ -205,8 +189,10 @@ function draw(deltaTime, time) {
 				actor.counted = true;
 			}
 
-			//once the baddie is off screen to the left reset the baddie 30 to 60 units
-			//behind where the previous baddie was replaced
+			//once the baddie is off screen to the left replace the baddie 30 to 60 units
+			//behind where the previous baddie was replaced. The baddies will over time get
+			//placed further away from the player, but they will also move faster. This should
+			//increase the difficulty as time goes on
 			if (actor.x < -4) {
 				actor.x = (lastReplace - framesSinceReplace * actorSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
 				lastReplace = actor.x
@@ -229,6 +215,7 @@ const introBaddie = {
 	height: 8,
 	counted: false
 };
+
 const introPad = {
 	startingX: 130,
 	x: 130,
@@ -239,6 +226,12 @@ const introPad = {
 	collided: checkCollisionPad
 };
 
+
+/**********************************************
+			Intro
+The intro is only run once. It includes text 
+that shows at the top of the background.
+**********************************************/
 function introOnRails() {
 	instructText = "";
 	introBaddie.x -= actorSpeed
@@ -254,7 +247,6 @@ function introOnRails() {
 		drawText(0)
 		introBaddie.counted = false;
 		actorSpeed += 0.02
-		console.log('speed up!')
 		return introComplete = true;
 	}
 
