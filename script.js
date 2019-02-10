@@ -137,6 +137,7 @@ frames since a baddie was last replaced.
 When replaced the first baddie will be between position 
 240+30 and 240+60.
 *************************************************************/
+
 let introComplete = false;
 let baddieFrameInCycle = 0;
 let cycle = 0;
