@@ -484,7 +484,7 @@ function createLeaderboard() {
 function displayNameEntry() {
 	document.querySelector('.nameEntry').innerHTML = 
 	`HIGH SCORE! <br>
-	 NAME: <input type="text" placeholder= " _ _ _" id="nameField" autocomplete="off" maxlength="3">
+	 NAME: <input type="text" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3">
 		`
 }
 
