@@ -10,10 +10,12 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '.public/index.html'))
 })
 
+//connect to the database
+const db = require('./config/keys').mongoURI
 
 
 
-PORT = 3000
+const PORT = process.env.PORT || 3000
 app.listen(PORT, function() {
     console.log(`server started on port ${3000}` )
 })
