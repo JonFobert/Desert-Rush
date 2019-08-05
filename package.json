@@ -1,0 +1,23 @@
+{
+  "name": "zombie-adventure",
+  "version": "1.0.0",
+  "description": "Zombie side scrolling game",
+  "main": "server.js",
+  "scripts": {
+    "test": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JonFobert/zombie-adventure.git"
+  },
+  "author": "Jon Fobert",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JonFobert/zombie-adventure/issues"
+  },
+  "homepage": "https://github.com/JonFobert/zombie-adventure#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.6.8"
+  }
+}
