@@ -484,18 +484,27 @@ function createLeaderboard() {
 function displayNameEntry() {
 	document.querySelector('.nameEntry').innerHTML = 
 	`HIGH SCORE! <br>
-	 NAME: <input type="text" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3">
+	 NAME: <input type="text" name="name" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3">
 		`
 }
 
+
 document.querySelector('.nameEntry').addEventListener("submit", e => {
-	e.preventDefault();
-	leaderboardArr.pop()
-	leaderboardArr.push([nameField.value.toUpperCase(), player.score]);
-	leaderboardSort(leaderboardArr).reverse()
-	displayLeaderboard()
-	e.target.style.display= "none"
-	document.querySelector('.nameEntryBuffer').style.display = "block";
+	let xhttp = new XMLHtttpRequest();
+	//asynchronous, may need a callback...
+	xhttp.open("POST", "http://localhost:3000")
+	xhttp.setRequestHeader('Content-Type', applicaion/json)
+	let name = nameField.value
+	xhhtp.send()
+
+	//e.preventDefault()
+	//nameField.value = ''
+	//leaderboardArr.pop()
+	//leaderboardArr.push([nameField.value.toUpperCase(), player.score]);
+	//leaderboardSort(leaderboardArr).reverse()
+	//displayLeaderboard()
+	//e.target.style.display= "none"
+	//document.querySelector('.nameEntryBuffer').style.display = "block";
 });
 
 function displayLeaderboard() {
