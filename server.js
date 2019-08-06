@@ -13,9 +13,13 @@ app.get('/', (req, res) => {
 //connect to the database
 const db = require('./config/keys').mongoURI
 
+mongoose
+    .connect(db,{useNewUrlParser: true})
+    .then(() => console.log("MongoDb connected"))
+    .catch(err => console.log(err))
 
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, function() {
-    console.log(`server started on port ${3000}` )
+    console.log(`server started on port ${3000}`)
 })
