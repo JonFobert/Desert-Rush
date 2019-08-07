@@ -161,7 +161,7 @@ the game if the player collides with a baddie
 ***********************************************/
 
 function draw(deltaTime, time) {
-	context.clearRect(0, 0, canvas.width, canvas.height);
+
 	drawBackground();
 	if(player.velocityY !== 0) {
 		gravity(deltaTime);
@@ -171,6 +171,8 @@ function draw(deltaTime, time) {
 		introOnRails();
 		return;
 	}
+
+	
 	//physicsFrames counts how many 1/60ths of a second ago the baddie was replaced
 	physicsFrames += deltaTime / (1000/60);
 	baddies.forEach(baddie => {
@@ -357,6 +359,8 @@ function drawText(xOffset) {
 	contextInstruct.fillStyle = "#293241";
 	contextInstruct.fillText(instructText, xOffset, 100);
 }
+
+
 
 /****************************************************
 Functions to handle collision, placement, and jumping

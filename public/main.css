@@ -63,8 +63,37 @@ body {
 	display: grid;
 	justify-items: center;
 	grid-template-columns: 1fr 960px 1fr;
-	grid-template-rows: 20px 100px 540px 20px;
+	grid-template-rows: 60px 100px 540px 20px;
 
+}
+
+.navBar {
+	grid-row: 1 / 2;
+	grid-column: 1 / 4;
+	color: white;
+	background-color: green;
+	justify-self: stretch;
+	display: flex;
+    justify-content: center;
+}
+
+.navItems {
+	display: flex;
+	flex-direction: row;
+	list-style: none;
+	justify-content: center;
+	align-items: center;
+}
+
+.navItem {
+	align-self: center;
+	justify-self: center;
+	margin: 0px 50px 0px 50px;
+	padding: 5px;
+}
+
+.navItem:hover {
+	background-color: blue;
 }
 
 .score {
