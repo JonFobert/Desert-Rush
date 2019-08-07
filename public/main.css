@@ -63,7 +63,7 @@ body {
 	display: grid;
 	justify-items: center;
 	grid-template-columns: 1fr 960px 1fr;
-	grid-template-rows: 60px 100px 540px 20px;
+	grid-template-rows: 40px 100px 540px 60px;
 
 }
 
@@ -71,11 +71,19 @@ body {
 	grid-row: 1 / 2;
 	grid-column: 1 / 4;
 	color: white;
-	background-color: green;
+	background-color: black;
 	justify-self: stretch;
 	display: flex;
-    justify-content: center;
+	justify-content: space-between;
+	align-items: center;
 }
+
+.title {
+	padding-left: 20px;
+	font-size: 26px;
+	font-weight: bold;
+}
+
 
 .navItems {
 	display: flex;
@@ -83,23 +91,36 @@ body {
 	list-style: none;
 	justify-content: center;
 	align-items: center;
+	width: 70%
 }
 
 .navItem {
 	align-self: center;
 	justify-self: center;
 	margin: 0px 50px 0px 50px;
-	padding: 5px;
+	font-size: 18px;
 }
 
+
 .navItem:hover {
-	background-color: blue;
+	border-bottom: 2px solid white;
+}
+
+.githubLink {
+	padding-right: 20px;
+	font-size: 24px;
+	display:flex;
+	align-items: center;
+}
+.githubLink img {
+	padding-right: 4px;
 }
 
 .score {
 	grid-row: 2 / 3;
 	grid-column: 2 / 3;
-	font-size: 48px
+	font-size: 48px;
+	align-self: center;
 }
 
 #stage {
@@ -177,7 +198,7 @@ body {
 	font-size: 34px
 }
 
-.nameEntry input[type=text]{;
+.nameEntry input[type=text]{
 	font-size: 34px;
 	background-color: transparent;
     border: none;
@@ -230,3 +251,26 @@ body {
 	text-align: center;
 	font-size: 14px
 }
+
+
+
+
+a:link {
+	text-decoration: none;
+	color: white;
+  }
+  
+  a:visited {
+	text-decoration: none;
+	color: white;
+  }
+  
+  a:hover {
+	text-decoration: none;
+	color: white;
+  }
+  
+  a:active {
+	text-decoration: none;
+	color: white;
+  }
