@@ -14,7 +14,11 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 //retrieve index.html when on the home page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '.public/index.html'))
+    res.sendFile(path.join(__dirname, 'public/index.html'))
+})
+
+app.get('/highScores', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/highScores.html'))
 })
 
 //Set up body parser for JSON
@@ -35,7 +39,6 @@ app.post('/', (req, res) => {
     let highScore = new HighScore()
     highScore.name = req.body.name;
     highScore.score = 43;
-    console.log(highScore);
 
     highScore.save( err => {
         if(err) {
