@@ -71,7 +71,7 @@ a:link {
 
 
 body {
-	background-color: #293241;
+	background-color: #0c2515;
     font-family: 'VT323', monospace;
 	font-size: 32px;
 	color: #FFFFFF;
@@ -132,6 +132,10 @@ body {
 }
 .githubLink img {
 	padding-right: 4px;
+}
+
+.highScoreArea {
+    border: 5px dashed white;
 }
 
 .pageHeading {
