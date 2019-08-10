@@ -21,6 +21,10 @@ app.get('/highScores', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/highScores.html'))
 })
 
+app.get('/highScoresEntry', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/highScoresEntry.html'))
+})
+
 //Set up body parser for JSON
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
