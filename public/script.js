@@ -481,7 +481,7 @@ function leaderboardSort(boardArray) {
 function createLeaderboard() {
 	if (player.score > leaderboardArr[4][1]) {
 		displayNameEntry()
-	}
+	} 
 	displayLeaderboard()
 }
 
@@ -494,12 +494,12 @@ function displayNameEntry() {
 
 
 document.querySelector('.nameEntry').addEventListener("submit", e => {
+	e.preventDefault();
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
 	xhttp.open("POST", "http://localhost:3000")
-	xhttp.setRequestHeader('Content-Type', applicaion/json)
-	let name = nameField.value
-	xhhtp.send()
+	xhttp.setRequestHeader("Content-Type", "application/json")
+	xhttp.send(JSON.stringify({score: player.score}))
 
 	//e.preventDefault()
 	//nameField.value = ''

@@ -9,20 +9,28 @@ const path = require('path')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 
+//set template engine to ejs
+app.set('view engine', 'ejs')
+
 //set the static folder
 app.use(express.static(path.join(__dirname, 'public')))
 
 //retrieve index.html when on the home page
+//app.get('/', (req, res) => {
+//    res.sendFile(path.join(__dirname, 'public/index.html'))
+//})
+
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/index.html'))
+    res.render('index')
 })
 
+
 app.get('/highScores', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/highScores.html'))
+    res.render('highScores')
 })
 
 app.get('/highScoresEntry', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/highScoresEntry.html'))
+    res.render('highScoresEntry')
 })
 
 //Set up body parser for JSON
@@ -40,6 +48,10 @@ mongoose
 let HighScore = require('./models/highScore');
 
 app.post('/', (req, res) => {
+    console.log(req.body)
+})
+
+/*app.post('/', (req, res) => {
     let highScore = new HighScore()
     highScore.name = req.body.name;
     highScore.score = 43;
@@ -52,7 +64,7 @@ app.post('/', (req, res) => {
             console.log("im a response")
         }
     })
-})
+})*/
 
 
 const PORT = process.env.PORT || 3000
