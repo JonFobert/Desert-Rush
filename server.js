@@ -44,24 +44,6 @@ app.get('/highScores', (req, res) => {
 })
 
 
-function topFiveHighToLow(array) {
-    return array.sort((a, b) => {
-        return b.score-a.score
-    })
-    .slice(0, 5)
-}
-
-app.get('/highScoresEntry', (req, res) => {
-    CurrentScore.find({}, (err, CurrentScore) => {
-        HighScore.find({}, (err, HighScore) => {
-            orderedHighScores = topFiveHighToLow(HighScore)
-            res.render('highScoresEntry', {
-                CurrentScore: CurrentScore[0].score,
-                HighScore: orderedHighScores
-            })
-        })
-    })
-})
 
 //Set up body parser for JSON
 app.use(bodyParser.urlencoded({extended: false}));
@@ -115,6 +97,48 @@ app.post('/', (req, res) => {
     })
 })
 
+function topFiveHighToLow(array) {
+    return array.sort((a, b) => {
+        return b.score-a.score
+    })
+    .slice(0, 5)
+}
+
+app.get('/highScoresEntry', (req, res) => {
+    CurrentScore.find({}, (err, CurrentScore) => {
+        HighScore.find({}, (err, HighScore) => {
+            orderedHighScores = topFiveHighToLow(HighScore)
+            res.render('highScoresEntry', {
+                CurrentScore: CurrentScore[0].score,
+                HighScore: orderedHighScores
+            })
+        })
+    })
+})
+
+app.post('/highScoresEntry', (req, res) => {
+    let highScore = new HighScore()
+    CurrentScore.find({}, (err, CurrentScore) => {
+        if(err) {
+           console.log("error posting score")
+            return
+        } else {
+            highScore.name = req.body.name
+            highScore.score = CurrentScore[0].score
+            highScore.save( err => {
+                //highScore.score = CurrentScore[0].score
+                console.log(highScore.score)
+                console.log(highScore.name)
+                if(err) {
+                    console.log(err)
+                    return
+                } else {
+                    res.redirect('/highScoresEntry')
+                }
+            })
+        }
+    })
+})
 
 const PORT = process.env.PORT || 3000
 
