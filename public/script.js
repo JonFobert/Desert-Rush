@@ -192,6 +192,7 @@ function draw(deltaTime, time) {
 			if (baddie.x < (5 - baddie.width) && baddie.type == 'baddie' && baddie.counted == false) {
 				player.score++;
 				updateScore();
+				updateScoreOnServer()
 				baddie.counted = true;
 			}
 
@@ -252,6 +253,7 @@ function introOnRails() {
 	else if (introBaddie.x < (5 - introBaddie.width) && introBaddie.counted === false) {
 		player.score++;
 		updateScore();
+		updateScoreOnServer()
 		introBaddie.counted = true;
 	}
 	else if (introBaddie.x < 50) {
@@ -479,10 +481,12 @@ function leaderboardSort(boardArray) {
 }
 
 function createLeaderboard() {
-	if (player.score > leaderboardArr[4][1]) {
-		displayNameEntry()
-	} 
-	displayLeaderboard()
+	window.location.assign("http://localhost:3000/highScoresEntry")
+	//if (player.score > leaderboardArr[4][1]) {
+		//displayNameEntry()
+	//	window.location.assign("http://localhost:3000/highScoreEntry")
+	//} 
+	//displayLeaderboard()
 }
 
 function displayNameEntry() {
@@ -493,13 +497,23 @@ function displayNameEntry() {
 }
 
 
+function updateScoreOnServer() {
+	let xhttp = new XMLHttpRequest();
+	//asynchronous, may need a callback...
+	xhttp.open("PUT", "http://localhost:3000/api/player")
+	xhttp.setRequestHeader("Content-Type", "application/json")
+	xhttp.send(JSON.stringify({score: player.score}))
+}
+
 document.querySelector('.nameEntry').addEventListener("submit", e => {
+
 	e.preventDefault();
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
 	xhttp.open("POST", "http://localhost:3000")
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: player.score}))
+
 
 	//e.preventDefault()
 	//nameField.value = ''

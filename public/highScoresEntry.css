@@ -153,8 +153,19 @@ body {
 
 .nameEntry {
 	grid-column: 2 / 3;
-	grid-row: 3 / 4
-	
+	grid-row: 3 / 4	
+}
+
+.nameEntry input[type=text]{
+	font-size: 44px;
+	background-color: transparent;
+    border: none;
+    color: white;
+    width: 80px;
+}
+
+.nameEntry input[type=text]:focus {
+    outline: none;
 }
 
 .gameOverTable {

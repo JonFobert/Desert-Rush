@@ -9,28 +9,58 @@ const path = require('path')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 
+//bring in mongoose models
+let HighScore = require('./models/highScore');
+let CurrentScore = require('./models/currentScore')
+
 //set template engine to ejs
 app.set('view engine', 'ejs')
 
 //set the static folder
 app.use(express.static(path.join(__dirname, 'public')))
 
-//retrieve index.html when on the home page
-//app.get('/', (req, res) => {
-//    res.sendFile(path.join(__dirname, 'public/index.html'))
-//})
-
 app.get('/', (req, res) => {
-    res.render('index')
+    HighScore.find({}, (err, articles) => {
+        if(err) {
+            console.log(err)
+        } else {
+            let topFive = 
+                articles
+                .sort((a, b) => {
+                    return b.score-a.score
+                })
+                .slice(0, 5)
+            console.log(topFive)
+                res.render('index')
+        }
+    })
 })
+
+
 
 
 app.get('/highScores', (req, res) => {
     res.render('highScores')
 })
 
+
+function topFiveHighToLow(array) {
+    return array.sort((a, b) => {
+        return b.score-a.score
+    })
+    .slice(0, 5)
+}
+
 app.get('/highScoresEntry', (req, res) => {
-    res.render('highScoresEntry')
+    CurrentScore.find({}, (err, CurrentScore) => {
+        HighScore.find({}, (err, HighScore) => {
+            orderedHighScores = topFiveHighToLow(HighScore)
+            res.render('highScoresEntry', {
+                CurrentScore: CurrentScore[0].score,
+                HighScore: orderedHighScores
+            })
+        })
+    })
 })
 
 //Set up body parser for JSON
@@ -45,26 +75,45 @@ mongoose
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err))
 
-let HighScore = require('./models/highScore');
-
-app.post('/', (req, res) => {
-    console.log(req.body)
+app.put('/api/player', (req, res) => {
+    CurrentScore.findOneAndUpdate({}, req.body, {new: true}, (err, newScore) => {
+        if (err) {
+            console.log("Error!")
+        } else {
+            res.json({msg: 'Score Updated in DB', newScore})
+        }
+    })
 })
 
-/*app.post('/', (req, res) => {
+app.post('/api/player', (req, res) => {
+    let currentScore = new CurrentScore()
+    currentScore.score = req.body.score;
+
+    currentScore.save( err => {
+        if(err) {
+            console.log("im an error")
+            return
+        } else {
+            console.log('updated current Score')
+        }
+    })
+})
+
+
+app.post('/', (req, res) => {
     let highScore = new HighScore()
     highScore.name = req.body.name;
-    highScore.score = 43;
+    highScore.score = 4;
 
     highScore.save( err => {
         if(err) {
             console.log("im an error")
             return
         } else {
-            console.log("im a response")
+            res.redirect('/')
         }
     })
-})*/
+})
 
 
 const PORT = process.env.PORT || 3000
