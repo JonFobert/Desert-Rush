@@ -494,7 +494,7 @@ function displayNameEntry() {
 
 
 document.querySelector('.nameEntry').addEventListener("submit", e => {
-	let xhttp = new XMLHtttpRequest();
+	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
 	xhttp.open("POST", "http://localhost:3000")
 	xhttp.setRequestHeader('Content-Type', applicaion/json)
@@ -525,7 +525,7 @@ function displayLeaderboard() {
 				<td>${leaderboardArr[0][0]}</td>
 				<td>${leaderboardArr[0][1]}</td>
 			</tr>
-			<tr>
+			<tr> 
 				<td>2ND</td>
 				<td>${leaderboardArr[1][0]}</td>
 				<td>${leaderboardArr[1][1]}</td>

@@ -46,10 +46,10 @@ app.post('/', (req, res) => {
 
     highScore.save( err => {
         if(err) {
-            console.log(err)
+            console.log("im an error")
             return
         } else {
-            console.log(res)
+            console.log("im a response")
         }
     })
 })
