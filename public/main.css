@@ -159,7 +159,7 @@ body {
 	z-index: 2
 }
 
-.start-menu, .game-over, .leaderboardScreen{
+.start-menu {
 	width: 640px;
 	height: 360px;
 	grid-row: 1 / 2;
@@ -171,20 +171,16 @@ body {
 	text-align: center;
 }
 
-.start-menu h1, .game-over h1 {
+.start-menu h1 {
 	color: #2ECC71;
 	font-size: 58px;
 	margin-top: 20px;
 }
 
-.start-menu p, .game-over h2{
+.start-menu p {
 	margin-top: 50px;
 	color: #2ECC71;
 	line-height: 1.2
-}
-
-.game-over h2 {
-	margin-top: 0px;
 }
 
 
@@ -201,69 +197,9 @@ body {
     padding: 5px 10px 5px 10px;
 }
 
-.start-menu button:hover, .game-over button:hover, .leaderboardScreen button:hover {
+.start-menu button:hover {
 	background-color: #2ECC71;
 	color: black;
-}
-
-.game-over, .leaderboardScreen{
-	display: none;
-	height: 540px;
-	font-size: 34px
-}
-
-.nameEntry {
-	margin-top: 35px;
-	font-size: 44px
-}
-
-.nameEntry input[type=text]{
-	font-size: 44px;
-	background-color: transparent;
-    border: none;
-    color: white;
-    width: 80px;
-}
-
-.nameEntry input[type=text]:focus {
-    outline: none;
-}
-
-.nameEntryBuffer {
-	display: none;
-	height: 111px;
-}
-
-.leaderboardDirect, .leaderboardEndGame {
-	padding-top: 20px;
-	line-height: 1.4
-}
-
-.gameOverTable{
-	margin: auto;
-	text-align: right;
-	width: 400px;
-}
-
-#firstColumn {
-	width: 64px;
-}
-
-.gameOverTable tr {
-	width: 50px;
-}
-
-.game-over button, .leaderboardScreen button{
-	font-family: 'VT323', monospace;
-	margin: 20px 50px 0 50px;
-    font-size: 34px;
-    background: transparent;
-    color: #ffffff;
-    font-weight: 600;
-    border-width: 3px;
-    border-radius: 8px;
-    border-color: #2ECC71;
-    padding: 5px 10px 5px 10px;
 }
 
 .attribution {

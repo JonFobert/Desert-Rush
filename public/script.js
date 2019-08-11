@@ -11,14 +11,8 @@ context.scale(10, 10);
 
 const canvasInstruct = document.querySelector('.instructions');
 const contextInstruct = canvasInstruct.getContext('2d');
-
 const startButton = document.querySelector('.start');
 const startScreen = document.querySelector('.start-menu');
-const gameOverScreen = document.querySelector('.game-over');
-const restartButton = document.querySelector('.restart');
-const leaderboardButton = document.querySelector('.leaderboardbtn')
-const leaderboardScreen = document.querySelector('.leaderboardScreen')
-const returnToMenuButton = document.querySelector('.returnToMenu')
 
 
 //background images
@@ -150,8 +144,6 @@ let lowEndSpacing = 40;
 let highEndSpacing = 110;
 let StartButtonPressed = false;
 let runGame = true;
-let leaderboardArr = [['JOE', 4], ['RIO', 3], ['SAM', 2], ['ALY', 1], ['RGE', 0]];
-leaderboardSort(leaderboardArr).reverse();
 
 /***********************************************
 				draw function:
@@ -185,7 +177,7 @@ function draw(deltaTime, time) {
 			baddie.draw(baddie);
 
 			if(baddie.collided(player,baddie)) {
-				resetGame();
+				endGame();
 			}
 
 			//if the baddie passes the player add one to the players score
@@ -234,7 +226,7 @@ function introOnRails() {
 	introBaddie.x -= baddieSpeed * ((1000/60)/deltaTime);
 	drawBaddieSprite(introBaddie);
 	if(checkCollision(player,introBaddie)) {
-		resetGame();
+		endGame();
 	}
 
 	if (introBaddie.x < -36) {
@@ -419,58 +411,20 @@ function updateScore() {
 	document.querySelector('.score').innerHTML = `Score: ${player.score}`
 }
 
-function resetGame() {
-	StartButtonPressed = false;
-	runGame = false;
-	createLeaderboard();
-	displayFinalScore();
-	baddieOne.x = 115;
-	baddieTwo.x = 160;
-	baddieThree.x = 200;
-	baddieFour.x = 240;
-	introBaddie.x = 100;
-	introComplete = false;
-	gameOverScreen.style.display = "block";
-	nextbaddieFrame = 0;
-	cycle = 0;
-	lastReplace = 240;
-	physicsFrames = 0;
+function endGame() {
+	window.location.assign("http://localhost:3000/highScoresEntry")
+	baddieSpeed
 }
 
 /******************************
 Menu/page display and operation
 *******************************/
 
-function displayFinalScore() {
-	document.querySelector('#gameOverScore').innerHTML = `Final Score: ${player.score}`
-}
-
 startButton.addEventListener("click", () => {
 	StartButtonPressed = true;
 	runGame = true;
 	startScreen.style.display = "none";
 	requestAnimationFrame(main);
-});
-
-leaderboardButton.addEventListener("click", () => {
-	startScreen.style.display = "none";
-	leaderboardScreen.style.display = "block"
-	displayLeaderboard();
-});
-
-returnToMenuButton.addEventListener("click", () => {
-	startScreen.style.display = "block";
-	leaderboardScreen.style.display = "none"
-});
-
-restartButton.addEventListener("click", () => {
-	player.score = 0;
-	updateScore();
-	StartButtonPressed = true;
-	runGame = true;
-	gameOverScreen.style.display = "none";
-	requestAnimationFrame(main); 
-	baddieSpeed = 0.35;
 });
 
 function leaderboardSort(boardArray) {
@@ -482,18 +436,6 @@ function leaderboardSort(boardArray) {
 
 function createLeaderboard() {
 	window.location.assign("http://localhost:3000/highScoresEntry")
-	//if (player.score > leaderboardArr[4][1]) {
-		//displayNameEntry()
-	//	window.location.assign("http://localhost:3000/highScoreEntry")
-	//} 
-	//displayLeaderboard()
-}
-
-function displayNameEntry() {
-	document.querySelector('.nameEntry').innerHTML = 
-	`HIGH SCORE! <br>
-	 NAME: <input type="text" name="name" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3">
-		`
 }
 
 
@@ -503,64 +445,6 @@ function updateScoreOnServer() {
 	xhttp.open("PUT", "http://localhost:3000/api/player")
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: player.score}))
-}
-
-document.querySelector('.nameEntry').addEventListener("submit", e => {
-
-	e.preventDefault();
-	let xhttp = new XMLHttpRequest();
-	//asynchronous, may need a callback...
-	xhttp.open("POST", "http://localhost:3000")
-	xhttp.setRequestHeader("Content-Type", "application/json")
-	xhttp.send(JSON.stringify({score: player.score}))
-
-
-	//e.preventDefault()
-	//nameField.value = ''
-	//leaderboardArr.pop()
-	//leaderboardArr.push([nameField.value.toUpperCase(), player.score]);
-	//leaderboardSort(leaderboardArr).reverse()
-	//displayLeaderboard()
-	//e.target.style.display= "none"
-	//document.querySelector('.nameEntryBuffer').style.display = "block";
-});
-
-function displayLeaderboard() {
-	document.querySelector('.leaderboardDirect').innerHTML = `
-		HIGH SCORES
-		<br>
-		<table class = 'gameOverTable'>
-			<tr>
-				<th id="firstColumn">RANK</th>
-				<th>NAME</th>
-				<th>SCORE</th>
-			<tr>
-				<td>1ST</td>
-				<td>${leaderboardArr[0][0]}</td>
-				<td>${leaderboardArr[0][1]}</td>
-			</tr>
-			<tr> 
-				<td>2ND</td>
-				<td>${leaderboardArr[1][0]}</td>
-				<td>${leaderboardArr[1][1]}</td>
-			</tr>
-			<tr>
-				<td>3RD</td>
-				<td>${leaderboardArr[2][0]}</td>
-				<td>${leaderboardArr[2][1]}</td>
-			</tr>
-			<tr>
-				<td>4TH</td>
-				<td>${leaderboardArr[3][0]}</td>
-				<td>${leaderboardArr[3][1]}</td>
-			</tr>
-			<tr>
-				<td>5TH</td>
-				<td>${leaderboardArr[4][0]}</td>
-				<td>${leaderboardArr[4][1]}</td>
-			</tr>
-		</table>`
-	document.querySelector('.leaderboardEndGame').innerHTML = document.querySelector('.leaderboardDirect').innerHTML
 }
 
 /******************************************************

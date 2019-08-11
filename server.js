@@ -1,8 +1,3 @@
-//To DO: two possible ideas:
-//  * after getting a high score display just the name entry. Post the name entry and score. res.redirect to a Home. Also add menu bar for navigation
-//  OR
-//  * after getting a high score display name field and high scores. just push the high score. at the same time post. Refresh to start a new game.
-
 const express = require('express');
 const app = express();
 const path = require('path')
@@ -81,22 +76,6 @@ app.post('/api/player', (req, res) => {
     })
 })
 
-
-app.post('/', (req, res) => {
-    let highScore = new HighScore()
-    highScore.name = req.body.name;
-    highScore.score = 4;
-
-    highScore.save( err => {
-        if(err) {
-            console.log("im an error")
-            return
-        } else {
-            res.redirect('/')
-        }
-    })
-})
-
 function topFiveHighToLow(array) {
     return array.sort((a, b) => {
         return b.score-a.score
@@ -126,7 +105,6 @@ app.post('/highScoresEntry', (req, res) => {
             highScore.name = req.body.name
             highScore.score = CurrentScore[0].score
             highScore.save( err => {
-                //highScore.score = CurrentScore[0].score
                 console.log(highScore.score)
                 console.log(highScore.name)
                 if(err) {
