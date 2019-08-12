@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 
 //bring in mongoose models
+//HighScore now IS the mongoose model for highScore
 let HighScore = require('./models/highScore');
 let CurrentScore = require('./models/currentScore')
 
@@ -13,6 +14,11 @@ app.set('view engine', 'ejs')
 
 //set the static folder
 app.use(express.static(path.join(__dirname, 'public')))
+
+//reroute highScoren=sEntry routes to the js file in the routes folder
+//get rid of the /highScoreEntry in highScoreEntry.js routes
+let highScoresEntry = require('./routes/highScoresEntry')
+app.use('/highScoresEntry', highScoresEntry)
 
 app.get('/', (req, res) => {
     HighScore.find({}, (err, articles) => {
@@ -30,9 +36,6 @@ app.get('/', (req, res) => {
         }
     })
 })
-
-
-
 
 app.get('/highScores', (req, res) => {
     res.render('highScores')
@@ -72,48 +75,6 @@ app.post('/api/player', (req, res) => {
             return
         } else {
             console.log('updated current Score')
-        }
-    })
-})
-
-function topFiveHighToLow(array) {
-    return array.sort((a, b) => {
-        return b.score-a.score
-    })
-    .slice(0, 5)
-}
-
-app.get('/highScoresEntry', (req, res) => {
-    CurrentScore.find({}, (err, CurrentScore) => {
-        HighScore.find({}, (err, HighScore) => {
-            orderedHighScores = topFiveHighToLow(HighScore)
-            res.render('highScoresEntry', {
-                CurrentScore: CurrentScore[0].score,
-                HighScore: orderedHighScores
-            })
-        })
-    })
-})
-
-app.post('/highScoresEntry', (req, res) => {
-    let highScore = new HighScore()
-    CurrentScore.find({}, (err, CurrentScore) => {
-        if(err) {
-           console.log("error posting score")
-            return
-        } else {
-            highScore.name = req.body.name
-            highScore.score = CurrentScore[0].score
-            highScore.save( err => {
-                console.log(highScore.score)
-                console.log(highScore.name)
-                if(err) {
-                    console.log(err)
-                    return
-                } else {
-                    res.redirect('/highScoresEntry')
-                }
-            })
         }
     })
 })
