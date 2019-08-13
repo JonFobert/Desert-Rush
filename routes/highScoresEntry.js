@@ -19,15 +19,27 @@ function topFiveHighToLow(array) {
 
 router.get('/', (req, res) => {
     CurrentScore.find({}, (err, CurrentScore) => {
-        HighScore.find({}, (err, HighScore) => {
-            orderedHighScores = topFiveHighToLow(HighScore)
-            res.render('highScoresEntry', {
-                CurrentScore: CurrentScore[0].score,
-                HighScore: orderedHighScores
-            })
-        })
-    })
-})
+        if(err) {
+            console.log(err)
+        } else {
+            HighScore.find({}, (err, HighScore) => {
+                if(err) {
+                    console.log(err)
+                } else {
+                    renderWithScores(res, CurrentScore, HighScore)
+                }
+            });
+        }
+    });
+});
+
+function renderWithScores(res, CurrentScore, HighScore) {
+    orderedHighScores = topFiveHighToLow(HighScore)
+    res.render('highScoresEntry', {
+        CurrentScore: CurrentScore[0].score,
+        HighScore: orderedHighScores    
+    });
+}
 
 router.post('/', (req, res) => {
     let highScore = new HighScore()

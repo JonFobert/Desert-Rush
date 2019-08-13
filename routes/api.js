@@ -26,7 +26,7 @@ router.post('/player', (req, res) => {
 
     currentScore.save( err => {
         if(err) {
-            console.log("im an error")
+            console.log(err)
             return
         } else {
             console.log('updated current Score')
