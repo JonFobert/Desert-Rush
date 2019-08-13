@@ -20,6 +20,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 let highScoresEntry = require('./routes/highScoresEntry')
 app.use('/highScoresEntry', highScoresEntry)
 
+let api = require('./routes/api')
+app.use('/api', api)
+
 app.get('/', (req, res) => {
     HighScore.find({}, (err, articles) => {
         if(err) {
@@ -42,7 +45,6 @@ app.get('/highScores', (req, res) => {
 })
 
 
-
 //Set up body parser for JSON
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -55,29 +57,6 @@ mongoose
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err))
 
-app.put('/api/player', (req, res) => {
-    CurrentScore.findOneAndUpdate({}, req.body, {new: true}, (err, newScore) => {
-        if (err) {
-            console.log("Error!")
-        } else {
-            res.json({msg: 'Score Updated in DB', newScore})
-        }
-    })
-})
-
-app.post('/api/player', (req, res) => {
-    let currentScore = new CurrentScore()
-    currentScore.score = req.body.score;
-
-    currentScore.save( err => {
-        if(err) {
-            console.log("im an error")
-            return
-        } else {
-            console.log('updated current Score')
-        }
-    })
-})
 
 const PORT = process.env.PORT || 3000
 
