@@ -22,7 +22,10 @@ router.get('/', (req, res) => {
         if(err) {
             console.log(err)
         } else {
-            HighScore.find({}, (err, HighScore) => {
+            query = HighScore.find({})
+            query.limit(5);
+            query.sort({'score': -1});
+            query.exec((err, HighScore) => {
                 if(err) {
                     console.log(err)
                 } else {
@@ -34,10 +37,9 @@ router.get('/', (req, res) => {
 });
 
 function renderWithScores(res, CurrentScore, HighScore) {
-    orderedHighScores = topFiveHighToLow(HighScore)
     res.render('highScoresEntry', {
         CurrentScore: CurrentScore[0].score,
-        HighScore: orderedHighScores    
+        HighScore: HighScore 
     });
 }
 

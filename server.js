@@ -24,26 +24,12 @@ let api = require('./routes/api')
 app.use('/api', api)
 
 app.get('/', (req, res) => {
-    HighScore.find({}, (err, articles) => {
-        if(err) {
-            console.log(err)
-        } else {
-            let topFive = 
-                articles
-                .sort((a, b) => {
-                    return b.score-a.score
-                })
-                .slice(0, 5)
-            console.log(topFive)
-                res.render('index')
-        }
-    })
+    res.render('index')
 })
 
 app.get('/highScores', (req, res) => {
     res.render('highScores')
 })
-
 
 //Set up body parser for JSON
 app.use(bodyParser.urlencoded({extended: false}));
