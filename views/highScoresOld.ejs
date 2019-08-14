@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href = "./highScoresEntry.css">
+    <link rel="stylesheet" href = "./highScores.css">
     <title>DESERT RUSH</title>
 </head>
 <body>
@@ -24,14 +24,6 @@
                     </div>
                 </nav>
             <div class = "scoreScreen"></div>
-                <div class ='nameEntry'>
-                    <h2>FINAL SCORE: <%= CurrentScore %></h2>
-                    <h1>HIGH SCORE!</h1>
-                    <h2>ENTER YOUR NAME</h2>
-                    <form action ="/highScoresEntry" method="POST" class = "nameEntry">
-                        <input type="text" name="name" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3">
-                    <form>
-                </div>
                 <h1 class = 'pageHeading'>HIGH SCORES</h1>
                 <br>
                 <table class = 'gameOverTable'>
@@ -41,28 +33,28 @@
                         <th id="thirdColumn">SCORE</th>
                     <tr>
                         <td>1ST</td>
-                        <td><%=HighScore[0].name%></td>
-                        <td><%=HighScore[0].score%></td>
+                        <td>IEN</td>
+                        <td>45</td>
                     </tr>
                     <tr>
                         <td>2ND</td>
-                        <td><%=HighScore[1].name%></td>
-                        <td><%=HighScore[1].score%></td>
+                        <td>FJS</td>
+                        <td>23</td>
                     </tr>
                     <tr>
                         <td>3RD</td>
-                        <td><%=HighScore[2].name%></td>
-                        <td><%=HighScore[2].score%></td>
+                        <td>FIS</td>
+                        <td>21</td>
                     </tr>
                     <tr>
                         <td>4TH</td>
-                        <td><%=HighScore[3].name%></td>
-                        <td><%=HighScore[3].score%></td>
+                        <td>NFW</td>
+                        <td>12</td>
                     </tr>
                     <tr>
                         <td>5TH</td>
-                        <td><%=HighScore[4].name%></td>
-                        <td><%=HighScore[4].score%></td>
+                        <td>FEL</td>
+                        <td>2</td>
                     </tr>
                 </table>
             </div>

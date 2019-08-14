@@ -412,7 +412,7 @@ function updateScore() {
 }
 
 function endGame() {
-	window.location.assign("http://localhost:3000/highScoresEntry")
+	window.location.assign("http://localhost:3000/highScores")
 	baddieSpeed
 }
 
@@ -435,7 +435,7 @@ function leaderboardSort(boardArray) {
 }
 
 function createLeaderboard() {
-	window.location.assign("http://localhost:3000/highScoresEntry")
+	window.location.assign("http://localhost:3000/highScores")
 }
 
 

@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
 });
 
 function renderWithScores(res, CurrentScore, HighScore) {
-    res.render('highScoresEntry', {
+    res.render('highScores', {
         CurrentScore: CurrentScore[0].score,
         HighScore: HighScore 
     });
@@ -59,7 +59,7 @@ router.post('/', (req, res) => {
                     console.log(err)
                     return
                 } else {
-                    res.redirect('/highScoresEntry')
+                    res.redirect('/highScores')
                 }
             })
         }

@@ -17,19 +17,42 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 //reroute highScoren=sEntry routes to the js file in the routes folder
 //get rid of the /highScoreEntry in highScoreEntry.js routes
-let highScoresEntry = require('./routes/highScoresEntry')
-app.use('/highScoresEntry', highScoresEntry)
+let highScores = require('./routes/highScores')
+app.use('/highScores', highScores)
 
 let api = require('./routes/api')
 app.use('/api', api)
 
+
+
+
+
 app.get('/', (req, res) => {
-    res.render('index')
+    CurrentScore.findOneAndUpdate({}, {score: 0}, {new: true}, (err, newScore) => {
+        console.log(newScore)
+        if (err) {
+            console.log("Error!")
+        } else {
+            res.render('index', {
+                CurrentScore: newScore.score
+            })
+        }
+    })
 })
 
-app.get('/highScores', (req, res) => {
-    res.render('highScores')
-})
+
+
+
+
+    /*res.render('index', {
+    currentScore.score: 0;
+    })
+    console.log(CurrentScore.score)
+})*/
+
+//app.get('/highScores', (req, res) => {
+//    res.render('highScores')
+//})
 
 //Set up body parser for JSON
 app.use(bodyParser.urlencoded({extended: false}));

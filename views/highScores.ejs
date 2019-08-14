@@ -24,6 +24,17 @@
                     </div>
                 </nav>
             <div class = "scoreScreen"></div>
+            <% if(CurrentScore > HighScore[4].score) { %>
+                <div class ='nameEntry'>
+                    <h2>FINAL SCORE: <%= CurrentScore %></h2>
+                    <h1>HIGH SCORE!</h1>
+                    <h2>ENTER YOUR NAME</h2>
+                    <form action ="/highScores" method="POST" class = "nameEntry">
+                        <input type="text" name="name" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3">
+                    <form>
+                </div>
+            <% } else { %>
+            <% } %>
                 <h1 class = 'pageHeading'>HIGH SCORES</h1>
                 <br>
                 <table class = 'gameOverTable'>
@@ -33,28 +44,28 @@
                         <th id="thirdColumn">SCORE</th>
                     <tr>
                         <td>1ST</td>
-                        <td>IEN</td>
-                        <td>45</td>
+                        <td><%=HighScore[0].name%></td>
+                        <td><%=HighScore[0].score%></td>
                     </tr>
                     <tr>
                         <td>2ND</td>
-                        <td>FJS</td>
-                        <td>23</td>
+                        <td><%=HighScore[1].name%></td>
+                        <td><%=HighScore[1].score%></td>
                     </tr>
                     <tr>
                         <td>3RD</td>
-                        <td>FIS</td>
-                        <td>21</td>
+                        <td><%=HighScore[2].name%></td>
+                        <td><%=HighScore[2].score%></td>
                     </tr>
                     <tr>
                         <td>4TH</td>
-                        <td>NFW</td>
-                        <td>12</td>
+                        <td><%=HighScore[3].name%></td>
+                        <td><%=HighScore[3].score%></td>
                     </tr>
                     <tr>
                         <td>5TH</td>
-                        <td>FEL</td>
-                        <td>2</td>
+                        <td><%=HighScore[4].name%></td>
+                        <td><%=HighScore[4].score%></td>
                     </tr>
                 </table>
             </div>
