@@ -43,15 +43,26 @@ function renderWithScores(res, CurrentScore, HighScore) {
     });
 }
 
+function zeroOutScoreThenRedirect(res, req) {
+    CurrentScore.findOneAndUpdate({}, {score: 0}, {new: true}, (err, newScore) => {
+        if (err) {
+            console.log("Error!")
+        } else {
+            console.log(newScore)
+            res.redirect('/highScores')
+        }
+    })
+}
+
 router.post('/', (req, res) => {
     let highScore = new HighScore()
-    CurrentScore.find({}, (err, CurrentScore) => {
+    CurrentScore.find({}, (err, newHighScore) => {
         if(err) {
            console.log("error posting score")
             return
         } else {
             highScore.name = req.body.name
-            highScore.score = CurrentScore[0].score
+            highScore.score = newHighScore[0].score
             highScore.save( err => {
                 console.log(highScore.score)
                 console.log(highScore.name)
@@ -59,7 +70,7 @@ router.post('/', (req, res) => {
                     console.log(err)
                     return
                 } else {
-                    res.redirect('/highScores')
+                    zeroOutScoreThenRedirect(res, req)
                 }
             })
         }

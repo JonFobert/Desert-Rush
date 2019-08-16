@@ -20,6 +20,7 @@ router.put('/player', (req, res) => {
     })
 })
 
+//Is this needed
 router.post('/player', (req, res) => {
     let currentScore = new CurrentScore()
     currentScore.score = req.body.score;
