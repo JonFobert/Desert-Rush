@@ -10,13 +10,6 @@ router.use(bodyParser.json());
 let HighScore = require('../models/highScore');
 let CurrentScore = require('../models/currentScore')
 
-function topFiveHighToLow(array) {
-    return array.sort((a, b) => {
-        return b.score-a.score
-    })
-    .slice(0, 5)
-}
-
 router.get('/', (req, res) => {
     CurrentScore.find({}, (err, CurrentScore) => {
         if(err) {

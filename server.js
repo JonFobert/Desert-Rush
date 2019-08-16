@@ -27,32 +27,8 @@ app.use('/api', api)
 
 
 
-app.get('/', (req, res) => {
-    CurrentScore.findOneAndUpdate({}, {score: 0}, {new: true}, (err, newScore) => {
-        console.log(newScore)
-        if (err) {
-            console.log("Error!")
-        } else {
-            res.render('index', {
-                CurrentScore: newScore.score
-            })
-        }
-    })
-})
 
 
-
-
-
-    /*res.render('index', {
-    currentScore.score: 0;
-    })
-    console.log(CurrentScore.score)
-})*/
-
-//app.get('/highScores', (req, res) => {
-//    res.render('highScores')
-//})
 
 //Set up body parser for JSON
 app.use(bodyParser.urlencoded({extended: false}));
@@ -66,6 +42,19 @@ mongoose
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err))
 
+
+app.get('/', (req, res) => {
+    CurrentScore.findOneAndUpdate({}, {score: 0}, {new: true}, (err, newScore) => {
+        console.log(newScore)
+        if (err) {
+            console.log("Error!")
+        } else {
+            res.render('index', {
+                CurrentScore: newScore.score
+            })
+        }
+    })
+})
 
 const PORT = process.env.PORT || 3000
 

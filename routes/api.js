@@ -20,19 +20,4 @@ router.put('/player', (req, res) => {
     })
 })
 
-//Is this needed
-router.post('/player', (req, res) => {
-    let currentScore = new CurrentScore()
-    currentScore.score = req.body.score;
-
-    currentScore.save( err => {
-        if(err) {
-            console.log(err)
-            return
-        } else {
-            console.log('updated current Score')
-        }
-    })
-})
-
 module.exports = router
