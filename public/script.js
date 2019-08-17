@@ -21,10 +21,6 @@ let backgroundFive = document.createElement("img");
 backgroundFive.src = "assets/background5.png"
 let backgroundFiveX = 0
 
-let backgroundFour = document.createElement("img");
-backgroundFour.src = "assets/background4.png"
-let backgroundFourX = 0
-
 let backgroundThree = document.createElement("img");
 backgroundThree.src = "assets/background3.png"
 let backgroundThreeX = 0
@@ -66,10 +62,6 @@ const baddieOne = {
 	height: 8,
 	counted: false,
 	collided: checkCollision,
-	collideAction: function () {
-		player.score = 0;
-		baddieSpeed = 0.35;
-	}
 };
 
 const baddieTwo = {
@@ -82,10 +74,6 @@ const baddieTwo = {
 	height: 8,
 	counted: false,
 	collided: checkCollision,
-	collideAction: function () {
-		player.score = 0;
-		baddieSpeed = 0.35;
-	}
 };
 
 const baddieThree = {
@@ -98,10 +86,6 @@ const baddieThree = {
 	height: 8,
 	counted: false,
 	collided: checkCollision,
-	collideAction: function () {
-		player.score = 0;
-		baddieSpeed = 0.35;
-	}
 };
 
 const baddieFour = {
@@ -114,10 +98,6 @@ const baddieFour = {
 	height: 8,
 	counted: false,
 	collided: checkCollision,
-	collideAction: function () {
-		player.score = 0;
-		baddieSpeed = 0.35;
-	}
 };
 
 let baddies = [baddieOne, baddieTwo, baddieThree, baddieFour];
@@ -153,7 +133,7 @@ the game if the player collides with a baddie
 ***********************************************/
 
 function draw(deltaTime, time) {
-
+	context.clearRect(0, 0, 960, 540)
 	drawBackground();
 	if(player.velocityY !== 0) {
 		gravity(deltaTime);
@@ -231,7 +211,7 @@ function introOnRails() {
 
 	if (introBaddie.x < -36) {
 		instructText = "";
-		drawText(0);
+		//drawText(0);
 		introBaddie.counted = false;
 		baddieSpeed += 0.03;
 		return introComplete = true;
@@ -239,7 +219,7 @@ function introOnRails() {
 
 	else if (introBaddie.x < -4) {
 		instructText = "";
-		drawText(60);
+		//drawText(60);
 	}
 
 	else if (introBaddie.x < (5 - introBaddie.width) && introBaddie.counted === false) {
@@ -250,12 +230,12 @@ function introOnRails() {
 	}
 	else if (introBaddie.x < 50) {
 		instructText = "Jump to avoid zombies";
-		drawText(320);
+		//drawText(320);
 	}	
 
 	else if (introBaddie.x < 95) {
 		instructText = "UP arrow key to jump"
-		drawText(330);
+		//drawText(330);
 	}
 	else {
 		if (!StartButtonPressed) {
@@ -412,8 +392,9 @@ function updateScore() {
 }
 
 function endGame() {
+	//baddieSpeed = 0;
+	runGame = false;
 	window.location.assign("http://localhost:3000/highScores")
-	baddieSpeed
 }
 
 /******************************
@@ -426,13 +407,6 @@ startButton.addEventListener("click", () => {
 	startScreen.style.display = "none";
 	requestAnimationFrame(main);
 });
-
-function leaderboardSort(boardArray) {
-	boardArray = boardArray.sort( (a, b) => {
-		return a[1] - b[1];
-	})
-	return boardArray
-}
 
 function createLeaderboard() {
 	window.location.assign("http://localhost:3000/highScores")
@@ -463,7 +437,6 @@ function updateScoreOnServer() {
 
 var images = [
             'assets/background5.png',
-            'assets/background4.png',
             'assets/background3.png',
             'assets/background2.png',
             'assets/background1.png',
@@ -511,6 +484,7 @@ function main(time) {
 		requestAnimationFrame(main);
 		deltaTime = time - lastTime;
 		lastTime = time;
+		console.log(deltaTime)
 		draw(deltaTime, time);
 	}
 }
