@@ -26,11 +26,11 @@
             <div class = "scoreScreen"></div>
             <% if(CurrentScore > HighScore[4].score) { %>
                 <div class ='nameEntry'>
-                    <h2>FINAL SCORE: <%= CurrentScore %></h2>
                     <h1>HIGH SCORE!</h1>
-                    <h2>ENTER YOUR NAME</h2>
+                    <h2>FINAL SCORE: <%= CurrentScore %></h2>
+                    <h2>ENTER YOUR NAME:</h2>
                     <form action ="/highScores" method="POST" class = "nameEntry">
-                        <input type="text" name="name" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3">
+                        <input type="text" name="name" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3" autofocus="autofocus">
                     <form>
                 </div>
             <% } else { %>

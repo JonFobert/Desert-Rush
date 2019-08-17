@@ -54,7 +54,8 @@ router.post('/', (req, res) => {
            console.log("error posting score")
             return
         } else {
-            highScore.name = req.body.name
+            const uppercaseName = req.body.name.toUpperCase()
+            highScore.name = uppercaseName
             highScore.score = newHighScore[0].score
             highScore.save( err => {
                 console.log(highScore.score)
