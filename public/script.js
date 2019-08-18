@@ -416,7 +416,7 @@ function createLeaderboard() {
 function updateScoreOnServer() {
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
-	xhttp.open("PUT", "https://ancient-dawn-29299.herokuapp.com//api/player")
+	xhttp.open("PUT", "https://ancient-dawn-29299.herokuapp.com/api/player")
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: player.score}))
 }
