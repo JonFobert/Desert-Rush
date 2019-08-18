@@ -394,7 +394,7 @@ function updateScore() {
 function endGame() {
 	//baddieSpeed = 0;
 	runGame = false;
-	window.location.assign("http://localhost:3000/highScores")
+	window.location.assign("https://ancient-dawn-29299.herokuapp.com/highScores")
 }
 
 /******************************

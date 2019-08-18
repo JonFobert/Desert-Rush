@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JonFobert/zombie-adventure.git"
+    "url": "git+https://github.com/JonFobert/Desert-Rush.git"
   },
   "author": "Jon Fobert",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JonFobert/zombie-adventur/issues"
+    "url": "https://github.com/JonFobert/Desert-Rush/issues"
   },
   "homepage": "https://github.com/JonFobert/zombie-adventure#readme",
   "dependencies": {
