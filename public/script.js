@@ -37,11 +37,11 @@ let playerImg = document.createElement("img");
 playerImg.src = "assets/playerWalk.png";
 let playerSpriteW = 80, playerSpriteH = 93;
 
-let baddieImg = document.createElement("img");
-baddieImg.src = "assets/zombieWalk.png";
-let baddieSpriteW = 80, baddieSpriteH = 90;
+let zombieImg = document.createElement("img");
+zombieImg.src = "assets/zombieWalk.png";
+let zombieSpriteW = 80, zombieSpriteH = 90;
 
-//Objects for the player and baddies (the enemies the player jumps over)
+//Objects for the player and zombies (the enemies the player jumps over)
 
 const player = {
 	x: 5,
@@ -52,10 +52,42 @@ const player = {
 	score: 0
 };
 
-const baddieOne = {
-	type: 'baddie',
-	draw: drawBaddieSprite,
-	drawTwo: drawBaddie,
+class Zombie {
+	constructor(x) {
+		this.type = 'zombie'
+		this.x = x
+		this.y = 38
+		this.width = 4
+		this.height = 8
+		this.counted = false
+	}
+	drawzombieSprite(zombie) {
+		context.drawImage(zombieImg,
+						  //source rectangle
+						  cycle * zombieSpriteW, 0, zombieSpriteW, zombieSpriteH,
+						  //destination rectange. -1 to compensate for blank left of sprite
+						  zombie.x-2, zombie.y-1, zombieSpriteW/10, zombieSpriteH/10);
+	}
+
+	checkCollision(player, zombie) {
+		if(((player.x + player.width) > zombie.x && player.x < (zombie.x + zombie.width)||
+			player.x < (zombie.x + zombie.width) && (player.x + player.width) < zombie.width) &&
+			((player.y + player.height) > zombie.y && player.y < (zombie.y + zombie.height)||
+			player.y < (zombie.y + zombie.height) && (player.y + player.height) < zombie.height)) {
+			return true;
+		}
+	}
+}
+
+let classZombieOne = new Zombie(115)
+let classZombieTwo = new Zombie(200)
+let classZombieThree = new Zombie(250)
+let classZombieFour = new Zombie(300)
+
+
+const zombieOne = {
+	type: 'zombie',
+	draw: drawzombieSprite,
 	x: 115,
 	y: 38,
 	width: 4,
@@ -64,10 +96,9 @@ const baddieOne = {
 	collided: checkCollision,
 };
 
-const baddieTwo = {
-	type: 'baddie',
-	draw: drawBaddieSprite,
-	drawTwo: drawBaddie,
+const zombieTwo = {
+	type: 'zombie',
+	draw: drawzombieSprite,
 	x: 200,
 	y: 38,
 	width: 4,
@@ -76,10 +107,9 @@ const baddieTwo = {
 	collided: checkCollision,
 };
 
-const baddieThree = {
-	type: 'baddie',
-	draw: drawBaddieSprite,
-	drawTwo: drawBaddie,
+const zombieThree = {
+	type: 'zombie',
+	draw: drawzombieSprite,
 	x: 250,
 	y: 38,
 	width: 4,
@@ -88,10 +118,9 @@ const baddieThree = {
 	collided: checkCollision,
 };
 
-const baddieFour = {
-	type: 'baddie',
-	draw: drawBaddieSprite,
-	drawTwo: drawBaddie,
+const zombieFour = {
+	type: 'zombie',
+	draw: drawzombieSprite,
 	x: 300,
 	y: 38,
 	width: 4,
@@ -100,150 +129,87 @@ const baddieFour = {
 	collided: checkCollision,
 };
 
-let baddies = [baddieOne, baddieTwo, baddieThree, baddieFour];
+let classZombies = [classZombieOne, classZombieTwo, classZombieThree, classZombieFour]
+let zombies = [zombieOne, zombieTwo, zombieThree, zombieFour];
 
 /************************************************************
 				Game starting conditions
-The intro is not complete. The baddie animation should be on 
+The zombie animation should be on 
 the first cycle and the first frame of the first cycle.
 The game's physics run at 60 fps and it has been been zero 
-frames since a baddie was last replaced. 
-When replaced the first baddie will be between position 
+frames since a zombie was last replaced. 
+When replaced the first zombie will be between position 
 240+30 and 240+60.
 *************************************************************/
 
-let introComplete = false;
-let baddieFrameInCycle = 0;
+let zombieFrameInCycle = 0;
 let cycle = 0;
 let lastReplace = 300;
 let physicsFrames = 0
 const gravityAccelY = 70.0;
-let baddieSpeed = 0.35;
-let baddieAcceleration = 0.1;
+let zombieSpeed = 0.35;
+let zombieAcceleration = 0.1;
 let lowEndSpacing = 40;
 let highEndSpacing = 110;
-let StartButtonPressed = false;
-let runGame = true;
+let runGame = false;
+let drawnOnce = false
 
 /***********************************************
 				draw function:
 The draw is the function called every frame
 It computes and displays every frame and resets
-the game if the player collides with a baddie
+the game if the player collides with a zombie
 ***********************************************/
 
 function draw(deltaTime, time) {
+	drawnOnce = true
 	context.clearRect(0, 0, 960, 540)
 	drawBackground();
 	if(player.velocityY !== 0) {
 		gravity(deltaTime);
 	}
 	drawPlayerSprite(player);
-	if (introComplete == false) {
-		introOnRails();
-		return;
-	}
-
 	
-	//physicsFrames counts how many 1/60ths of a second ago the baddie was replaced
+	//physicsFrames counts how many 1/60ths of a second ago the zombie was replaced
 	physicsFrames += deltaTime / (1000/60);
-	baddies.forEach(baddie => {
-		//the physics run at 60 fps. The new baddie position will be the baddies 
-		//old position - the baddies speed (the distance the baddie advances in
+	classZombies.forEach(zombie => {
+		//the physics run at 60 fps. The new zombie position will be the zombies 
+		//old position - the zombies speed (the distance the zombie advances in
 		//1/60th of a second) this is multiplied by how how many 1/60ths of a second
 		//it has been since the last frame.
-		baddie.x -= baddieSpeed * ((1000/60)/deltaTime);
-		if (baddie.x < 96) {
-			baddie.draw(baddie);
+		zombie.x -= zombieSpeed * ((1000/60)/deltaTime);
+		if (zombie.x < 96) {
+			zombie.drawzombieSprite(zombie);
 
-			if(baddie.collided(player,baddie)) {
+			if(zombie.checkCollision(player,zombie)) {
 				endGame();
 			}
 
-			//if the baddie passes the player add one to the players score
-			if (baddie.x < (5 - baddie.width) && baddie.type == 'baddie' && baddie.counted == false) {
+			//if the zombie passes the player add one to the players score
+			if (zombie.x < (5 - zombie.width) && zombie.type == 'zombie' && zombie.counted == false) {
 				player.score++;
 				updateScore();
 				updateScoreOnServer()
-				baddie.counted = true;
+				zombie.counted = true;
 			}
 
-			//once the baddie is off screen to the left replace the baddie 30 to 60 units
-			//behind where the previous baddie was replaced. The baddies will over time get
+			//once the zombie is off screen to the left replace the zombie 30 to 60 units
+			//behind where the previous zombie was replaced. The zombies will over time get
 			//placed further away from the player, but they will also move faster. This should
 			//increase the difficulty as time goes on
-			if (baddie.x < -4) {
-				baddie.x = (lastReplace - physicsFrames * baddieSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
-				lastReplace = baddie.x;
-				lowEndSpacing += 5 + baddieAcceleration;
-				highEndSpacing += 5 + baddieAcceleration;
+			if (zombie.x < -4) {
+				zombie.x = (lastReplace - physicsFrames * zombieSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
+				lastReplace = zombie.x;
+				lowEndSpacing += 5 + zombieAcceleration;
+				highEndSpacing += 5 + zombieAcceleration;
 				physicsFrames = 0;
-				baddie.counted = false;
-				baddieSpeed += 0.07;
-				baddieAcceleration += 0.13
+				zombie.counted = false;
+				zombieSpeed += 0.07;
+				zombieAcceleration += 0.13
 			}
 		}	
 	});
 }
-/**********************************************
-				IntroOnRails
-This is the intro. There is one Baddie. The 
-instructions on how to play the game are 
-displayed at the top of the game.  It is run 
-every time a new  game is started.
-**********************************************/
-
-const introBaddie = {
-	x: 100,
-	y: 38,
-	width: 4,
-	height: 8,
-	counted: false
-};
-
-function introOnRails() {
-	instructText = "";
-	introBaddie.x -= baddieSpeed * ((1000/60)/deltaTime);
-	drawBaddieSprite(introBaddie);
-	if(checkCollision(player,introBaddie)) {
-		endGame();
-	}
-
-	if (introBaddie.x < -36) {
-		instructText = "";
-		//drawText(0);
-		introBaddie.counted = false;
-		baddieSpeed += 0.03;
-		return introComplete = true;
-	}
-
-	else if (introBaddie.x < -4) {
-		instructText = "";
-		//drawText(60);
-	}
-
-	else if (introBaddie.x < (5 - introBaddie.width) && introBaddie.counted === false) {
-		player.score++;
-		updateScore();
-		updateScoreOnServer()
-		introBaddie.counted = true;
-	}
-	else if (introBaddie.x < 50) {
-		instructText = "Jump to avoid zombies";
-		//drawText(320);
-	}	
-
-	else if (introBaddie.x < 95) {
-		instructText = "UP arrow key to jump"
-		//drawText(330);
-	}
-	else {
-		if (!StartButtonPressed) {
-			runGame = false;
-		}
-	}
-};
-
 
 /***********************************************************
   Functions to draw the player, background, and characters
@@ -307,24 +273,24 @@ function drawPlayerSprite() {
 					  cycle * playerSpriteW, 0, playerSpriteW, playerSpriteH,
 					  //destination rectange. -1 to compensate for blank left of sprite
 					  player.x-1, player.y, playerSpriteW/10, playerSpriteH/10);
-	baddieFrameInCycle++
-	if (baddieFrameInCycle == 8) {
+	zombieFrameInCycle++
+	if (zombieFrameInCycle == 8) {
 		cycle = (cycle + 1) % 2
-		baddieFrameInCycle = 0;
+		zombieFrameInCycle = 0;
 	}
 }
 
-function drawBaddieSprite(baddie) {
-	context.drawImage(baddieImg,
+function drawzombieSprite(zombie) {
+	context.drawImage(zombieImg,
 					  //source rectangle
-					  cycle * baddieSpriteW, 0, baddieSpriteW, baddieSpriteH,
+					  cycle * zombieSpriteW, 0, zombieSpriteW, zombieSpriteH,
 					  //destination rectange. -1 to compensate for blank left of sprite
-					  baddie.x-2, baddie.y-1, baddieSpriteW/10, baddieSpriteH/10);
+					  zombie.x-2, zombie.y-1, zombieSpriteW/10, zombieSpriteH/10);
 }
 
-function drawBaddie(baddie) {
+function drawzombie(zombie) {
 	context.fillStyle = '#EE6C4D';
-	context.fillRect(baddie.x, baddie.y, baddie.width, baddie.height);
+	context.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
 }
 
 function drawText(xOffset) {
@@ -346,7 +312,7 @@ function randomIntFromInterval(min,max) {
 }
 
 //modified version of: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-//Not currently being used. Might be a better way to randomize the placement of Baddies
+//Not currently being used. Might be a better way to randomize the placement of zombies
 /*
 function randomizeLastThree(array) {
 	for(let i = 5; i > 3; i--) {
@@ -357,12 +323,12 @@ function randomizeLastThree(array) {
 }
 */
 
-//check the for a collision between baddie and player. If they intersect return true
-function checkCollision(player, baddie) {
-	if(((player.x + player.width) > baddie.x && player.x < (baddie.x + baddie.width)||
-		player.x < (baddie.x + baddie.width) && (player.x + player.width) < baddie.width) &&
-		((player.y + player.height) > baddie.y && player.y < (baddie.y + baddie.height)||
-		player.y < (baddie.y + baddie.height) && (player.y + player.height) < baddie.height)) {
+//check the for a collision between zombie and player. If they intersect return true
+function checkCollision(player, zombie) {
+	if(((player.x + player.width) > zombie.x && player.x < (zombie.x + zombie.width)||
+		player.x < (zombie.x + zombie.width) && (player.x + player.width) < zombie.width) &&
+		((player.y + player.height) > zombie.y && player.y < (zombie.y + zombie.height)||
+		player.y < (zombie.y + zombie.height) && (player.y + player.height) < zombie.height)) {
 		return true;
 	}
 }
@@ -392,9 +358,8 @@ function updateScore() {
 }
 
 function endGame() {
-	//baddieSpeed = 0;
 	runGame = false;
-	window.location.assign("https://ancient-dawn-29299.herokuapp.com/highScores")
+	window.location.assign("http://localhost:3000/highScores")
 }
 
 /******************************
@@ -402,21 +367,15 @@ Menu/page display and operation
 *******************************/
 
 startButton.addEventListener("click", () => {
-	StartButtonPressed = true;
 	runGame = true;
 	startScreen.style.display = "none";
 	requestAnimationFrame(main);
 });
 
-function createLeaderboard() {
-	window.location.assign("http://localhost:3000/highScores")
-}
-
-
 function updateScoreOnServer() {
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
-	xhttp.open("PUT", "https://ancient-dawn-29299.herokuapp.com/api/player")
+	xhttp.open("PUT", "http://localhost:3000/api/player")
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: player.score}))
 }
@@ -470,7 +429,6 @@ for(i = 0; i < imagesLoading; ++i) {
 	loadImage(i);
 }
 
-
 //run this before the main animation loop in order to set the score to 0 when starting.
 updateScore();
 
@@ -480,11 +438,10 @@ updateScore();
 //main animation loop starts
 let lastTime = 0;
 function main(time) {
-	if(runGame) {
+	if(runGame || !drawnOnce) {
 		requestAnimationFrame(main);
 		deltaTime = time - lastTime;
 		lastTime = time;
-		console.log(deltaTime)
 		draw(deltaTime, time);
 	}
 }
