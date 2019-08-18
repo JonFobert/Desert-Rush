@@ -4,7 +4,7 @@
   "description": "Zombie side scrolling game",
   "main": "server.js",
   "scripts": {
-    "start": "node index",
+    "start": "node server",
     "test": "nodemon server"
   },
   "repository": {
