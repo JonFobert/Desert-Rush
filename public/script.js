@@ -80,10 +80,18 @@ class Zombie {
 	}
 }
 
+/*
 let classZombieOne = new Zombie(1150)
 let classZombieTwo = new Zombie(2000)
 let classZombieThree = new Zombie(2500)
 let classZombieFour = new Zombie(3000)
+*/
+
+
+let classZombieOne = new Zombie(1000)
+let classZombieTwo = new Zombie(1400)
+let classZombieThree = new Zombie(1800)
+let classZombieFour = new Zombie(2200)
 
 let classZombies = [classZombieOne, classZombieTwo, classZombieThree, classZombieFour]
 
@@ -99,13 +107,13 @@ When replaced the first zombie will be between position
 
 let zombieFrameInCycle = 0;
 let cycle = 0;
-let lastReplace = 3000;
+let lastReplace = 2200;
 let physicsFrames = 0
 const gravityAccelY = 800;
+let zombieSpeedMedian = 3
 let zombieSpeed = 3;
-let zombieAcceleration = 1;
-let lowEndSpacing = 400;
-let highEndSpacing = 1100;
+let lowEndSpacing = 2;
+let highEndSpacing = 20;
 let runGame = false;
 
 /***********************************************
@@ -153,14 +161,13 @@ function draw(deltaTime, time) {
 			//placed further away from the player, but they will also move faster. This should
 			//increase the difficulty as time goes on
 			if (zombie.x < -40) {
-				zombie.x = (lastReplace - physicsFrames * zombieSpeed) + randomIntFromInterval(lowEndSpacing, highEndSpacing);
+				//Starting at 2200, 
+				zombie.x = lastReplace + randomIntFromInterval(lowEndSpacing, highEndSpacing);
 				lastReplace = zombie.x;
-				lowEndSpacing += 50 + zombieAcceleration;
-				highEndSpacing += 50 + zombieAcceleration;
 				physicsFrames = 0;
-				zombie.counted = false;
-				zombieSpeed += 1;
-				zombieAcceleration += 1
+				zombie.counted = false;		
+				zombieSpeed = randomIntFromInterval(zombieSpeedMedian, zombieSpeedMedian+2);
+				console.log(zombieSpeed)
 			}
 		}	
 	});
@@ -268,7 +275,7 @@ function gravity(deltaTime) {
 //if the player hits the up arrow key give the player a -Y (upwards) velocity
 document.addEventListener("keydown", e => {
 	if (e.keyCode === 38 && player.velocityY === 0) {
-		player.velocityY = -500
+		player.velocityY = -600
 	}
 });
 
