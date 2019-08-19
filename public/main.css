@@ -208,6 +208,8 @@ body {
 }
 
 .attribution {
+	grid-row: 4 / 5;
+	grid-column: 2 / 3;
 	margin-top: 10px;
 	text-align: center;
 	font-size: 24px
