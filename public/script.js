@@ -60,7 +60,7 @@ class Zombie {
 		this.height = 80
 		this.counted = false
 	}
-	drawzombieSprite(zombie) {
+	drawZombieSprite(zombie) {
 		context.clearRect(Math.round(zombie.x-5), Math.round(zombie.y-10), Math.round(zombieSpriteW), Math.round(zombieSpriteH));
 		context.drawImage(
 			zombieImg,
@@ -134,7 +134,7 @@ function draw(deltaTime, time) {
 		//it has been since the last frame.
 		zombie.x -= zombieSpeed * ((1000/60)/deltaTime);
 		if (zombie.x < 960) {
-			zombie.drawzombieSprite(zombie);
+			zombie.drawZombieSprite(zombie);
 
 			if(zombie.checkCollision(player,zombie)) {
 				endGame();

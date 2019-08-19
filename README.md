@@ -10,8 +10,14 @@ Character art from Kenney.nl
 Background art from OpenGameArt.org
 
 ## Optimizations
-3 canvases: static background, dynamic background, and game sprites
-turned off text rendering
-turned off transparency on static background
-get rid of floats, especially when drawing images
-only use clearRect on necessary areas
+- Broke the game into three canvases:
+    - One for the static background
+    - One for the dynamic background
+    - One for the game sprite
+- Used clearRect only on necessary areas:
+    - the bottom ~1/2 of the game for the dynamic background
+    - around the game sprites for the sprites 
+- Moved all calculations and rendering to integers instead of floats
+    - This is mostly to avoid subpixel rendering when drawing an image
+- removing a canvas that rendered text (rendering text is bad for performance)
+- turned off transparency in the static canvas
