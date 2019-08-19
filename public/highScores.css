@@ -71,8 +71,8 @@ a:link {
 
 
 body {
-	background-color: #112f1b;
-    font-family: 'VT323', monospace;
+	background-color: #009ddc;
+    font-family: 'Bangers', cursive;
 	font-size: 32px;
 	color: #FFFFFF;
 }
@@ -81,7 +81,7 @@ body {
 	display: grid;
 	justify-items: center;
 	grid-template-columns: 1fr 600px 1fr;
-    grid-template-rows: 40px 60px 140px 1fr;
+    grid-template-rows: 40px 80px 140px 1fr;
     grid-row-gap: 14px;
 
 }
@@ -90,7 +90,7 @@ body {
 	grid-row: 1 / 2;
 	grid-column: 1 / 4;
 	color: white;
-	background-color: black;
+	background-color: #2a2d34;
 	justify-self: stretch;
 	display: flex;
 	justify-content: space-between;
@@ -100,7 +100,6 @@ body {
 .title {
 	padding-left: 20px;
 	font-size: 36px;
-	font-weight: bold;
 }
 
 .navItems {
@@ -140,14 +139,14 @@ body {
     justify-self: stretch;
     margin-top: 5px;
     border: 5px dashed white;
-    background-color: black;
+    background-color: #2A2d34;
 }
 
 .pageHeading {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
     align-self: center;
-    font-family: 'VT323', monospace;
+    font-family: 'Bangers', cursive;
     font-size: 50px;
 }
 
@@ -158,12 +157,16 @@ body {
 }
 
 .nameEntry input[type=text]{
+	font-family: 'Bangers', cursive;
 	font-size: 44px;
 	background-color: transparent;
     border: none;
     color: white;
-	width: 130px;
+	width: 90px;
 	text-transform: uppercase;
+	width: auto;
+    text-align: center;
+
 }
 
 .nameEntry input[type=text]:focus {
@@ -182,7 +185,7 @@ th, td{
     padding-right: 30px;
     padding-left: 30px;
     padding-bottom: 5px;
-    font-family: 'VT323', monospace;
+    font-family: 'Bangers', cursive;
     font-size: 50px;
 }
 

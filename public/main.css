@@ -71,8 +71,8 @@ a:link {
 
 
 body {
-	background-color: #112f1b;
-    font-family: 'VT323', monospace;
+	background-color: #009ddc;
+    font-family: 'Bangers', cursive;
 	font-size: 42px;
 	color: #FFFFFF;
 }
@@ -89,7 +89,7 @@ body {
 	grid-row: 1 / 2;
 	grid-column: 1 / 4;
 	color: white;
-	background-color: black;
+	background-color: #2A2D34;
 	justify-self: stretch;
 	display: flex;
 	justify-content: space-between;
@@ -99,7 +99,6 @@ body {
 .title {
 	padding-left: 20px;
 	font-size: 36px;
-	font-weight: bold;
 }
 
 
@@ -191,7 +190,7 @@ body {
 }
 
 .start-menu button{
-	font-family: 'VT323', monospace;
+	font-family: 'Bangers', cursive;
 	margin: 50px 50px 0 50px;
     font-size: 34px;
     background: transparent;

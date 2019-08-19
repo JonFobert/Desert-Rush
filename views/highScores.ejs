@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Bangers&display=swap" rel="stylesheet">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href = "./highScores.css">
     <title>DESERT RUSH</title>
@@ -25,8 +25,8 @@
                 </nav>
             <div class = "scoreScreen"></div>
             <% if(CurrentScore > HighScore[4].score) { %>
-                <div class ='nameEntry'>
-                    <h1>HIGH SCORE!</h1>
+                <h1 class='pageHeading'>HIGH SCORE!</h1>
+                <div class ='nameEntry'>    
                     <h2>FINAL SCORE: <%= CurrentScore %></h2>
                     <h2>ENTER YOUR NAME:</h2>
                     <form action ="/highScores" method="POST" class = "nameEntry">
@@ -34,8 +34,9 @@
                     <form>
                 </div>
             <% } else { %>
-            <% } %>
                 <h1 class = 'pageHeading'>HIGH SCORES</h1>
+            <% } %>
+                
                 <br>
                 <table class = 'gameOverTable'>
                     <tr>
