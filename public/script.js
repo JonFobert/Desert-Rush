@@ -12,7 +12,7 @@ context.scale(10, 10);
 const movingBackgroundCanvas = document.querySelector('.background')
 const movingBackgroundContext = movingBackgroundCanvas.getContext('2d');
 
-const staticBackgroundCanvas = document.querySelector('.staticBackground')
+const staticBackgroundCanvas = document.querySelector('.static')
 const staticBackgroundContext = staticBackgroundCanvas.getContext('2d');
 
 const startButton = document.querySelector('.start');
@@ -101,13 +101,12 @@ let zombieFrameInCycle = 0;
 let cycle = 0;
 let lastReplace = 300;
 let physicsFrames = 0
-const gravityAccelY = 70.0;
+const gravityAccelY = 95.0;
 let zombieSpeed = 0.35;
 let zombieAcceleration = 0.1;
 let lowEndSpacing = 40;
 let highEndSpacing = 110;
 let runGame = false;
-let drawnOnce = false
 
 /***********************************************
 				draw function:
@@ -117,9 +116,8 @@ the game if the player collides with a zombie
 ***********************************************/
 
 function draw(deltaTime, time) {
-	drawnOnce = true
 	context.clearRect(0, 190/10, 960/10, 350/10)
-	movingBackgroundContext.clearRect(0, 190, 960, 350)
+	movingBackgroundContext.clearRect(0, 0, 960, 350)
 	drawBackground();
 	if(player.velocityY !== 0) {
 		gravity(deltaTime);
@@ -179,8 +177,8 @@ function drawPlayer() {
 
 function drawStaticBackground() {
 	staticBackgroundContext.drawImage(backgroundOne,
-		0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
-		0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
+		0, 0, staticBackgroundCanvas.width, staticBackgroundCanvas.height,
+		0, 0, staticBackgroundCanvas.width, staticBackgroundCanvas.height);
 }
 
 //The background consists of four images. 3 are 2x the width of the canvas. 
@@ -339,6 +337,8 @@ var loadImage = function(i) {
 // Call upon all images loaded.
 var workDone = function() {
 	drawStaticBackground()
+	drawBackground();
+	drawPlayerSprite();
 	requestAnimationFrame(main)
 }
 
@@ -357,7 +357,7 @@ updateScore();
 //main animation loop starts
 let lastTime = 0;
 function main(time) {
-	if(runGame || !drawnOnce) {
+	if(runGame) {
 		requestAnimationFrame(main);
 		deltaTime = time - lastTime;
 		lastTime = time;
