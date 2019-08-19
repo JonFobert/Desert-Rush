@@ -61,6 +61,7 @@ class Zombie {
 		this.counted = false
 	}
 	drawzombieSprite(zombie) {
+		context.clearRect(Math.round(zombie.x-5), Math.round(zombie.y-10), Math.round(zombieSpriteW), Math.round(zombieSpriteH));
 		context.drawImage(
 			zombieImg,
 			//source rectangle
@@ -185,8 +186,6 @@ function drawStaticBackground() {
 //these 3 images move to the left and loops, creating the illustion they are
 //infinite. 
 function drawBackground() {
-	console.log(backgroundFiveX)
-	console.log(backgroundThreeX)
 	
 	//IMAGE THREE
 	movingBackgroundContext.drawImage(backgroundThree,
@@ -214,6 +213,7 @@ function drawBackground() {
 }
 
 function drawPlayerSprite() {
+	context.clearRect(Math.round(player.x), Math.round(player.y), Math.round(playerSpriteW), Math.round(playerSpriteH))
 	context.drawImage(playerImg,
 					  //source rectangle
 					  Math.round(cycle * playerSpriteW), 0, Math.round(playerSpriteW), Math.round(playerSpriteH),
