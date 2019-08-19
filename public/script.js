@@ -6,13 +6,13 @@
 ***********************************************************/
 
 const canvas = document.querySelector('.game');
-const context = canvas.getContext('2d');
+const context = canvas.getContext('2d',);
 
 const movingBackgroundCanvas = document.querySelector('.background')
-const movingBackgroundContext = movingBackgroundCanvas.getContext('2d');
+const movingBackgroundContext = movingBackgroundCanvas.getContext('2d',);
 
 const staticBackgroundCanvas = document.querySelector('.static')
-const staticBackgroundContext = staticBackgroundCanvas.getContext('2d');
+const staticBackgroundContext = staticBackgroundCanvas.getContext('2d', { alpha: false });
 
 const startButton = document.querySelector('.start');
 const startScreen = document.querySelector('.start-menu');
@@ -64,9 +64,9 @@ class Zombie {
 		context.drawImage(
 			zombieImg,
 			//source rectangle
-			cycle * zombieSpriteW, 0, zombieSpriteW, zombieSpriteH,
+			Math.round(cycle * zombieSpriteW), 0, Math.round(zombieSpriteW), Math.round(zombieSpriteH),
 			//destination rectange. -1 to compensate for blank left of sprite
-			zombie.x-20, zombie.y-10, zombieSpriteW, zombieSpriteH);
+			Math.round(zombie.x-20), Math.round(zombie.y-10), Math.round(zombieSpriteW), Math.round(zombieSpriteH));
 	}
 
 	checkCollision(player, zombie) {
@@ -185,6 +185,8 @@ function drawStaticBackground() {
 //these 3 images move to the left and loops, creating the illustion they are
 //infinite. 
 function drawBackground() {
+	console.log(backgroundFiveX)
+	console.log(backgroundThreeX)
 	
 	//IMAGE THREE
 	movingBackgroundContext.drawImage(backgroundThree,
@@ -214,9 +216,9 @@ function drawBackground() {
 function drawPlayerSprite() {
 	context.drawImage(playerImg,
 					  //source rectangle
-					  cycle * playerSpriteW, 0, playerSpriteW, playerSpriteH,
+					  Math.round(cycle * playerSpriteW), 0, Math.round(playerSpriteW), Math.round(playerSpriteH),
 					  //destination rectange. -1 to compensate for blank left of sprite
-					  player.x, player.y, playerSpriteW, playerSpriteH);
+					  Math.round(player.x), Math.round(player.y), Math.round(playerSpriteW), Math.round(playerSpriteH));
 	zombieFrameInCycle++
 	if (zombieFrameInCycle == 8) {
 		cycle = (cycle + 1) % 2
