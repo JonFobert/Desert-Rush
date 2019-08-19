@@ -9,8 +9,12 @@ const canvas = document.querySelector('.game');
 const context = canvas.getContext('2d');
 context.scale(10, 10);
 
-const canvasInstruct = document.querySelector('.instructions');
-const contextInstruct = canvasInstruct.getContext('2d');
+const movingBackgroundCanvas = document.querySelector('.background')
+const movingBackgroundContext = movingBackgroundCanvas.getContext('2d');
+
+const staticBackgroundCanvas = document.querySelector('.staticBackground')
+const staticBackgroundContext = staticBackgroundCanvas.getContext('2d');
+
 const startButton = document.querySelector('.start');
 const startScreen = document.querySelector('.start-menu');
 
@@ -24,10 +28,6 @@ let backgroundFiveX = 0
 let backgroundThree = document.createElement("img");
 backgroundThree.src = "assets/background3.png"
 let backgroundThreeX = 0
-
-let backgroundTwo = document.createElement("img");
-backgroundTwo.src = "assets/background2.png"
-let backgroundTwoX = 0
 
 let backgroundOne = document.createElement("img");
 backgroundOne.src = "assets/background1.png"
@@ -62,11 +62,12 @@ class Zombie {
 		this.counted = false
 	}
 	drawzombieSprite(zombie) {
-		context.drawImage(zombieImg,
-						  //source rectangle
-						  cycle * zombieSpriteW, 0, zombieSpriteW, zombieSpriteH,
-						  //destination rectange. -1 to compensate for blank left of sprite
-						  zombie.x-2, zombie.y-1, zombieSpriteW/10, zombieSpriteH/10);
+		context.drawImage(
+			zombieImg,
+			//source rectangle
+			cycle * zombieSpriteW, 0, zombieSpriteW, zombieSpriteH,
+			//destination rectange. -1 to compensate for blank left of sprite
+			zombie.x-2, zombie.y-1, zombieSpriteW/10, zombieSpriteH/10);
 	}
 
 	checkCollision(player, zombie) {
@@ -84,53 +85,7 @@ let classZombieTwo = new Zombie(200)
 let classZombieThree = new Zombie(250)
 let classZombieFour = new Zombie(300)
 
-
-const zombieOne = {
-	type: 'zombie',
-	draw: drawzombieSprite,
-	x: 115,
-	y: 38,
-	width: 4,
-	height: 8,
-	counted: false,
-	collided: checkCollision,
-};
-
-const zombieTwo = {
-	type: 'zombie',
-	draw: drawzombieSprite,
-	x: 200,
-	y: 38,
-	width: 4,
-	height: 8,
-	counted: false,
-	collided: checkCollision,
-};
-
-const zombieThree = {
-	type: 'zombie',
-	draw: drawzombieSprite,
-	x: 250,
-	y: 38,
-	width: 4,
-	height: 8,
-	counted: false,
-	collided: checkCollision,
-};
-
-const zombieFour = {
-	type: 'zombie',
-	draw: drawzombieSprite,
-	x: 300,
-	y: 38,
-	width: 4,
-	height: 8,
-	counted: false,
-	collided: checkCollision,
-};
-
 let classZombies = [classZombieOne, classZombieTwo, classZombieThree, classZombieFour]
-let zombies = [zombieOne, zombieTwo, zombieThree, zombieFour];
 
 /************************************************************
 				Game starting conditions
@@ -163,7 +118,8 @@ the game if the player collides with a zombie
 
 function draw(deltaTime, time) {
 	drawnOnce = true
-	context.clearRect(0, 0, 960, 540)
+	context.clearRect(0, 190/10, 960/10, 350/10)
+	movingBackgroundContext.clearRect(0, 190, 960, 350)
 	drawBackground();
 	if(player.velocityY !== 0) {
 		gravity(deltaTime);
@@ -221,48 +177,38 @@ function drawPlayer() {
 	context.fillRect(player.x, player.y, player.width, player.height);
 }
 
+function drawStaticBackground() {
+	staticBackgroundContext.drawImage(backgroundOne,
+		0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
+		0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
+}
+
 //The background consists of four images. 3 are 2x the width of the canvas. 
 //these 3 images move to the left and loops, creating the illustion they are
 //infinite. 
 function drawBackground() {
-	//IMAGE ONE
-	context.drawImage(backgroundOne,
-				  0, 0, canvas.width, canvas.height,
-				  0, 0, canvas.width/10, canvas.height/10);
-
-	//IMAGE TWO
-	context.drawImage(backgroundTwo,
-					  0, 0, canvas.width, canvas.height,
-					  backgroundTwoX/10, 0, canvas.width/10, canvas.height/10);
-	context.drawImage(backgroundTwo,
-				 	  0, 0, canvas.width, canvas.height,
-				 	  backgroundTwoX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10);
-	backgroundTwoX -= 0.5;
-	if (-backgroundTwoX == canvas.width) {
-		backgroundTwoX = 0;
-	}
 	
 	//IMAGE THREE
-	context.drawImage(backgroundThree,
-					  0, 0, canvas.width, canvas.height,
-					  backgroundThreeX/10, 0, canvas.width/10, canvas.height/10);
-	context.drawImage(backgroundThree,
-				 	  0, 0, canvas.width, canvas.height,
-				 	  backgroundThreeX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10);
+	movingBackgroundContext.drawImage(backgroundThree,
+					  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
+					  backgroundThreeX, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
+	movingBackgroundContext.drawImage(backgroundThree,
+				 	  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
+				 	  backgroundThreeX + movingBackgroundCanvas.width, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
 	backgroundThreeX -= 1;
-	if (-backgroundThreeX == canvas.width) {
+	if (-backgroundThreeX == movingBackgroundCanvas.width) {
 		backgroundThreeX = 0;
 	}
 
 		//IMAGE FIVE
-	context.drawImage(backgroundFive,
-					  0, 0, canvas.width, canvas.height,
-					  backgroundFiveX/10, 0, canvas.width/10, canvas.height/10);
-	context.drawImage(backgroundFive,
-				 	  0, 0, canvas.width, canvas.height,
-				 	  backgroundFiveX/10 + canvas.width/10, 0, canvas.width/10, canvas.height/10);
+	movingBackgroundContext.drawImage(backgroundFive,
+					  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
+					  backgroundFiveX, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
+	movingBackgroundContext.drawImage(backgroundFive,
+				 	  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
+				 	  backgroundFiveX + movingBackgroundCanvas.width, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
 	backgroundFiveX -= 2;
-	if (-backgroundFiveX == canvas.width) {
+	if (-backgroundFiveX == movingBackgroundCanvas.width) {
 		backgroundFiveX = 0;
 	}
 }
@@ -280,27 +226,10 @@ function drawPlayerSprite() {
 	}
 }
 
-function drawzombieSprite(zombie) {
-	context.drawImage(zombieImg,
-					  //source rectangle
-					  cycle * zombieSpriteW, 0, zombieSpriteW, zombieSpriteH,
-					  //destination rectange. -1 to compensate for blank left of sprite
-					  zombie.x-2, zombie.y-1, zombieSpriteW/10, zombieSpriteH/10);
-}
-
 function drawzombie(zombie) {
 	context.fillStyle = '#EE6C4D';
 	context.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
 }
-
-function drawText(xOffset) {
-	contextInstruct.clearRect(0,0,960,540)
-	contextInstruct.font = "32px Arial";
-	contextInstruct.fillStyle = "#293241";
-	contextInstruct.fillText(instructText, xOffset, 100);
-}
-
-
 
 /****************************************************
 Functions to handle collision, placement, and jumping
@@ -322,16 +251,6 @@ function randomizeLastThree(array) {
 	return array;
 }
 */
-
-//check the for a collision between zombie and player. If they intersect return true
-function checkCollision(player, zombie) {
-	if(((player.x + player.width) > zombie.x && player.x < (zombie.x + zombie.width)||
-		player.x < (zombie.x + zombie.width) && (player.x + player.width) < zombie.width) &&
-		((player.y + player.height) > zombie.y && player.y < (zombie.y + zombie.height)||
-		player.y < (zombie.y + zombie.height) && (player.y + player.height) < zombie.height)) {
-		return true;
-	}
-}
 
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
 //function for gravity. If player is in the air accelerate in +Y (downward) direction.
@@ -397,7 +316,6 @@ function updateScoreOnServer() {
 var images = [
             'assets/background5.png',
             'assets/background3.png',
-            'assets/background2.png',
             'assets/background1.png',
             'assets/playerWalk.png',
             'assets/zombieWalk.png'
@@ -420,6 +338,7 @@ var loadImage = function(i) {
 
 // Call upon all images loaded.
 var workDone = function() {
+	drawStaticBackground()
 	requestAnimationFrame(main)
 }
 
