@@ -1,3 +1,6 @@
+//TO DO: I think that one problem left is that zombies who are not stopped by the lava will
+// Reset then run into the zombies stopped in front of them...
+
 
 /***********************************************************
 						OVERVIEW:
@@ -68,7 +71,6 @@ class Lava {
 		this.lastY = 452;
 		this.width = 34;
 		this.height = 88;
-		this.zombiesStopped = false
 		this.counted = false;
 	}
 
@@ -140,7 +142,15 @@ let classLavaOne = new Lava(2200)
 let classZombieThree = new Zombie(2800)
 let classZombieFour = new Zombie(3400)
 
+let classZombieFive = new Zombie(1000)
+let classZombieSix = new Zombie(1600)
+let classLavaTwo = new Lava(2200)
+let classZombieSeven = new Zombie(2800)
+let classZombieEight = new Zombie(3400)
+
 let enemies = [classZombieOne, classZombieTwo, classLavaOne, classZombieThree, classZombieFour]
+let complete = []
+let nextWave = [classZombieFive, classLavaTwo, classZombieSix, classZombieSeven, classZombieEight]
 
 /************************************************************
 				Game starting conditions
@@ -158,11 +168,12 @@ let lastReplacedZombiePos = 3400;
 let physicsFrames = 0
 const gravityAccelY = 800;
 let zombieSpeedStart = 5
-let lowEndSpacing = -100;
-let highEndSpacing = 100;
+let lowEndSpacing = 0;
+let highEndSpacing = 0;
 let runGame = false;
 let lastReplacedZombieSpeed = 5;
 let timeSinceLastZombieReplace = 0
+let zombiesStopped = false
 /***********************************************
 				draw function:
 The draw is the function called every frame
@@ -186,7 +197,7 @@ function draw(deltaTime, time) {
 				  enemies[i+1].type ==='zombie') 
 			{
 				enemies[i].speed = 5;
-				enemies[i+1].speed = 5;
+				enemies[i+1].speed = 3;
 				console.log('adjusted zombie')
 			}
 		}
@@ -195,7 +206,7 @@ function draw(deltaTime, time) {
 			enemies[0].type ==='zombie')
 		{
 			enemies[enemies.length-1].speed = 5;
-			enemies[0].speed = 5;
+			enemies[0].speed = 3;
 			console.log('adjusted zombie')
 		}
 	}
@@ -219,7 +230,9 @@ function draw(deltaTime, time) {
 		})
 	}
 
-	preventZombieOvertake(enemies)
+	if (!zombiesStopped) {
+		preventZombieOvertake(enemies)
+	}
 
 	//physicsFrames counts how many 1/60ths of a second ago the zombie was replaced
 	timeSinceLastZombieReplace += ((1000/60)/deltaTime)
@@ -237,9 +250,9 @@ function draw(deltaTime, time) {
 		}
 		if (enemy.x < 960) {
 			enemy.drawSprite(enemy);
-			if (enemy.type === 'lava' && (!enemy.zombiesStopped)) {
+			if (enemy.type === 'lava' && (!zombiesStopped)) {
 				stopAllZombiesBeforeLava(enemy.x)
-				enemy.zombiesStopped = true
+				zombiesStopped = true
 			}
 
 			if(enemy.checkCollision(player,enemy)) {
@@ -269,9 +282,12 @@ function draw(deltaTime, time) {
 				console.log(`replaced position: ${enemy.x}`)
 				if (enemy.type === 'zombie') {
 					enemy.speed = randomIntFromInterval(zombieSpeedStart-1, zombieSpeedStart+2);
+					if(zombiesStopped) {
+						stopAllZombiesBeforeLava(enemy.x)
+					}
 				} else {
 					resumeAllZombies()
-					enemy.zombiesStopped = false
+					zombiesStopped = false
 				}
 			}
 		}	
@@ -378,7 +394,7 @@ function gravity(deltaTime) {
 //if the player hits the up arrow key give the player a -Y (upwards) velocity
 document.addEventListener("keydown", e => {
 	if (e.keyCode === 38 && player.velocityY === 0) {
-		player.velocityY = -500
+		player.velocityY = -600
 	}
 });
 
