@@ -62,12 +62,13 @@ const player = {
 };
 
 class Lava {
-	constructor(x) {
+	constructor(resetPos) {
 		this.type = 'lava';
-		this.x = x;
+		this.resetPos = resetPos
+		this.x = resetPos;
 		this.speed = 3;
 		this.y = 452;
-		this.lastX = x;
+		this.lastX = resetPos;
 		this.lastY = 452;
 		this.width = 34;
 		this.height = 88;
@@ -101,11 +102,12 @@ class Lava {
 }
 
 class Zombie {
-	constructor(x) {
+	constructor(resetPos) {
 		this.type = 'zombie'
-		this.x = x
+		this.resetPos = resetPos
+		this.x = resetPos
 		this.y = 380
-		this.lastX = x
+		this.lastX = resetPos
 		this.lastY = 380
 		this.speed = 5
 		this.lastSpeed = 3
@@ -148,8 +150,8 @@ let classLavaTwo = new Lava(2200)
 let classZombieSeven = new Zombie(2800)
 let classZombieEight = new Zombie(3400)
 
-let enemies = [classZombieOne, classZombieTwo, classLavaOne, classZombieThree, classZombieFour]
-let complete = []
+let currentWave = [classZombieOne, classZombieTwo, classLavaOne, classZombieThree, classZombieFour]
+let completeWave = []
 let nextWave = [classZombieFive, classLavaTwo, classZombieSix, classZombieSeven, classZombieEight]
 
 /************************************************************
@@ -190,6 +192,16 @@ function draw(deltaTime, time) {
 	}
 	drawPlayerSprite(player);
 	
+	function beginNewWave() {
+		currentWave.forEach((enemy) => {
+			enemy.x = enemy.resetPos;
+			enemy.counted = false;
+			if (enemy.type === 'zombie') {
+				enemy.speed = randomIntFromInterval(zombieSpeedStart-1, zombieSpeedStart+2)
+			}
+		})
+	}
+
 	function preventZombieOvertake(enemies) {
 		for(let i = 0; i < enemies.length-1; i++) {
 			if (( Math.abs(enemies[i].x - enemies[i+1].x) <= 400) && 
@@ -197,7 +209,7 @@ function draw(deltaTime, time) {
 				  enemies[i+1].type ==='zombie') 
 			{
 				enemies[i].speed = 5;
-				enemies[i+1].speed = 3;
+				enemies[i+1].speed = 5;
 				console.log('adjusted zombie')
 			}
 		}
@@ -206,13 +218,13 @@ function draw(deltaTime, time) {
 			enemies[0].type ==='zombie')
 		{
 			enemies[enemies.length-1].speed = 5;
-			enemies[0].speed = 3;
+			enemies[0].speed = 5;
 			console.log('adjusted zombie')
 		}
 	}
 
 	function stopAllZombiesBeforeLava(lavaX) {
-		enemies.forEach((enemy) => {
+		currentWave.forEach((enemy) => {
 			if (enemy.type==='zombie' && enemy.x > lavaX) {
 				enemy.lastSpeed = enemy.speed;
 				enemy.speed = 3
@@ -222,7 +234,7 @@ function draw(deltaTime, time) {
 	}
 
 	function resumeAllZombies() {
-		enemies.forEach((enemy)=> {
+		currentWave.forEach((enemy)=> {
 			if (enemy.type==='zombie') {
 				enemy.speed = enemy.lastSpeed;
 				console.log(enemy.lastSpeed)
@@ -231,13 +243,13 @@ function draw(deltaTime, time) {
 	}
 
 	if (!zombiesStopped) {
-		preventZombieOvertake(enemies)
+		preventZombieOvertake(currentWave)
 	}
 
 	//physicsFrames counts how many 1/60ths of a second ago the zombie was replaced
 	timeSinceLastZombieReplace += ((1000/60)/deltaTime)
 	physicsFrames += deltaTime / (1000/60);
-	enemies.forEach((enemy, i) => {
+	currentWave.forEach((enemy, i) => {
 
 		//the physics run at 60 fps. The new zombie position will be the zombies 
 		//old position - the zombies speed (the distance the zombie advances in
@@ -272,6 +284,26 @@ function draw(deltaTime, time) {
 			//placed further away from the player, but they will also move faster. This should
 			//increase the difficulty as time goes on
 			if (enemy.x < -60) {
+				context.clearRect(enemy.lastX-2, enemy.y-12, 100, 100);
+				completeWave.push(enemy);
+				currentWave.splice(i, 1)
+
+				if (currentWave.length === 0) {
+					console.log('next Wave!')
+					console.log(`current wave: ${currentWave}`)
+					console.log(`complete wave: ${completeWave}`)
+					console.log(`next wave: ${nextWave}`)
+					currentWave = nextWave;
+					nextWave = completeWave
+					completeWave = []
+					beginNewWave()
+				} else if (enemy.type === 'lava') {
+					resumeAllZombies()
+					zombiesStopped = false
+				}
+			}
+			
+			/*if (enemy.x < -60) {
 				lastReplacedZombiePos = lastReplacedZombiePos //- lastReplacedZombieSpeed * timeSinceLastZombieReplace
 				enemy.x = Math.round(lastReplacedZombiePos + randomIntFromInterval(lowEndSpacing, highEndSpacing));
 				context.clearRect(enemy.lastX-2, enemy.y-12, 100, 100);
@@ -289,7 +321,7 @@ function draw(deltaTime, time) {
 					resumeAllZombies()
 					zombiesStopped = false
 				}
-			}
+			}*/
 		}	
 	});
 }
