@@ -1,3 +1,4 @@
+
 /***********************************************************
 						OVERVIEW:
 	The main loop of this game uses request animation frame.
@@ -59,18 +60,24 @@ const player = {
 
 class Lava {
 	constructor(x) {
-		this.type = 'lava'
-		this.x = x
-		this.y = 452
-		this.lastX = x
-		this.lastY = 452
-		this.width = 44
-		this.height = 88
-		this.counted = false
+		this.type = 'lava';
+		this.x = x;
+		this.speed = 3;
+		this.y = 452;
+		this.lastX = x;
+		this.lastY = 452;
+		this.width = 34;
+		this.height = 88;
+		this.zombiesStopped = false
+		this.counted = false;
 	}
 
+	get hitBoxX() {
+		return this.x + 25;
+	} 
+
 	drawSprite(lava) {
-		context.clearRect(lava.x, lava.y, lavaSpriteW, lavaSpriteH);
+		context.clearRect(lava.lastX-2, lava.y-2, lavaSpriteW+4, lavaSpriteH+4);
 		context.drawImage(
 			lavaImg,
 			//source rectangle
@@ -78,11 +85,12 @@ class Lava {
 			//destination rectange. -1 to compensate for blank left of sprite
 			Math.round(lava.x), Math.round(lava.y), Math.round(lavaSpriteW), Math.round(lavaSpriteH)
 		);
+		lava.lastX = lava.x
 	}
 
 	checkCollision(player, lava) {
-		if(((player.x + player.width) > lava.x && player.x < (lava.x + lava.width)||
-			player.x < (lava.x + lava.width) && (player.x + player.width) < lava.width) &&
+		if(((player.x + player.width) > lava.hitBoxX && player.x < (lava.hitBoxX + lava.width)||
+			player.x < (lava.hitBoxX + lava.width) && (player.x + player.width) < lava.width) &&
 			((player.y + player.height) > lava.y && player.y < (lava.y + lava.height)||
 			player.y < (lava.y + lava.height) && (player.y + player.height) < lava.height)) {
 			return true;
@@ -97,18 +105,22 @@ class Zombie {
 		this.y = 380
 		this.lastX = x
 		this.lastY = 380
+		this.speed = 5
+		this.lastSpeed = 3
 		this.width = 40
 		this.height = 80
 		this.counted = false
 	}
 	drawSprite(zombie) {
-		context.clearRect(Math.round(zombie.x-5), Math.round(zombie.y-10), Math.round(zombieSpriteW), Math.round(zombieSpriteH));
+		context.clearRect(zombie.lastX-2, zombie.y-12, zombieSpriteW+4, zombieSpriteH+16);
 		context.drawImage(
 			zombieImg,
 			//source rectangle
 			Math.round(cycle * zombieSpriteW), 0, Math.round(zombieSpriteW), Math.round(zombieSpriteH),
 			//destination rectange. -1 to compensate for blank left of sprite
-			Math.round(zombie.x-20), Math.round(zombie.y-10), Math.round(zombieSpriteW), Math.round(zombieSpriteH));
+			Math.round(zombie.x-20), Math.round(zombie.y-10), Math.round(zombieSpriteW), Math.round(zombieSpriteH)
+		);
+		zombie.lastX = zombie.x
 	}
 
 	checkCollision(player, zombie) {
@@ -121,13 +133,14 @@ class Zombie {
 	}
 }
 
-let classLavaOne = new Lava(1000)
-let classZombieOne = new Zombie(1600)
-let classZombieTwo = new Zombie(2200)
+
+let classZombieOne = new Zombie(1000)
+let classZombieTwo = new Zombie(1600)
+let classLavaOne = new Lava(2200)
 let classZombieThree = new Zombie(2800)
 let classZombieFour = new Zombie(3400)
 
-let enemies = [classZombieOne, classZombieTwo, classZombieThree, classZombieFour, classLavaOne]
+let enemies = [classZombieOne, classZombieTwo, classLavaOne, classZombieThree, classZombieFour]
 
 /************************************************************
 				Game starting conditions
@@ -141,16 +154,15 @@ When replaced the first zombie will be between position
 
 let zombieFrameInCycle = 0;
 let cycle = 0;
-let lastReplace = 3400;
+let lastReplacedZombiePos = 3400;
 let physicsFrames = 0
 const gravityAccelY = 800;
-let zombieSpeedMedian = 4
-let zombieSpeed = 4;
-let lavaSpeed = 3;
-let lowEndSpacing = -10;
-let highEndSpacing = 10;
+let zombieSpeedStart = 5
+let lowEndSpacing = -100;
+let highEndSpacing = 100;
 let runGame = false;
-
+let lastReplacedZombieSpeed = 5;
+let timeSinceLastZombieReplace = 0
 /***********************************************
 				draw function:
 The draw is the function called every frame
@@ -167,20 +179,68 @@ function draw(deltaTime, time) {
 	}
 	drawPlayerSprite(player);
 	
+	function preventZombieOvertake(enemies) {
+		for(let i = 0; i < enemies.length-1; i++) {
+			if (( Math.abs(enemies[i].x - enemies[i+1].x) <= 400) && 
+				  enemies[i].type === 'zombie' &&
+				  enemies[i+1].type ==='zombie') 
+			{
+				enemies[i].speed = 5;
+				enemies[i+1].speed = 5;
+				console.log('adjusted zombie')
+			}
+		}
+		if( (Math.abs(enemies[enemies.length-1].x - enemies[0].x) <= 400) &&
+			enemies[enemies.length-1].type === 'zombie' &&
+			enemies[0].type ==='zombie')
+		{
+			enemies[enemies.length-1].speed = 5;
+			enemies[0].speed = 5;
+			console.log('adjusted zombie')
+		}
+	}
+
+	function stopAllZombiesBeforeLava(lavaX) {
+		enemies.forEach((enemy) => {
+			if (enemy.type==='zombie' && enemy.x > lavaX) {
+				enemy.lastSpeed = enemy.speed;
+				enemy.speed = 3
+				console.log('stopped zombies')
+			}
+		})
+	}
+
+	function resumeAllZombies() {
+		enemies.forEach((enemy)=> {
+			if (enemy.type==='zombie') {
+				enemy.speed = enemy.lastSpeed;
+				console.log(enemy.lastSpeed)
+			}
+		})
+	}
+
+	preventZombieOvertake(enemies)
+
 	//physicsFrames counts how many 1/60ths of a second ago the zombie was replaced
+	timeSinceLastZombieReplace += ((1000/60)/deltaTime)
 	physicsFrames += deltaTime / (1000/60);
-	enemies.forEach(enemy => {
+	enemies.forEach((enemy, i) => {
+
 		//the physics run at 60 fps. The new zombie position will be the zombies 
 		//old position - the zombies speed (the distance the zombie advances in
 		//1/60th of a second) this is multiplied by how how many 1/60ths of a second
 		//it has been since the last frame.
 		if (enemy.type === 'zombie') {
-			enemy.x -= zombieSpeed * ((1000/60)/deltaTime);
+			enemy.x -= enemy.speed * ((1000/60)/deltaTime);
 		} else {
-			enemy.x -= lavaSpeed * ((1000/60)/deltaTime)
+			enemy.x -= enemy.speed * ((1000/60)/deltaTime)
 		}
 		if (enemy.x < 960) {
 			enemy.drawSprite(enemy);
+			if (enemy.type === 'lava' && (!enemy.zombiesStopped)) {
+				stopAllZombiesBeforeLava(enemy.x)
+				enemy.zombiesStopped = true
+			}
 
 			if(enemy.checkCollision(player,enemy)) {
 				endGame();
@@ -198,13 +258,21 @@ function draw(deltaTime, time) {
 			//behind where the previous enemy was replaced. The enemys will over time get
 			//placed further away from the player, but they will also move faster. This should
 			//increase the difficulty as time goes on
-			if (enemy.x < -40) {
-				//Starting at 2200, 
-				enemy.x = lastReplace + randomIntFromInterval(lowEndSpacing, highEndSpacing);
-				lastReplace = enemy.x;
+			if (enemy.x < -60) {
+				lastReplacedZombiePos = lastReplacedZombiePos //- lastReplacedZombieSpeed * timeSinceLastZombieReplace
+				enemy.x = Math.round(lastReplacedZombiePos + randomIntFromInterval(lowEndSpacing, highEndSpacing));
+				context.clearRect(enemy.lastX-2, enemy.y-12, 100, 100);
+				lastReplacedZombiePos = enemy.x;
+				lastReplacedZombieSpeed = enemy.speed
 				physicsFrames = 0;
-				enemy.counted = false;	
-				zombieSpeed = randomIntFromInterval(zombieSpeedMedian, zombieSpeedMedian+3);
+				enemy.counted = false;
+				console.log(`replaced position: ${enemy.x}`)
+				if (enemy.type === 'zombie') {
+					enemy.speed = randomIntFromInterval(zombieSpeedStart-1, zombieSpeedStart+2);
+				} else {
+					resumeAllZombies()
+					enemy.zombiesStopped = false
+				}
 			}
 		}	
 	});
@@ -258,7 +326,7 @@ function drawBackground() {
 }
 
 function drawPlayerSprite() {
-	context.clearRect(Math.round(player.lastX)-2, Math.round(player.lastY)-2, Math.round(playerSpriteW)+4, Math.round(playerSpriteH)+4)
+	context.clearRect(player.lastX-2, player.lastY-2, playerSpriteW+4,playerSpriteH+4)
 	context.drawImage(
 		playerImg,
 		//source rectangle
@@ -280,6 +348,11 @@ function drawzombie(zombie) {
 	context.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
 }
 
+function drawlava(lava) {
+	context.fillStyle = '#EE6C4D';
+	context.fillRect(lava.hitBoxX, lava.y, lava.width, lava.height);
+}
+
 /****************************************************
 Functions to handle collision, placement, and jumping
 ****************************************************/
@@ -288,18 +361,6 @@ Functions to handle collision, placement, and jumping
 function randomIntFromInterval(min,max) {
 	return Math.floor(Math.random()*(max-min+1) + min);
 }
-
-//modified version of: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-//Not currently being used. Might be a better way to randomize the placement of zombies
-/*
-function randomizeLastThree(array) {
-	for(let i = 5; i > 3; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[array[i], array[j]] = [array[j], array[i]];
-	}
-	return array;
-}
-*/
 
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
 //function for gravity. If player is in the air accelerate in +Y (downward) direction.
