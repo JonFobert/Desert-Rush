@@ -380,6 +380,7 @@ function drawPlayerSprite() {
 	zombieFrameInCycle++
 	if (zombieFrameInCycle == 8) {
 		cycle = (cycle + 1) % 2
+		console.log(cycle)
 		zombieFrameInCycle = 0;
 	}
 }
