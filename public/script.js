@@ -1,4 +1,4 @@
-
+import calculateFrame from './modules/calculateFrame.js'
 
 /***********************************************************
 						OVERVIEW:
@@ -58,7 +58,8 @@ const gameState = {
 	uuid: getRandomTenDigit(),
 	score: 0,
 	frame: 0,
-	zombiesStopped: false
+	zombiesStopped: false,
+	waveOver: false
 };
 
 const player = {
@@ -83,6 +84,7 @@ class Lava {
 		this.width = 34;
 		this.height = 88;
 		this.counted = false;
+		this.draw = false;
 	}
 
 	get hitBoxX() {
@@ -119,11 +121,12 @@ class Zombie {
 		this.y = 380
 		this.lastX = resetPos
 		this.lastY = 380
-		this.speed = 6
+		this.speed = 5
 		this.lastSpeed = 3
 		this.width = 40
 		this.height = 80
 		this.counted = false
+		this.draw = false
 	}
 	drawSprite(zombie) {
 		context.clearRect(zombie.lastX-2, zombie.y-12, zombieSpriteW+4, zombieSpriteH+16);
@@ -177,19 +180,17 @@ When replaced the first zombie will be between position
 let zombieFrameInCycle = 0;
 let cycle = 0;
 let lastReplacedZombiePos = 3400;
-let physicsFrames = 0
 const gravityAccelY = 680;
-let zombieSpeedStart = 6
+let zombieSpeedStart = 5
 let lowEndSpacing = 0;
 let highEndSpacing = 0;
 let runGame = false;
-let lastReplacedZombieSpeed = 6;
-let timeSinceLastZombieReplace = 0
-let 
+let lastReplacedZombieSpeed = 5; 
 
 //Helper functions
 
 function beginNewWave() {
+	console.log(`currentWave to beginNewWave(): ${currentWave}`)
 	currentWave.forEach((enemy) => {
 		enemy.x = enemy.resetPos;
 		enemy.counted = false;
@@ -199,140 +200,30 @@ function beginNewWave() {
 	})
 }
 
-function stopAllZombiesBeforeLava(lavaX) {
-	currentWave.forEach((enemy) => {
-		if (enemy.type==='zombie' && enemy.x > lavaX) {
-			enemy.lastSpeed = enemy.speed;
-			enemy.speed = 3
-			console.log('stopped zombies')
-		}
-	})
-}
 
-function resumeAllZombies() {
-	currentWave.forEach((enemy)=> {
-		if (enemy.type==='zombie') {
-			enemy.speed = enemy.lastSpeed;
-			console.log(enemy.lastSpeed)
-		}
-	})
-}
 
-function preventZombieOvertake(enemies) {
-	console.log(enemies)
-	let zombies = enemies.filter(enemy => enemy.type === 'zombie')
-	//console.log(zombies)
-	for(let i = 0; i < zombies.length-1; i++) {
-		if ( Math.abs(zombies[i].x - zombies[i+1].x) <= 400)
-		{
-			zombies[i].speed = 5;
-			zombies[i+1].speed = 6;
-			console.log('adjusted zombie')
-		}
-	}
-	if( (Math.abs(zombies[zombies.length-1].x - zombies[0].x) <= 400) &&
-		zombies[zombies.length-1].type === 'zombie' &&
-		zombies[0].type ==='zombie')
-	{
-		zombies[zombies.length-1].speed = 5;
-		zombies[0].speed = 6;
-		console.log('adjusted zombie')
-	}
-}
-
-/***********************************************
-				draw function:
-The draw is the function called every frame
-It computes and displays every frame and resets
-the game if the player collides with a zombie
-***********************************************/
-
-function playGame(deltaTime, time) {
-	calculateFrame(deltaTime)
-}
-
-function calculateFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave) {
-	if(player.velocityY !== 0) {
-		gravity(deltaTime);
-	}
-
-	if (!gameState.zombiesStopped) {
-		preventZombieOvertake(currentWave)
-	}
-	frame++
-}
-
-function draw(deltaTime, time) {
-	//context.clearRect(0, 190, 960, 350)
+function drawFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave) {
 	movingBackgroundContext.clearRect(0, 0, 960, 350)
 	drawBackground();
-	if(player.velocityY !== 0) {
-		gravity(deltaTime);
-	}
 	drawPlayerSprite(player);
-	
-	if (!gameState.zombiesStopped) {
-		preventZombieOvertake(currentWave)
+	currentWave.forEach((enemy, i) => {
+		if (enemy.draw) {
+			enemy.drawSprite(enemy)
+		}
+	})
+}
+
+function playGame(deltaTime, time) {
+	calculateFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave)
+	drawFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave)
+	if(gameState.waveOver) {
+		currentWave = nextWave;
+		nextWave = completeWave
+		completeWave = []
+		beginNewWave()
+		gameState.waveOver = false
 	}
 
-	//physicsFrames counts how many 1/60ths of a second ago the zombie was replaced
-	timeSinceLastZombieReplace += ((1000/60)/deltaTime)
-	physicsFrames += deltaTime / (1000/60);
-	currentWave.forEach((enemy, i) => {
-
-		//the physics run at 60 fps. The new zombie position will be the zombies 
-		//old position - the zombies speed (the distance the zombie advances in
-		//1/60th of a second) this is multiplied by how how many 1/60ths of a second
-		//it has been since the last frame.
-		if (enemy.type === 'zombie') {
-			enemy.x -= enemy.speed * ((1000/60)/deltaTime);
-		} else {
-			enemy.x -= enemy.speed * ((1000/60)/deltaTime)
-		}
-		if (enemy.x < 960) {
-			enemy.drawSprite(enemy);
-			if (enemy.type === 'lava' && (!gameState.zombiesStopped)) {
-				stopAllZombiesBeforeLava(enemy.x)
-				gameState.zombiesStopped = true
-			}
-
-			if(enemy.checkCollision(player,enemy)) {
-				endGame();
-			}
-
-			//if the enemy passes the player add one to the players score
-			if (enemy.x < (50 - enemy.width) && enemy.counted == false) {
-				gameState.score++;
-				updateScore();
-				updateScoreOnServer()
-				enemy.counted = true;
-			}
-
-			//once the enemy is off screen to the left replace the enemy 30 to 60 units
-			//behind where the previous enemy was replaced. The enemys will over time get
-			//placed further away from the player, but they will also move faster. This should
-			//increase the difficulty as time goes on
-			if (enemy.x < -60) {
-				context.clearRect(enemy.lastX-2, enemy.y-12, 100, 100);
-				completeWave.push(enemy);
-				currentWave.splice(i, 1)
-				if (enemy.type === 'lava') {
-					resumeAllZombies()
-					gameState.zombiesStopped = false
-				}
-				if (currentWave.length === 0) {
-					console.log('next Wave!')
-					console.log(`current wave: ${currentWave}`)
-					console.log(`complete wave: ${completeWave}`)
-					console.log(`next wave: ${nextWave}`)
-					currentWave = nextWave;
-					nextWave = completeWave
-					completeWave = []
-					beginNewWave()
-				}
-			}	
-		};
-	});
 }
 
 /***********************************************************
@@ -396,7 +287,6 @@ function drawPlayerSprite() {
 	zombieFrameInCycle++
 	if (zombieFrameInCycle == 8) {
 		cycle = (cycle + 1) % 2
-		console.log(cycle)
 		zombieFrameInCycle = 0;
 	}
 }
@@ -423,32 +313,7 @@ function randomIntFromInterval(min,max) {
 //https://stackoverflow.com/questions/9960959/jumping-in-a-game
 //function for gravity. If player is in the air accelerate in +Y (downward) direction.
 //if player is on the ground keep the velocity 0.
-function gravity(deltaTime) {
-	let timeInSec = deltaTime/1000
-	player.velocityY += gravityAccelY * timeInSec;
-	player.y += player.velocityY * timeInSec;
-	if (player.y > 367) {
-    	player.y = 367; // assuming the ground is at height 367
-    	player.velocityY = 0;
-	}
-}
 
-//if the player hits the up arrow key give the player a -Y (upwards) velocity
-document.addEventListener("keydown", e => {
-	if (e.keyCode === 38 && player.velocityY === 0) {
-		player.velocityY = -500
-	}
-});
-
-function updateScore() {
-	document.querySelector('.score').innerHTML = `Score: ${gameState.score}`
-}
-
-function endGame() {
-	//instead of reassigning post to api/highscores/:id then redirect in express.
-	runGame = false;
-	window.location.assign(`http://localhost:3000/highScores/${gameState.uuid}`)
-}
 
 /******************************
 Menu/page display and operation
@@ -469,13 +334,6 @@ function createNewDBScore() {
 	xhttp.send(JSON.stringify({score: gameState.score}))
 }
 
-function updateScoreOnServer() {
-	let xhttp = new XMLHttpRequest();
-	//asynchronous, may need a callback...
-	xhttp.open("PUT", `http://localhost:3000/api/player/${gameState.uuid}`)
-	xhttp.setRequestHeader("Content-Type", "application/json")
-	xhttp.send(JSON.stringify({score: gameState.score}))
-}
 
 
 
@@ -542,7 +400,7 @@ let lastTime = 0;
 function main(time) {
 	if(runGame) {
 		requestAnimationFrame(main);
-		deltaTime = time - lastTime;
+		let deltaTime = time - lastTime;
 		lastTime = time;
 		playGame(deltaTime, time);
 	}
