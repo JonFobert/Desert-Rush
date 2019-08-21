@@ -56,7 +56,9 @@ function getRandomTenDigit() {
 
 const gameState = {
 	uuid: getRandomTenDigit(),
-	score: 0
+	score: 0,
+	frame: 0,
+	zombiesStopped: false
 };
 
 const player = {
@@ -183,9 +185,38 @@ let highEndSpacing = 0;
 let runGame = false;
 let lastReplacedZombieSpeed = 6;
 let timeSinceLastZombieReplace = 0
-let zombiesStopped = false
+let 
 
 //Helper functions
+
+function beginNewWave() {
+	currentWave.forEach((enemy) => {
+		enemy.x = enemy.resetPos;
+		enemy.counted = false;
+		if (enemy.type === 'zombie') {
+			enemy.speed = randomIntFromInterval(zombieSpeedStart-1, zombieSpeedStart+2)
+		}
+	})
+}
+
+function stopAllZombiesBeforeLava(lavaX) {
+	currentWave.forEach((enemy) => {
+		if (enemy.type==='zombie' && enemy.x > lavaX) {
+			enemy.lastSpeed = enemy.speed;
+			enemy.speed = 3
+			console.log('stopped zombies')
+		}
+	})
+}
+
+function resumeAllZombies() {
+	currentWave.forEach((enemy)=> {
+		if (enemy.type==='zombie') {
+			enemy.speed = enemy.lastSpeed;
+			console.log(enemy.lastSpeed)
+		}
+	})
+}
 
 function preventZombieOvertake(enemies) {
 	console.log(enemies)
@@ -216,6 +247,21 @@ It computes and displays every frame and resets
 the game if the player collides with a zombie
 ***********************************************/
 
+function playGame(deltaTime, time) {
+	calculateFrame(deltaTime)
+}
+
+function calculateFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave) {
+	if(player.velocityY !== 0) {
+		gravity(deltaTime);
+	}
+
+	if (!gameState.zombiesStopped) {
+		preventZombieOvertake(currentWave)
+	}
+	frame++
+}
+
 function draw(deltaTime, time) {
 	//context.clearRect(0, 190, 960, 350)
 	movingBackgroundContext.clearRect(0, 0, 960, 350)
@@ -225,37 +271,7 @@ function draw(deltaTime, time) {
 	}
 	drawPlayerSprite(player);
 	
-	function beginNewWave() {
-		currentWave.forEach((enemy) => {
-			enemy.x = enemy.resetPos;
-			enemy.counted = false;
-			if (enemy.type === 'zombie') {
-				enemy.speed = randomIntFromInterval(zombieSpeedStart-1, zombieSpeedStart+2)
-			}
-		})
-	}
-
-
-	function stopAllZombiesBeforeLava(lavaX) {
-		currentWave.forEach((enemy) => {
-			if (enemy.type==='zombie' && enemy.x > lavaX) {
-				enemy.lastSpeed = enemy.speed;
-				enemy.speed = 3
-				console.log('stopped zombies')
-			}
-		})
-	}
-
-	function resumeAllZombies() {
-		currentWave.forEach((enemy)=> {
-			if (enemy.type==='zombie') {
-				enemy.speed = enemy.lastSpeed;
-				console.log(enemy.lastSpeed)
-			}
-		})
-	}
-
-	if (!zombiesStopped) {
+	if (!gameState.zombiesStopped) {
 		preventZombieOvertake(currentWave)
 	}
 
@@ -275,9 +291,9 @@ function draw(deltaTime, time) {
 		}
 		if (enemy.x < 960) {
 			enemy.drawSprite(enemy);
-			if (enemy.type === 'lava' && (!zombiesStopped)) {
+			if (enemy.type === 'lava' && (!gameState.zombiesStopped)) {
 				stopAllZombiesBeforeLava(enemy.x)
-				zombiesStopped = true
+				gameState.zombiesStopped = true
 			}
 
 			if(enemy.checkCollision(player,enemy)) {
@@ -302,7 +318,7 @@ function draw(deltaTime, time) {
 				currentWave.splice(i, 1)
 				if (enemy.type === 'lava') {
 					resumeAllZombies()
-					zombiesStopped = false
+					gameState.zombiesStopped = false
 				}
 				if (currentWave.length === 0) {
 					console.log('next Wave!')
@@ -528,6 +544,6 @@ function main(time) {
 		requestAnimationFrame(main);
 		deltaTime = time - lastTime;
 		lastTime = time;
-		draw(deltaTime, time);
+		playGame(deltaTime, time);
 	}
 }
