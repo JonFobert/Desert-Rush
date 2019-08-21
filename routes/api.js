@@ -10,8 +10,26 @@ router.use(bodyParser.json());
 let HighScore = require('../models/highScore');
 let CurrentScore = require('../models/currentScore')
 
-router.put('/player', (req, res) => {
-    CurrentScore.findOneAndUpdate({}, req.body, {new: true}, (err, newScore) => {
+router.post('/player/:id', function(req, res) {
+    let newScore = new CurrentScore(
+        {
+            id: req.params.id,
+            score: 0
+        }
+    );
+    newScore.save(function (err) {
+        if (err) {
+            console.log(err) 
+        } else {
+            res.render('index', {
+                CurrentScore: newScore.score
+            })
+        }
+    })
+})
+
+router.put('/player/:id', (req, res) => {
+    CurrentScore.findOneAndUpdate({id: req.params.id}, req.body, {new: true}, (err, newScore) => {
         if (err) {
             console.log("Error!")
         } else {

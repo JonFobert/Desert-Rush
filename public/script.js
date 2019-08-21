@@ -51,6 +51,7 @@ let lavaSpriteW = 88, lavaSpriteH = 88;
 //Objects for the player and zombies (the enemies the player jumps over)
 
 const player = {
+	uuid: uuidv4(),
 	x: 50,
 	y: 367,
 	lastX: 50,
@@ -302,26 +303,6 @@ function draw(deltaTime, time) {
 					zombiesStopped = false
 				}
 			}
-			
-			/*if (enemy.x < -60) {
-				lastReplacedZombiePos = lastReplacedZombiePos //- lastReplacedZombieSpeed * timeSinceLastZombieReplace
-				enemy.x = Math.round(lastReplacedZombiePos + randomIntFromInterval(lowEndSpacing, highEndSpacing));
-				context.clearRect(enemy.lastX-2, enemy.y-12, 100, 100);
-				lastReplacedZombiePos = enemy.x;
-				lastReplacedZombieSpeed = enemy.speed
-				physicsFrames = 0;
-				enemy.counted = false;
-				console.log(`replaced position: ${enemy.x}`)
-				if (enemy.type === 'zombie') {
-					enemy.speed = randomIntFromInterval(zombieSpeedStart-1, zombieSpeedStart+2);
-					if(zombiesStopped) {
-						stopAllZombiesBeforeLava(enemy.x)
-					}
-				} else {
-					resumeAllZombies()
-					zombiesStopped = false
-				}
-			}*/
 		}	
 	});
 }
@@ -452,7 +433,15 @@ startButton.addEventListener("click", () => {
 function updateScoreOnServer() {
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
-	xhttp.open("PUT", "http://localhost:3000/api/player")
+	xhttp.open("PUT", `http://localhost:3000/api/player/${player.uuid}`)
+	xhttp.setRequestHeader("Content-Type", "application/json")
+	xhttp.send(JSON.stringify({score: player.score}))
+}
+
+function createNewDBScore() {
+	let xhttp = new XMLHttpRequest();
+	//asynchronous, may need a callback...
+	xhttp.open("POST", `http://localhost:3000/api/player/${player.uuid}`)
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: player.score}))
 }
@@ -510,6 +499,7 @@ for(i = 0; i < imagesLoading; ++i) {
 
 //run this before the main animation loop in order to set the score to 0 when starting.
 updateScore();
+createNewDBScore();
 
 //resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
 //main loop for the game. Keeps track of time and calls draw function to compute and 

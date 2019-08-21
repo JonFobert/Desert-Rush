@@ -3,6 +3,7 @@ const app = express();
 const path = require('path')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
+const uuidv4 = require('uuid/v4')
 
 //bring in mongoose models
 //HighScore now IS the mongoose model for highScore
@@ -22,14 +23,6 @@ app.use('/highScores', highScores)
 
 let api = require('./routes/api')
 app.use('/api', api)
-
-
-
-
-
-
-
-
 //Set up body parser for JSON
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -44,18 +37,34 @@ mongoose
 
 
 app.get('/', (req, res) => {
-    CurrentScore.findOneAndUpdate({}, {score: 0}, {new: true}, (err, newScore) => {
-        console.log(newScore)
-        if (err) {
-            console.log("Error!")
+    res.render('index')
+})
+
+/*//Delete Me
+router.post('/', (req, res) => {
+    let highScore = new HighScore()
+    CurrentScore.find({}, (err, newHighScore) => {
+        if(err) {
+           console.log("error posting score")
+            return
         } else {
-            res.render('index', {
-                CurrentScore: newScore.score
+            const uppercaseName = req.body.name.toUpperCase()
+            highScore.name = uppercaseName
+            highScore.score = newHighScore[0].score
+            highScore.save( err => {
+                console.log(highScore.score)
+                console.log(highScore.name)
+                if(err) {
+                    console.log(err)
+                    return
+                } else {
+                    zeroOutScoreThenRedirect(res, req)
+                }
             })
         }
     })
 })
-
+*/
 
 const PORT = process.env.PORT || 3000
 
