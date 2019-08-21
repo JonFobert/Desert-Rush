@@ -21,9 +21,10 @@ router.post('/player/:id', function(req, res) {
         if (err) {
             console.log(err) 
         } else {
-            res.render('index', {
-                CurrentScore: newScore.score
-            })
+            res.send('done!')
+            //res.render('highScores', {
+            //    CurrentScore: newScore.score
+            //})
         }
     })
 })
@@ -37,5 +38,16 @@ router.put('/player/:id', (req, res) => {
         }
     })
 })
+
+/*router.post('/player/highScore:id', (req, res) => {
+    Current.score.find({id: req.params.id}, (err, endingScore) => {
+        if (err) {
+            console.log("Error!")
+            }
+        } else {
+            
+        }
+    })
+})*/
 
 module.exports = router

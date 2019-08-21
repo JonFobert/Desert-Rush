@@ -11,7 +11,26 @@ let HighScore = require('../models/highScore');
 let CurrentScore = require('../models/currentScore')
 
 router.get('/', (req, res) => {
-    CurrentScore.find({}, (err, CurrentScore) => {
+    query = HighScore.find({})
+    query.limit(5);
+    query.sort({'score': -1});
+    query.exec((err, HighScore) => {
+        if(err) {
+            console.log(err)
+        } else {
+            renderWithScores(res, HighScore)
+        }
+    })
+});
+
+function renderWithScores(res, HighScore) {
+    res.render('highScores', {
+        HighScore: HighScore 
+    });
+}
+
+router.get('/:id', (req, res) => {
+    CurrentScore.find({id: req.params.id}, (err, CurrentScore) => {
         if(err) {
             console.log(err)
         } else {
@@ -22,17 +41,19 @@ router.get('/', (req, res) => {
                 if(err) {
                     console.log(err)
                 } else {
-                    renderWithScores(res, CurrentScore, HighScore)
+                    console.log(CurrentScore)
+                    renderWithScoresAndId(res, CurrentScore, HighScore, req.params.id)
                 }
             });
         }
     });
 });
 
-function renderWithScores(res, CurrentScore, HighScore) {
-    res.render('highScores', {
+function renderWithScoresAndId(res, CurrentScore, HighScore, id) {
+    res.render('highScoresEntry', {
         CurrentScore: CurrentScore[0].score,
-        HighScore: HighScore 
+        HighScore: HighScore,
+        id: id
     });
 }
 
@@ -47,9 +68,9 @@ function zeroOutScoreThenRedirect(res, req) {
     })
 }
 
-router.post('/', (req, res) => {
+router.post('/:id', (req, res) => {
     let highScore = new HighScore()
-    CurrentScore.find({}, (err, newHighScore) => {
+    CurrentScore.find({id: req.params.id}, (err, newHighScore) => {
         if(err) {
            console.log("error posting score")
             return
@@ -64,7 +85,7 @@ router.post('/', (req, res) => {
                     console.log(err)
                     return
                 } else {
-                    zeroOutScoreThenRedirect(res, req)
+                    res.redirect('/highScores')
                 }
             })
         }

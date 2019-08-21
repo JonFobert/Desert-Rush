@@ -1,5 +1,3 @@
-//TO DO: I think that one problem left is that zombies who are not stopped by the lava will
-// Reset then run into the zombies stopped in front of them...
 
 
 /***********************************************************
@@ -50,8 +48,14 @@ let lavaSpriteW = 88, lavaSpriteH = 88;
 
 //Objects for the player and zombies (the enemies the player jumps over)
 
+function getRandomTenDigit() {
+	const array = new Uint32Array(1);
+	window.crypto.getRandomValues(array);
+	return array.toString();
+}
+
 const player = {
-	uuid: uuidv4(),
+	uuid: getRandomTenDigit(),
 	x: 50,
 	y: 367,
 	lastX: 50,
@@ -416,8 +420,9 @@ function updateScore() {
 }
 
 function endGame() {
+	//instead of reassigning post to api/highscores/:id then redirect in express.
 	runGame = false;
-	window.location.assign("http://localhost:3000/highScores")
+	window.location.assign(`http://localhost:3000/highScores/${player.uuid}`)
 }
 
 /******************************
@@ -430,13 +435,6 @@ startButton.addEventListener("click", () => {
 	requestAnimationFrame(main);
 });
 
-function updateScoreOnServer() {
-	let xhttp = new XMLHttpRequest();
-	//asynchronous, may need a callback...
-	xhttp.open("PUT", `http://localhost:3000/api/player/${player.uuid}`)
-	xhttp.setRequestHeader("Content-Type", "application/json")
-	xhttp.send(JSON.stringify({score: player.score}))
-}
 
 function createNewDBScore() {
 	let xhttp = new XMLHttpRequest();
@@ -445,6 +443,16 @@ function createNewDBScore() {
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: player.score}))
 }
+
+function updateScoreOnServer() {
+	let xhttp = new XMLHttpRequest();
+	//asynchronous, may need a callback...
+	xhttp.open("PUT", `http://localhost:3000/api/player/${player.uuid}`)
+	xhttp.setRequestHeader("Content-Type", "application/json")
+	xhttp.send(JSON.stringify({score: player.score}))
+}
+
+
 
 /******************************************************
 				Main Animation Loop

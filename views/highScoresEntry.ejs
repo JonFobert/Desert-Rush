@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Bangers&display=swap" rel="stylesheet">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href = "/highScores.css">
+    <link rel="stylesheet" href = "/highScoresEntry.css">
     <title>VOLCANO RUSH</title>
 </head>
 <body>
@@ -24,7 +24,19 @@
                     </div>
                 </nav>
             <div class = "scoreScreen"></div>
+            <% if(CurrentScore > HighScore[4].score) { %>
+                <h1 class='pageHeading'>HIGH SCORE!</h1>
+                <div class ='nameEntry'>    
+                    <h2>FINAL SCORE: <%= CurrentScore %></h2>
+                    <h2>ENTER YOUR NAME:</h2>
+                    <form action ="/highScores/<%= id %>" method="POST" class = "nameEntry">
+                        <input type="text" name="name" placeholder= " _ _ _ " id="nameField" autocomplete="off" maxlength="3" autofocus="autofocus">
+                    <form>
+                </div>
+            <% } else { %>
                 <h1 class = 'pageHeading'>HIGH SCORES</h1>
+            <% } %>
+                
                 <br>
                 <table class = 'gameOverTable'>
                     <tr>
