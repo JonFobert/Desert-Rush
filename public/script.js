@@ -54,8 +54,12 @@ function getRandomTenDigit() {
 	return array.toString();
 }
 
-const player = {
+const gameState = {
 	uuid: getRandomTenDigit(),
+	score: 0
+};
+
+const player = {
 	x: 50,
 	y: 367,
 	lastX: 50,
@@ -63,7 +67,6 @@ const player = {
 	width: 60,
 	height: 90,
 	velocityY: 0,
-	score: 0
 };
 
 class Lava {
@@ -114,7 +117,7 @@ class Zombie {
 		this.y = 380
 		this.lastX = resetPos
 		this.lastY = 380
-		this.speed = 5
+		this.speed = 6
 		this.lastSpeed = 3
 		this.width = 40
 		this.height = 80
@@ -173,14 +176,39 @@ let zombieFrameInCycle = 0;
 let cycle = 0;
 let lastReplacedZombiePos = 3400;
 let physicsFrames = 0
-const gravityAccelY = 800;
-let zombieSpeedStart = 5
+const gravityAccelY = 680;
+let zombieSpeedStart = 6
 let lowEndSpacing = 0;
 let highEndSpacing = 0;
 let runGame = false;
-let lastReplacedZombieSpeed = 5;
+let lastReplacedZombieSpeed = 6;
 let timeSinceLastZombieReplace = 0
 let zombiesStopped = false
+
+//Helper functions
+
+function preventZombieOvertake(enemies) {
+	console.log(enemies)
+	let zombies = enemies.filter(enemy => enemy.type === 'zombie')
+	//console.log(zombies)
+	for(let i = 0; i < zombies.length-1; i++) {
+		if ( Math.abs(zombies[i].x - zombies[i+1].x) <= 400)
+		{
+			zombies[i].speed = 5;
+			zombies[i+1].speed = 6;
+			console.log('adjusted zombie')
+		}
+	}
+	if( (Math.abs(zombies[zombies.length-1].x - zombies[0].x) <= 400) &&
+		zombies[zombies.length-1].type === 'zombie' &&
+		zombies[0].type ==='zombie')
+	{
+		zombies[zombies.length-1].speed = 5;
+		zombies[0].speed = 6;
+		console.log('adjusted zombie')
+	}
+}
+
 /***********************************************
 				draw function:
 The draw is the function called every frame
@@ -207,26 +235,6 @@ function draw(deltaTime, time) {
 		})
 	}
 
-	function preventZombieOvertake(enemies) {
-		for(let i = 0; i < enemies.length-1; i++) {
-			if (( Math.abs(enemies[i].x - enemies[i+1].x) <= 400) && 
-				  enemies[i].type === 'zombie' &&
-				  enemies[i+1].type ==='zombie') 
-			{
-				enemies[i].speed = 5;
-				enemies[i+1].speed = 5;
-				console.log('adjusted zombie')
-			}
-		}
-		if( (Math.abs(enemies[enemies.length-1].x - enemies[0].x) <= 400) &&
-			enemies[enemies.length-1].type === 'zombie' &&
-			enemies[0].type ==='zombie')
-		{
-			enemies[enemies.length-1].speed = 5;
-			enemies[0].speed = 5;
-			console.log('adjusted zombie')
-		}
-	}
 
 	function stopAllZombiesBeforeLava(lavaX) {
 		currentWave.forEach((enemy) => {
@@ -278,7 +286,7 @@ function draw(deltaTime, time) {
 
 			//if the enemy passes the player add one to the players score
 			if (enemy.x < (50 - enemy.width) && enemy.counted == false) {
-				player.score++;
+				gameState.score++;
 				updateScore();
 				updateScoreOnServer()
 				enemy.counted = true;
@@ -292,7 +300,10 @@ function draw(deltaTime, time) {
 				context.clearRect(enemy.lastX-2, enemy.y-12, 100, 100);
 				completeWave.push(enemy);
 				currentWave.splice(i, 1)
-
+				if (enemy.type === 'lava') {
+					resumeAllZombies()
+					zombiesStopped = false
+				}
 				if (currentWave.length === 0) {
 					console.log('next Wave!')
 					console.log(`current wave: ${currentWave}`)
@@ -302,12 +313,9 @@ function draw(deltaTime, time) {
 					nextWave = completeWave
 					completeWave = []
 					beginNewWave()
-				} else if (enemy.type === 'lava') {
-					resumeAllZombies()
-					zombiesStopped = false
 				}
-			}
-		}	
+			}	
+		};
 	});
 }
 
@@ -411,18 +419,18 @@ function gravity(deltaTime) {
 //if the player hits the up arrow key give the player a -Y (upwards) velocity
 document.addEventListener("keydown", e => {
 	if (e.keyCode === 38 && player.velocityY === 0) {
-		player.velocityY = -600
+		player.velocityY = -500
 	}
 });
 
 function updateScore() {
-	document.querySelector('.score').innerHTML = `Score: ${player.score}`
+	document.querySelector('.score').innerHTML = `Score: ${gameState.score}`
 }
 
 function endGame() {
 	//instead of reassigning post to api/highscores/:id then redirect in express.
 	runGame = false;
-	window.location.assign(`http://localhost:3000/highScores/${player.uuid}`)
+	window.location.assign(`http://localhost:3000/highScores/${gameState.uuid}`)
 }
 
 /******************************
@@ -439,17 +447,17 @@ startButton.addEventListener("click", () => {
 function createNewDBScore() {
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
-	xhttp.open("POST", `http://localhost:3000/api/player/${player.uuid}`)
+	xhttp.open("POST", `http://localhost:3000/api/player/${gameState.uuid}`)
 	xhttp.setRequestHeader("Content-Type", "application/json")
-	xhttp.send(JSON.stringify({score: player.score}))
+	xhttp.send(JSON.stringify({score: gameState.score}))
 }
 
 function updateScoreOnServer() {
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
-	xhttp.open("PUT", `http://localhost:3000/api/player/${player.uuid}`)
+	xhttp.open("PUT", `http://localhost:3000/api/player/${gameState.uuid}`)
 	xhttp.setRequestHeader("Content-Type", "application/json")
-	xhttp.send(JSON.stringify({score: player.score}))
+	xhttp.send(JSON.stringify({score: gameState.score}))
 }
 
 
