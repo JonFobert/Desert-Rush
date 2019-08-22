@@ -1,4 +1,5 @@
 import calculateFrame from './modules/calculateFrame.js'
+import {drawFrame, drawBackground, drawPlayerSprite} from './modules/drawFrame.js'
 
 /***********************************************************
 						OVERVIEW:
@@ -6,6 +7,7 @@ import calculateFrame from './modules/calculateFrame.js'
 	See the function "main" at the bottom.
 	The physics run at 60 fps.
 ***********************************************************/
+
 
 const canvas = document.querySelector('.game');
 const context = canvas.getContext('2d',);
@@ -46,6 +48,28 @@ let lavaImg = document.createElement("img");
 lavaImg.src = "assets/lavabig.png";
 let lavaSpriteW = 88, lavaSpriteH = 88;
 
+let canvasesAndImages = {
+	context: context,
+	movingBackgroundCanvas: movingBackgroundCanvas,
+	staticBackgroundCanvas: staticBackgroundCanvas,
+	movingBackgroundContext: movingBackgroundContext,
+	staticBackgroundContext: staticBackgroundContext,
+	backgroundFive: backgroundFive,
+	backgroundFiveX: backgroundFiveX,
+	backgroundThree: backgroundThree,
+	backgroundThreeX: backgroundThreeX,
+	backgroundOne: backgroundOne,
+	playerImg: playerImg,
+	playerSpriteW: playerSpriteW,
+	playerSpriteH: playerSpriteH,
+	zombieImg: zombieImg,
+	zombieSpriteW: zombieSpriteW,
+	zombieSpriteH: zombieSpriteH,
+	lavaImg: lavaImg,
+	lavaSpriteW: lavaSpriteW,
+	lavaSpriteH: lavaSpriteH
+}
+
 //Objects for the player and zombies (the enemies the player jumps over)
 
 function getRandomTenDigit() {
@@ -54,13 +78,22 @@ function getRandomTenDigit() {
 	return array.toString();
 }
 
+const gameProperties = {
+	gravityAccelY: 680,
+	zombieSpeedStart: 5
+}
+
 const gameState = {
+	runGame: false,
 	uuid: getRandomTenDigit(),
 	score: 0,
 	frame: 0,
 	zombiesStopped: false,
-	waveOver: false
+	waveOver: false,
+	frameInAnimationCycle: 0,
+    animationCycle: 0
 };
+console.log(gameState)
 
 const player = {
 	x: 50,
@@ -133,7 +166,7 @@ class Zombie {
 		context.drawImage(
 			zombieImg,
 			//source rectangle
-			Math.round(cycle * zombieSpriteW), 0, Math.round(zombieSpriteW), Math.round(zombieSpriteH),
+			Math.round(gameState.animationCycle * zombieSpriteW), 0, Math.round(zombieSpriteW), Math.round(zombieSpriteH),
 			//destination rectange. -1 to compensate for blank left of sprite
 			Math.round(zombie.x-20), Math.round(zombie.y-10), Math.round(zombieSpriteW), Math.round(zombieSpriteH)
 		);
@@ -177,16 +210,6 @@ When replaced the first zombie will be between position
 240+30 and 240+60.
 *************************************************************/
 
-let zombieFrameInCycle = 0;
-let cycle = 0;
-let lastReplacedZombiePos = 3400;
-const gravityAccelY = 680;
-let zombieSpeedStart = 5
-let lowEndSpacing = 0;
-let highEndSpacing = 0;
-let runGame = false;
-let lastReplacedZombieSpeed = 5; 
-
 //Helper functions
 
 function beginNewWave() {
@@ -195,35 +218,22 @@ function beginNewWave() {
 		enemy.x = enemy.resetPos;
 		enemy.counted = false;
 		if (enemy.type === 'zombie') {
-			enemy.speed = randomIntFromInterval(zombieSpeedStart-1, zombieSpeedStart+2)
-		}
-	})
-}
-
-
-
-function drawFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave) {
-	movingBackgroundContext.clearRect(0, 0, 960, 350)
-	drawBackground();
-	drawPlayerSprite(player);
-	currentWave.forEach((enemy, i) => {
-		if (enemy.draw) {
-			enemy.drawSprite(enemy)
+			enemy.speed = randomIntFromInterval(gameProperties.zombieSpeedStart-1, gameProperties.zombieSpeedStart+2)
 		}
 	})
 }
 
 function playGame(deltaTime, time) {
-	calculateFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave)
-	drawFrame(deltaTime, gameState, player, currentWave, completeWave, nextWave)
+	calculateFrame(deltaTime, gameState, gameProperties, player, currentWave, completeWave, nextWave)
+	drawFrame(canvasesAndImages, deltaTime, gameState, player, currentWave, completeWave, nextWave)
 	if(gameState.waveOver) {
+		canvasesAndImages.context.clearRect(-62, 50-12, 100, 100);
 		currentWave = nextWave;
 		nextWave = completeWave
 		completeWave = []
 		beginNewWave()
 		gameState.waveOver = false
 	}
-
 }
 
 /***********************************************************
@@ -246,50 +256,7 @@ function drawStaticBackground() {
 //The background consists of four images. 3 are 2x the width of the canvas. 
 //these 3 images move to the left and loops, creating the illustion they are
 //infinite. 
-function drawBackground() {
-	
-	//IMAGE THREE
-	movingBackgroundContext.drawImage(backgroundThree,
-					  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
-					  backgroundThreeX, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
-	movingBackgroundContext.drawImage(backgroundThree,
-				 	  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
-				 	  backgroundThreeX + movingBackgroundCanvas.width, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
-	backgroundThreeX -= 1;
-	if (-backgroundThreeX == movingBackgroundCanvas.width) {
-		backgroundThreeX = 0;
-	}
 
-		//IMAGE FIVE
-	movingBackgroundContext.drawImage(backgroundFive,
-					  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
-					  backgroundFiveX, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
-	movingBackgroundContext.drawImage(backgroundFive,
-				 	  0, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height,
-				 	  backgroundFiveX + movingBackgroundCanvas.width, 0, movingBackgroundCanvas.width, movingBackgroundCanvas.height);
-	backgroundFiveX -= 3;
-	if (-backgroundFiveX == movingBackgroundCanvas.width) {
-		backgroundFiveX = 0;
-	}
-}
-
-function drawPlayerSprite() {
-	context.clearRect(player.lastX-2, player.lastY-2, playerSpriteW+4,playerSpriteH+4)
-	context.drawImage(
-		playerImg,
-		//source rectangle
-		Math.round(cycle * playerSpriteW), 0, Math.round(playerSpriteW), Math.round(playerSpriteH),
-		//destination rectange. -1 to compensate for blank left of sprite
-		Math.round(player.x), Math.round(player.y), Math.round(playerSpriteW), Math.round(playerSpriteH)
-	);
-	player.lastX = player.x;
-	player.lastY = player.y;	
-	zombieFrameInCycle++
-	if (zombieFrameInCycle == 8) {
-		cycle = (cycle + 1) % 2
-		zombieFrameInCycle = 0;
-	}
-}
 
 function drawzombie(zombie) {
 	context.fillStyle = '#EE6C4D';
@@ -316,11 +283,17 @@ function randomIntFromInterval(min,max) {
 
 
 /******************************
-Menu/page display and operation
+Event Listeners
 *******************************/
 
+document.addEventListener("keydown", e => {
+	if (e.keyCode === 38 && player.velocityY === 0) {
+		player.velocityY = -500
+	}
+});
+
 startButton.addEventListener("click", () => {
-	runGame = true;
+	gameState.runGame = true;
 	startScreen.style.display = "none";
 	requestAnimationFrame(main);
 });
@@ -333,9 +306,6 @@ function createNewDBScore() {
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: gameState.score}))
 }
-
-
-
 
 /******************************************************
 				Main Animation Loop
@@ -377,8 +347,8 @@ var loadImage = function(i) {
 // Call upon all images loaded.
 var workDone = function() {
 	drawStaticBackground()
-	drawBackground();
-	drawPlayerSprite();
+	drawBackground(canvasesAndImages);
+	drawPlayerSprite(canvasesAndImages, player, gameState.animationCycle);
 	requestAnimationFrame(main)
 }
 
@@ -388,8 +358,12 @@ for(i = 0; i < imagesLoading; ++i) {
 	loadImage(i);
 }
 
+function initializeScore() {
+	document.querySelector('.score').innerHTML = `Score: ${gameState.score}`
+}
+
 //run this before the main animation loop in order to set the score to 0 when starting.
-updateScore();
+initializeScore();
 createNewDBScore();
 
 //resource for rAF and main loop: https://developer.mozilla.org/en-US/docs/Games/Anatomy
@@ -398,7 +372,7 @@ createNewDBScore();
 //main animation loop starts
 let lastTime = 0;
 function main(time) {
-	if(runGame) {
+	if(gameState.runGame) {
 		requestAnimationFrame(main);
 		let deltaTime = time - lastTime;
 		lastTime = time;
