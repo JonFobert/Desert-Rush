@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 //connect to the database
-const db = process.env.mongoURI || require('./config/keys').mongoURI
+const db = process.env.mongoURI// || require('./config/keys').mongoURI
 
 mongoose
     .connect(db,{useNewUrlParser: true})
