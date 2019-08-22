@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 
 //bring in mongoose models
-//HighScore now IS the mongoose model for highScore
+//HighScore now is the mongoose model for highScore
 let HighScore = require('./models/highScore');
 let CurrentScore = require('./models/currentScore')
 

@@ -271,7 +271,6 @@ function createNewDBScore() {
 //adapted from https://stackoverflow.com/questions/31299509/call-a-function-when-html5-canvas-is-ready
 //because the images load asychronously, wait for  all the images to load before calling the 
 //main animation frame for the first time
-
 var images = [
             'assets/background5.png',
             'assets/background3.png',
@@ -332,7 +331,7 @@ function main(time) {
 }
 
 
-//can be used to draw the hitxboxes of objects
+/******can be used for testing to draw the hitxboxes of objects******/
 /*function drawzombie(zombie) {
 	context.fillStyle = '#EE6C4D';
 	context.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);

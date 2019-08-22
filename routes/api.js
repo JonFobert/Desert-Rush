@@ -39,15 +39,4 @@ router.put('/player/:id', (req, res) => {
     })
 })
 
-/*router.post('/player/highScore:id', (req, res) => {
-    Current.score.find({id: req.params.id}, (err, endingScore) => {
-        if (err) {
-            console.log("Error!")
-            }
-        } else {
-            
-        }
-    })
-})*/
-
 module.exports = router

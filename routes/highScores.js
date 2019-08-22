@@ -10,6 +10,11 @@ router.use(bodyParser.json());
 let HighScore = require('../models/highScore');
 let CurrentScore = require('../models/currentScore')
 
+function renderWithScores(res, HighScore) {
+    res.render('highScores', {
+        HighScore: HighScore 
+    });
+}
 router.get('/', (req, res) => {
     query = HighScore.find({})
     query.limit(5);
@@ -23,9 +28,12 @@ router.get('/', (req, res) => {
     })
 });
 
-function renderWithScores(res, HighScore) {
-    res.render('highScores', {
-        HighScore: HighScore 
+
+function renderWithScoresAndId(res, CurrentScore, HighScore, id) {
+    res.render('highScoresEntry', {
+        CurrentScore: CurrentScore[0].score,
+        HighScore: HighScore,
+        id: id
     });
 }
 
@@ -48,25 +56,6 @@ router.get('/:id', (req, res) => {
         }
     });
 });
-
-function renderWithScoresAndId(res, CurrentScore, HighScore, id) {
-    res.render('highScoresEntry', {
-        CurrentScore: CurrentScore[0].score,
-        HighScore: HighScore,
-        id: id
-    });
-}
-
-function zeroOutScoreThenRedirect(res, req) {
-    CurrentScore.findOneAndUpdate({}, {score: 0}, {new: true}, (err, newScore) => {
-        if (err) {
-            console.log("Error!")
-        } else {
-            console.log(newScore)
-            res.redirect('/highScores')
-        }
-    })
-}
 
 router.post('/:id', (req, res) => {
     let highScore = new HighScore()
