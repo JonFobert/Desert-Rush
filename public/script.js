@@ -253,7 +253,7 @@ startButton.addEventListener("click", () => {
 function createNewDBScore() {
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
-	xhttp.open("POST", `https://ancient-dawn-29299.herokuapp.com//api/player/${gameState.uuid}`)
+	xhttp.open("POST", `https://ancient-dawn-29299.herokuapp.com/api/player/${gameState.uuid}`)
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: gameState.score}))
 }
