@@ -1,7 +1,7 @@
-Desert Rush
+Volcano Rush
 =================
 
-This is a short side scrolling game. The objective is to jump over the zombies as the appear from the righ side of the screen. 1 Point is awarded for each baddie you jump over. If the player collides with a zombie the game is over.
+This is a short side scrolling game. The objective is to jump over the zombies and lava as the appear from the right side of the screen. 1 Point is awarded for every one of these obstacles that you jump over. If the player collides with a zombie or with lava the game is over
 
 Acknowledgments
 ---------------
