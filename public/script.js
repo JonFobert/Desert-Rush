@@ -1,29 +1,18 @@
 import calculateFrame from './modules/calculateFrame.js'
 import {drawFrame, drawBackground, drawPlayerSprite} from './modules/drawFrame.js'
 
-/***********************************************************
-						OVERVIEW:
-	The main loop of this game uses request animation frame.
-	See the function "main" at the bottom.
-	The physics run at 60 fps.
-***********************************************************/
-
-
+//canvses
 const canvas = document.querySelector('.game');
 const context = canvas.getContext('2d',);
-
 const movingBackgroundCanvas = document.querySelector('.background')
 const movingBackgroundContext = movingBackgroundCanvas.getContext('2d',);
-
 const staticBackgroundCanvas = document.querySelector('.static')
 const staticBackgroundContext = staticBackgroundCanvas.getContext('2d', { alpha: false });
 
 const startButton = document.querySelector('.start');
 const startScreen = document.querySelector('.start-menu');
 
-
 //background images
-
 let backgroundFive = document.createElement("img");
 backgroundFive.src = "assets/background5.png"
 let backgroundFiveX = 0
@@ -70,7 +59,11 @@ let canvasesAndImages = {
 	lavaSpriteH: lavaSpriteH
 }
 
-//Objects for the player and zombies (the enemies the player jumps over)
+
+const gameProperties = {
+	gravityAccelY: 680,
+	zombieSpeedStart: 5
+}
 
 function getRandomTenDigit() {
 	const array = new Uint32Array(1);
@@ -78,22 +71,17 @@ function getRandomTenDigit() {
 	return array.toString();
 }
 
-const gameProperties = {
-	gravityAccelY: 680,
-	zombieSpeedStart: 5
-}
-
 const gameState = {
 	runGame: false,
 	uuid: getRandomTenDigit(),
 	score: 0,
 	frame: 0,
+	enemyLeftFrame: false,
 	zombiesStopped: false,
 	waveOver: false,
 	frameInAnimationCycle: 0,
     animationCycle: 0
 };
-console.log(gameState)
 
 const player = {
 	x: 50,
@@ -213,7 +201,6 @@ When replaced the first zombie will be between position
 //Helper functions
 
 function beginNewWave() {
-	console.log(`currentWave to beginNewWave(): ${currentWave}`)
 	currentWave.forEach((enemy) => {
 		enemy.x = enemy.resetPos;
 		enemy.counted = false;
@@ -225,9 +212,9 @@ function beginNewWave() {
 
 function playGame(deltaTime, time) {
 	calculateFrame(deltaTime, gameState, gameProperties, player, currentWave, completeWave, nextWave)
-	drawFrame(canvasesAndImages, deltaTime, gameState, player, currentWave, completeWave, nextWave)
+	drawFrame(canvasesAndImages, gameState, player, currentWave)
 	if(gameState.waveOver) {
-		canvasesAndImages.context.clearRect(-62, 50-12, 100, 100);
+		console.log('cleared!')
 		currentWave = nextWave;
 		nextWave = completeWave
 		completeWave = []
@@ -236,51 +223,16 @@ function playGame(deltaTime, time) {
 	}
 }
 
-/***********************************************************
-  Functions to draw the player, background, and characters
-***********************************************************/
-
-
-function drawPlayer() {
-	context.clearRect(player.x, player.y, player.width, player.height);
-	context.fillStyle = '#98C1D9';
-	context.fillRect(player.x, player.y, player.width, player.height);
-}
-
 function drawStaticBackground() {
 	staticBackgroundContext.drawImage(backgroundOne,
 		0, 0, staticBackgroundCanvas.width, staticBackgroundCanvas.height,
 		0, 0, staticBackgroundCanvas.width, staticBackgroundCanvas.height);
 }
 
-//The background consists of four images. 3 are 2x the width of the canvas. 
-//these 3 images move to the left and loops, creating the illustion they are
-//infinite. 
-
-
-function drawzombie(zombie) {
-	context.fillStyle = '#EE6C4D';
-	context.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
-}
-
-function drawlava(lava) {
-	context.fillStyle = '#EE6C4D';
-	context.fillRect(lava.hitBoxX, lava.y, lava.width, lava.height);
-}
-
-/****************************************************
-Functions to handle collision, placement, and jumping
-****************************************************/
-
 //https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
 function randomIntFromInterval(min,max) {
 	return Math.floor(Math.random()*(max-min+1) + min);
 }
-
-//https://stackoverflow.com/questions/9960959/jumping-in-a-game
-//function for gravity. If player is in the air accelerate in +Y (downward) direction.
-//if player is on the ground keep the velocity 0.
-
 
 /******************************
 Event Listeners
@@ -297,7 +249,6 @@ startButton.addEventListener("click", () => {
 	startScreen.style.display = "none";
 	requestAnimationFrame(main);
 });
-
 
 function createNewDBScore() {
 	let xhttp = new XMLHttpRequest();
@@ -379,3 +330,19 @@ function main(time) {
 		playGame(deltaTime, time);
 	}
 }
+
+
+//can be used to draw the hitxboxes of objects
+/*function drawzombie(zombie) {
+	context.fillStyle = '#EE6C4D';
+	context.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
+}
+function drawPlayer() {
+	context.clearRect(player.x, player.y, player.width, player.height);
+	context.fillStyle = '#98C1D9';
+	context.fillRect(player.x, player.y, player.width, player.height);
+}
+function drawlava(lava) {
+	context.fillStyle = '#EE6C4D';
+	context.fillRect(lava.hitBoxX, lava.y, lava.width, lava.height);
+}*/

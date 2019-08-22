@@ -1,8 +1,13 @@
 
-function drawFrame(canvasesAndImages, deltaTime, gameState, player, currentWave, completeWave, nextWave) {
+function drawFrame(canvasesAndImages, gameState, player, currentWave) {
     canvasesAndImages.movingBackgroundContext.clearRect(0, 0, 960, 350)
     drawBackground(canvasesAndImages);
     determineAnimationCycle(gameState);
+    if(gameState.enemyLeftFrame) {
+        //clear Rect around the enemy that left the frame.
+        canvasesAndImages.context.clearRect(-50, 400, 200, 200);
+        gameState.enemyLeftFrame = false;
+    }
 	drawPlayerSprite(canvasesAndImages, player, gameState.animationCycle);
 	currentWave.forEach((enemy, i) => {
 		if (enemy.draw) {
@@ -12,8 +17,6 @@ function drawFrame(canvasesAndImages, deltaTime, gameState, player, currentWave,
 }
 
 function drawBackground(cAndI) {
-	
-	//IMAGE THREE
 	cAndI.movingBackgroundContext.drawImage(cAndI.backgroundThree,
 					  0, 0, cAndI.movingBackgroundCanvas.width, cAndI.movingBackgroundCanvas.height,
 					  cAndI.backgroundThreeX, 0, cAndI.movingBackgroundCanvas.width, cAndI.movingBackgroundCanvas.height);
@@ -25,7 +28,6 @@ function drawBackground(cAndI) {
 		cAndI.backgroundThreeX = 0;
 	}
 
-		//IMAGE FIVE
     cAndI.movingBackgroundContext.drawImage(cAndI.backgroundFive,
 					  0, 0, cAndI.movingBackgroundCanvas.width, cAndI.movingBackgroundCanvas.height,
 					  cAndI.backgroundFiveX, 0, cAndI.movingBackgroundCanvas.width, cAndI.movingBackgroundCanvas.height);

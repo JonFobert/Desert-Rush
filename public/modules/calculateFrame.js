@@ -2,7 +2,7 @@ function calculateFrame(deltaTime, gameState, gameProperties, player, currentWav
 	if(player.velocityY !== 0) {
 		gravity(deltaTime, player, gameProperties.gravityAccelY);
 	}
-
+	
 	if (!gameState.zombiesStopped) {
 		preventZombieOvertake(currentWave)
 	}
@@ -21,8 +21,7 @@ function calculateFrame(deltaTime, gameState, gameProperties, player, currentWav
 				gameState.zombiesStopped = true
 			}
 			if(enemy.checkCollision(player,enemy)) {
-				//gameState.runGame = false;
-				endGame(gameState) //gameState.uuid);
+				endGame(gameState);
 			}
 		}
 		//50********
@@ -34,6 +33,7 @@ function calculateFrame(deltaTime, gameState, gameProperties, player, currentWav
 		}
 		//60*********
 		if (enemy.x < -60) {
+			gameState.enemyLeftFrame = true;
 			completeWave.push(enemy);
 			currentWave.splice(i, 1)
 
@@ -42,17 +42,7 @@ function calculateFrame(deltaTime, gameState, gameProperties, player, currentWav
 				gameState.zombiesStopped = false
 			}
 			if (currentWave.length === 0) {
-				console.log('next Wave!')
-				console.log(`current wave: ${currentWave}`)
-				console.log(`complete wave: ${completeWave}`)
-				console.log(`next wave: ${nextWave}`)
 				gameState.waveOver = true
-				/*currentWave = nextWave;
-				nextWave = completeWave
-				completeWave = []
-				console.log(`CurrentWave to calculate function: ${currentWave}`)
-				console.log(`currentWave to beginNewWave(): ${currentWave}`)
-				beginNewWave()*/
 			}
 		}	
 	})
@@ -63,7 +53,6 @@ function stopAllZombiesBeforeLava(lavaX, currentWave) {
 		if (enemy.type==='zombie' && enemy.x > lavaX) {
 			enemy.lastSpeed = enemy.speed;
 			enemy.speed = 3
-			console.log('stopped zombies')
 		}
 	})
 }
@@ -72,7 +61,6 @@ function resumeAllZombies(currentWave) {
 	currentWave.forEach((enemy)=> {
 		if (enemy.type==='zombie') {
 			enemy.speed = enemy.lastSpeed;
-			console.log(enemy.lastSpeed)
 		}
 	})
 }
@@ -83,15 +71,13 @@ function preventZombieOvertake(enemies) {
 		for(let i = 0; i < zombies.length-1; i++) {
 			if ( Math.abs(zombies[i].x - zombies[i+1].x) <= 400)
 			{
-				zombies[i].speed = 5;
-				zombies[i+1].speed = 6;
-				console.log('adjusted zombie')
+				zombies[i].speed = 6;
+				zombies[i+1].speed = 5;
 			}
 		}
 		if (Math.abs(zombies[zombies.length-1].x - zombies[0].x) <= 400) {
-			zombies[zombies.length-1].speed = 5;
-			zombies[0].speed = 6;
-			console.log('adjusted zombie')
+			zombies[zombies.length-1].speed = 6;
+			zombies[0].speed = 5;
 		}
 	}
 }
@@ -125,6 +111,5 @@ function updateScoreOnServer(score, uuid) {
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: score}))
 }
-
 
 export default calculateFrame

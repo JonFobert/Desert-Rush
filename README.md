@@ -1,7 +1,12 @@
 Volcano Rush
 =================
 
-This is a short side scrolling game. The objective is to jump over the zombies and lava as the appear from the right side of the screen. 1 Point is awarded for every one of these obstacles that you jump over. If the player collides with a zombie or with lava the game is over
+This is a short side scrolling game. The objective is to jump over the zombies and lava as the appear from the right side of the screen. 1 Point is awarded for every one of these obstacles that you jump over. If the player collides with a zombie or with lava the game is over/
+
+## Rules
+
+ - when you are approaching lava, zombies will pause and wait for you to jump over the lava
+ - zombies will space themselves out automatically. If one zombie gets too close the zombie in front will start moving faster than the zombie behind
 
 Acknowledgments
 ---------------
