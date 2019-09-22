@@ -25,3 +25,4 @@ Acknowledgments
 ---------------
 Character art from Kenney.nl
 Background art from OpenGameArt.org
+Favicon from https://www.iconfinder.com/josyanimator
