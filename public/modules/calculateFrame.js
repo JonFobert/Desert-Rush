@@ -101,13 +101,13 @@ function updateScore(score) {
 function endGame(gameState) { 
 	//instead of reassigning post to api/highscores/:id then redirect in express.
 	gameState.runGame = false;
-	window.location.assign(`https://ancient-dawn-29299.herokuapp.com/highScores/${gameState.uuid}`)
+	window.location.assign(`https://volcano-rush.herokuapp.com/highScores/${gameState.uuid}`)
 }
 
 function updateScoreOnServer(score, uuid) {
 	let xhttp = new XMLHttpRequest();
 	//asynchronous, may need a callback...
-	xhttp.open("PUT", `https://ancient-dawn-29299.herokuapp.com/api/player/${uuid}`)
+	xhttp.open("PUT", `https://avolcano-rush.herokuapp.com/api/player/${uuid}`)
 	xhttp.setRequestHeader("Content-Type", "application/json")
 	xhttp.send(JSON.stringify({score: score}))
 }
