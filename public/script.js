@@ -214,7 +214,6 @@ function playGame(deltaTime, time) {
 	calculateFrame(deltaTime, gameState, gameProperties, player, currentWave, completeWave, nextWave)
 	drawFrame(canvasesAndImages, gameState, player, currentWave)
 	if(gameState.waveOver) {
-		console.log('cleared!')
 		currentWave = nextWave;
 		nextWave = completeWave
 		completeWave = []
